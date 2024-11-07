@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Lamp_Test" Id="{174bf0a2-537b-03a1-3af1-2680370f6cfe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Lamp_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbLamp : FB_Lamp;
+	nExpected : BYTE;
+	nResult : BYTE;
+	bExpected : BOOL;
+	bResult : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set bEnable TRUE');			 
+fbLamp.bEnable := TRUE; 
+fbLamp();
+nExpected := 1;
+nResult := fbLamp.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Set bEnable FALSE');			 
+fbLamp.bEnable := FALSE; 
+fbLamp();
+nExpected := 0;
+nResult := fbLamp.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Lamp_Test">
+      <LineId Id="30" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="69" Count="8" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_ControllerType" Id="{aca3d751-4855-0531-0abd-541498247c5f}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ControllerType :
+(
+	NotDefined := 0,
+	PlcSimAdvanced := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

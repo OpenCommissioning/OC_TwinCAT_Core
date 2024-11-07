@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Euchner_MGB_Test" Id="{d1a3dccc-6922-0752-0913-3a9a4148371d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Euchner_MGB_Test EXTENDS FB_TestSuite
+VAR
+	fbEuchnerMgb : FB_EuchnerMGB;
+	nExpected : BYTE;
+	nResult : BYTE;
+	bExpected : BOOL;
+	bResult : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Button1();
+Test_Button2();
+Test_Button3();
+Test_Button4();
+
+Test_Lamp1();
+Test_Lamp2();
+Test_Lamp3();
+Test_Lamp4();
+
+Test_DoorOpen();
+Test_DoorClosed_NoLock();
+Test_DoorClosed_Locked();
+
+]]></ST>
+    </Implementation>
+    <Method Name="Test_Button1" Id="{dee19089-3e25-098e-1657-52548e6262fb}">
+      <Declaration><![CDATA[METHOD Test_Button1
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Button 1 not pressed');
+fbEuchnerMgb.SetStatus(0);
+fbEuchnerMgb();
+bExpected := FALSE;
+bResult := fbEuchnerMgb.bButton_1;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Button 1 is pressed');	
+fbEuchnerMgb.SetStatus(16);
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bButton_1;
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Button2" Id="{7f4e069b-a00f-0584-1c9e-4bcfac3182fe}">
+      <Declaration><![CDATA[METHOD Test_Button2
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Button 2 not pressed');
+fbEuchnerMgb.SetStatus(0);
+fbEuchnerMgb();
+bExpected := FALSE;
+bResult := fbEuchnerMgb.bButton_2;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Button 2 is pressed');	
+fbEuchnerMgb.SetStatus(32);
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bButton_2;
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Button3" Id="{c0a15eea-f16b-0ef3-2161-6bcbb46019ba}">
+      <Declaration><![CDATA[METHOD Test_Button3
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Button 3 not pressed');
+fbEuchnerMgb.SetStatus(0);
+fbEuchnerMgb();
+bExpected := FALSE;
+bResult := fbEuchnerMgb.bButton_3;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Button 3 is pressed');	
+fbEuchnerMgb.SetStatus(64);
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bButton_3;
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Button4" Id="{f0a1a345-8a6d-0a1e-0f31-1ccfd0fe4fc0}">
+      <Declaration><![CDATA[METHOD Test_Button4
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Button 4 not pressed');
+fbEuchnerMgb.SetStatus(0);
+fbEuchnerMgb();
+bExpected := FALSE;
+bResult := fbEuchnerMgb.bButton_4;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Button 4 is pressed');	
+fbEuchnerMgb.SetStatus(128);
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bButton_4;
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DoorClosed_Locked" Id="{530007a1-7277-0db3-356a-4ab067fd21de}">
+      <Declaration><![CDATA[METHOD Test_DoorClosed_Locked
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Door closed and locked');
+fbEuchnerMgb.SetStatus(3);
+fbEuchnerMgb.bLock := TRUE;
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bclosed AND fbEuchnerMgb.bClosedAndLocked;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DoorClosed_NoLock" Id="{f5ecf1fa-9a9b-0bed-36f5-4c467273694d}">
+      <Declaration><![CDATA[METHOD Test_DoorClosed_NoLock
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Door is closed but not locked');
+fbEuchnerMgb.SetStatus(1);
+fbEuchnerMgb();
+bExpected := TRUE;
+bResult := fbEuchnerMgb.bclosed AND NOT fbEuchnerMgb.bClosedAndLocked;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DoorOpen" Id="{b0158dd4-c44e-0b86-3726-ec971f4a1056}">
+      <Declaration><![CDATA[METHOD Test_DoorOpen
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Door is open');
+fbEuchnerMgb.SetStatus(0);
+fbEuchnerMgb();
+bExpected := FALSE;
+bResult := fbEuchnerMgb.bclosed;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Lamp1" Id="{2f79bcb1-56de-00d3-0ef5-000ebe2b6aff}">
+      <Declaration><![CDATA[METHOD Test_Lamp1
+VAR_INPUT
+END_VAR
+
+VAR
+	fbButton: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Turn ON Lamp 1');			 
+fbEuchnerMgb.bLamp_1 := TRUE; 
+fbEuchnerMgb();
+nExpected := 16;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Turn OFF Lamp 1');			 
+fbEuchnerMgb.bLamp_1 := FALSE; 
+fbEuchnerMgb();
+nExpected := 0;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Lamp2" Id="{654626a7-037c-09be-2acf-641b632b0a7e}">
+      <Declaration><![CDATA[METHOD Test_Lamp2
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Turn ON Lamp 2');			 
+fbEuchnerMgb.bLamp_2 := TRUE; 
+fbEuchnerMgb();
+nExpected := 32;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Turn OFF Lamp 2');			 
+fbEuchnerMgb.bLamp_2 := FALSE; 
+fbEuchnerMgb();
+nExpected := 0;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Lamp3" Id="{c862a8c8-b009-0bc0-3ef5-9e103598e504}">
+      <Declaration><![CDATA[METHOD Test_Lamp3
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Turn ON Lamp 3');			 
+fbEuchnerMgb.bLamp_3 := TRUE; 
+fbEuchnerMgb();
+nExpected := 64;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Turn OFF Lamp 3');			 
+fbEuchnerMgb.bLamp_3 := FALSE; 
+fbEuchnerMgb();
+nExpected := 0;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Lamp4" Id="{8da073a5-75e7-0c80-3cf1-d5c1ddb42821}">
+      <Declaration><![CDATA[METHOD Test_Lamp4
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Turn ON Lamp 4');			 
+fbEuchnerMgb.bLamp_4 := TRUE; 
+fbEuchnerMgb();
+nExpected := 128;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Turn OFF Lamp 4');			 
+fbEuchnerMgb.bLamp_4 := FALSE; 
+fbEuchnerMgb();
+nExpected := 0;
+nResult := fbEuchnerMgb.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Euchner_MGB_Test">
+      <LineId Id="27" Count="7" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Button1">
+      <LineId Id="24" Count="18" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Button2">
+      <LineId Id="6" Count="18" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Button3">
+      <LineId Id="6" Count="18" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Button4">
+      <LineId Id="6" Count="18" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_DoorClosed_Locked">
+      <LineId Id="6" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="8" Count="6" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_DoorClosed_NoLock">
+      <LineId Id="6" Count="8" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_DoorOpen">
+      <LineId Id="6" Count="8" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Lamp1">
+      <LineId Id="6" Count="17" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Lamp2">
+      <LineId Id="6" Count="17" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Lamp3">
+      <LineId Id="6" Count="17" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Euchner_MGB_Test.Test_Lamp4">
+      <LineId Id="6" Count="17" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

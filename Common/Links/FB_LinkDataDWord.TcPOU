@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_LinkDataDWord" Id="{6640c605-874d-0b5b-3d68-62428ba9b094}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDataDWord EXTENDS FB_LinkDevice
+VAR		
+	ControlData		AT %Q* : DWORD; //{simulation-interface}
+	StatusData		AT %I* : DWORD; //{simulation-interface}	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();]]></ST>
+    </Implementation>
+    <Method Name="GetLinkControlData" Id="{741520f1-4770-0983-0fe1-555395da09ab}">
+      <Declaration><![CDATA[METHOD INTERNAL GetLinkControlData : DWORD
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLinkControlData := ControlData;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLinkStatusData" Id="{c74d0794-b847-0043-3a61-8919b309200a}">
+      <Declaration><![CDATA[METHOD INTERNAL SetLinkStatusData : BOOL
+VAR_INPUT
+	nStatusData : DWORD;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[StatusData := nStatusData;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

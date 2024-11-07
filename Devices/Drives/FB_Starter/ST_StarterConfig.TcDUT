@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_StarterConfig" Id="{514cb85f-579f-0257-394c-28a085289d6e}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_StarterConfig:
+STRUCT
+	fVelocity			: REAL := 100; 	// mm
+	fAcceleration		: REAL := 500; 	// deg/s2
+	fDeceleration		: REAL := 500; 	// deg/s2		
+	bSwapProcessData	: BOOL; //SWAP Process Data from/to FIELDBUS
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

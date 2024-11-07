@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_MoveAbsolute" Id="{33b9870f-0a9c-08e8-23f5-ccdbe10d56b1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_MoveAbsolute 
+VAR_INPUT
+	fTargetPosition 	: REAL;
+	fTargetVelocity 	: REAL; 
+	fAccMax 			: REAL; 
+	fDecMax 			: REAL;	
+	fTolerance			: REAL := 1E-6;	
+END_VAR
+
+VAR
+	_fVelocity 			: REAL;
+	_fPosition 			: REAL;
+	_bIsReached			: BOOL;
+END_VAR                 
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fTargetVelocity := ABS(fTargetVelocity); 
+fAccMax := ABS(fAccMax);
+fDecMax := -ABS(fDecMax);
+
+IF F_Compare(fTargetPosition, _fPosition, fTolerance) THEN
+	_fVelocity := 0;
+	_fPosition := fTargetPosition;
+	_bIsReached := TRUE;	
+ELSE
+	(* Calculate velocity and position *)
+	IF fTargetPosition > _fPosition THEN		
+		IF _fVelocity < 0 THEN
+			_fVelocity := MIN(_fVelocity - fDecMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, fTargetVelocity);
+		ELSE
+			IF _fVelocity > fTargetVelocity THEN
+				_fVelocity := MAX(_fVelocity + fDecMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, fTargetVelocity);
+			ELSE
+				_fVelocity := MIN(_fVelocity + fAccMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, fTargetVelocity);
+			END_IF
+
+			_fVelocity := MIN(SQRT((_fPosition - fTargetPosition) * 2.0 * fDecMax - 1.5 * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling * fDecMax), _fVelocity);
+		END_IF
+
+		_fPosition := _fPosition + MIN(_fVelocity * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, fTargetPosition - _fPosition);	
+	ELSE		
+		IF _fVelocity > 0 THEN
+			_fVelocity := MAX(_fVelocity + fDecMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, -fTargetVelocity);
+		ELSE
+			IF _fVelocity < -fTargetVelocity THEN
+				_fVelocity := MIN(_fVelocity - fDecMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, -fTargetVelocity);
+			ELSE				
+				_fVelocity := MAX(_fVelocity - fAccMax * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, -fTargetVelocity);
+			END_IF
+			
+			_fVelocity := MAX(-SQRT((_fPosition - fTargetPosition) * 2.0 * -fDecMax - 1.5 * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling * fDecMax), _fVelocity);
+	   END_IF
+
+		_fPosition := _fPosition + MAX(_fVelocity * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling, fTargetPosition - _fPosition);	
+	END_IF;
+	
+	_bIsReached := FALSE;		
+END_IF;
+
+]]></ST>
+    </Implementation>
+    <Property Name="bIsReached" Id="{320d2df9-9e83-0523-347f-f35c1b62f10e}">
+      <Declaration><![CDATA[PROPERTY bIsReached : BOOL]]></Declaration>
+      <Get Name="Get" Id="{eacc081e-c993-0ad0-39a3-fb17f6116bc2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bIsReached := THIS^._bIsReached;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="fPosition" Id="{a21654d8-2e5f-07b0-0e69-8fa21086f7cb}">
+      <Declaration><![CDATA[PROPERTY fPosition : REAL]]></Declaration>
+      <Get Name="Get" Id="{c28b23b5-f544-0523-161b-cc1f0434641a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fPosition := _fPosition;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{f7fb7a3c-f492-0b49-0050-c94ddcd18011}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fPosition := fPosition;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fVelocity" Id="{9afbc35c-a683-0626-3ff9-fba8fb0d85b9}">
+      <Declaration><![CDATA[PROPERTY fVelocity : REAL]]></Declaration>
+      <Get Name="Get" Id="{ddc4c959-cefa-0b1a-0065-0f24a9c97365}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fVelocity := _fVelocity;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a85e303f-e873-0b76-39a2-e99cbc778880}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fVelocity := fVelocity;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="FB_MoveAbsolute">
+      <LineId Id="161" Count="0" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="170" Count="3" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="274" Count="0" />
+      <LineId Id="277" Count="30" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="175" Count="1" />
+      <LineId Id="273" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute.bIsReached.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute.fPosition.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute.fPosition.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute.fVelocity.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute.fVelocity.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

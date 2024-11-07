@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Lock" Id="{5790e8ef-3f96-0918-0b04-0b693ccc467d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Lock EXTENDS FB_LinkDataByte 
+VAR_INPUT
+	bLock			: BOOL;
+	nControlData	: BYTE;
+END_VAR
+
+VAR_OUTPUT	
+	bClosed 		: BOOL;
+	bLocked 		: BOOL; 
+	nStatusData		: BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control.0 := bLock;
+ControlData := nControlData;
+
+bClosed := Status.0;
+bLocked := Status.1;
+nStatusData := StatusData;
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

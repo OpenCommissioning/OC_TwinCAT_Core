@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_FileIO" Id="{9bd0ee4a-382c-097c-0148-97ed6cb4f83e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FileIO
+VAR	
+	_sNetId				: STRING;
+	_sPath				: STRING;
+	fbFileOpen 			: FB_FileOpen;
+	fbFileWrite 		: FB_FileWrite;
+	fbFileRead 			: FB_FileRead;
+	fbFileClose 		: FB_FileClose;	
+	fbCreateDir			: FB_CreateDir;
+	nHFile 				: UINT := 0;
+	eReadState 			: E_FileIoState := READY;
+	eWriteState 		: E_FileIoState := READY;
+	nBytesReadResult	: UDINT;
+	nErrorIdResult		: UDINT;	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="nBytesRead" Id="{77d13791-0365-08c4-3bd9-096e691e978b}">
+      <Declaration><![CDATA[PROPERTY PUBLIC nBytesRead : UDINT]]></Declaration>
+      <Get Name="Get" Id="{f25b037a-82a3-01f6-3927-ed3e9b0a6234}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nBytesRead := nBytesReadResult;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{dd598571-c71e-048c-391c-82a7be85eeae}">
+        <Declaration><![CDATA[PRIVATE
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nBytesReadResult := nBytesRead;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="nErrorId" Id="{cfef08be-643c-0e12-22fb-90630518dad7}">
+      <Declaration><![CDATA[PROPERTY PUBLIC nErrorId : uDINT]]></Declaration>
+      <Get Name="Get" Id="{7b8c5cc6-591a-0ab8-1bf5-f9fe8b7ca6c1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nErrorId := nErrorIdResult;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8758247d-9ed6-0698-25af-4a957bc27e4e}">
+        <Declaration><![CDATA[PRIVATE
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nErrorIdResult := nErrorId;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Read" Id="{88360398-0c6e-0b7e-0e2d-578c6012dec3}">
+      <Declaration><![CDATA[METHOD PUBLIC Read : BOOL
+VAR_INPUT
+	sFileName	: T_MaxString;
+	pData		: PVOID;
+	nLength		: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Read := FALSE;
+CASE eReadState OF
+	E_FileIoState.READY:
+		fbFileOpen(sNetId := _sNetId, bExecute := FALSE);
+		fbFileRead(sNetId := _sNetId, bExecute := FALSE);
+		fbFileClose(sNetId := _sNetId, bExecute := FALSE);
+		eReadState := E_FileIoState.OPEN;
+		
+	E_FileIoState.OPEN:
+		nErrorId := 0;
+		nBytesRead := 0;
+		IF nHFile = 0 THEN
+			fbFileOpen.sPathName := sFileName;
+			fbFileOpen.nMode := FOPEN_MODEREAD;
+			fbFileOpen.ePath := PATH_GENERIC;
+			fbFileOpen(bExecute := TRUE);
+		END_IF
+		IF fbFileOpen.hFile <> 0 AND NOT fbFileOpen.bBusy AND NOT fbFileOpen.bError THEN
+			nHFile := fbFileOpen.hFile;
+			fbFileOpen(bExecute := FALSE);			
+			fbFileRead.hFile := nHFile;
+			fbFileRead.cbReadLen := nLength;
+			fbFileRead.pReadBuff := pData;
+			eReadState := E_FileIoState.READ;
+		END_IF
+		IF fbFileOpen.bError THEN
+			fbFileOpen(bExecute := FALSE);
+			nErrorId := fbFileOpen.nErrId;
+			eReadState := E_FileIoState.CREATE;
+		END_IF
+		
+	E_FileIoState.CREATE:
+		IF THIS^.Write(sFileName, pData, nLength) THEN
+			IF nErrorId = 0 THEN
+				eReadState := E_FileIoState.OPEN;
+			ELSE
+				eReadState := E_FileIoState.ERROR;
+			END_IF
+		END_IF
+				
+	E_FileIoState.READ:
+		fbFileRead(bExecute := TRUE);
+		IF NOT fbFileRead.bBusy AND NOT fbFileRead.bError THEN
+			nBytesRead := fbFileRead.cbRead;
+			fbFileRead(bExecute := FALSE);
+			eReadState := E_FileIoState.CLOSE;
+		END_IF
+		IF fbFileRead.bError THEN
+			nErrorId := fbFileRead.nErrId;
+			eReadState := E_FileIoState.ERROR;
+		END_IF
+		
+	E_FileIoState.CLOSE:
+		IF nHFile <> 0 THEN
+			fbFileClose(hFile := nHFile, bExecute := TRUE);
+		END_IF
+		IF NOT fbFileClose.bBusy THEN
+			fbFileClose(bExecute := FALSE);
+			nHFile := 0;
+			eReadState := E_FileIoState.READY;
+			Read := TRUE;
+		END_IF
+				
+	E_FileIoState.ERROR:
+		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', _sPath))));
+		eReadState := E_FileIoState.CLOSE;
+		
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="sNetId" Id="{e5323cd2-2532-0a2a-0b62-cd12af0fc498}">
+      <Declaration><![CDATA[PROPERTY sNetId : STRING]]></Declaration>
+      <Get Name="Get" Id="{b6ab6318-d9d7-062e-0bb5-bd2818d9d253}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sNetId := _sNetId;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{3f44aea4-48fe-01ec-2bff-fb9bdaa8d292}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_sNetId := sNetId;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="sPath" Id="{06934dc8-2694-07cf-16fe-75a309d1c44f}">
+      <Declaration><![CDATA[PROPERTY sPath : STRING]]></Declaration>
+      <Get Name="Get" Id="{fbf55ba6-f6f0-0b6f-0ce6-2ff953730a55}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[sPath := _sPath;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{57f28500-383c-07d1-26f1-947f17fbf6b6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_sPath := sPath;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Write" Id="{68c59710-200f-05a4-0ce2-66f5a6e5ee04}">
+      <Declaration><![CDATA[METHOD PUBLIC Write : BOOL
+VAR_INPUT
+	sFileName	: T_MaxString;
+	pData 		: PVOID;
+	nLength 	: UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Write := FALSE;
+CASE eWriteState OF
+	E_FileIoState.READY:
+		fbFileOpen(sNetId := _sNetId, bExecute := FALSE);
+		fbFileWrite(sNetId := _sNetId, bExecute := FALSE);
+		fbFileClose(sNetId := _sNetId, bExecute := FALSE);
+		fbCreateDir(sNetId := _sNetId, bExecute := FALSE);
+		eWriteState := E_FileIoState.OPEN;
+		
+	E_FileIoState.OPEN:
+		nErrorId := 0;
+		IF nHFile = 0 THEN
+			fbFileOpen.sPathName := sFileName;
+			fbFileOpen.nMode := FOPEN_MODEWRITE;
+			fbFileOpen.ePath := PATH_GENERIC;
+			fbFileOpen(bExecute := TRUE);
+		END_IF
+		IF fbFileOpen.hFile <> 0 AND NOT fbFileOpen.bBusy AND NOT fbFileOpen.bError THEN
+			nHFile := fbFileOpen.hFile;
+			fbFileOpen(bExecute := FALSE);					
+			fbFileWrite.hFile := nHFile;
+			fbFileWrite.cbWriteLen := nLength;
+			fbFileWrite.pWriteBuff := pData;
+			eWriteState := E_FileIoState.WRITE;
+		END_IF
+		IF fbFileOpen.bError THEN
+			fbFileOpen(bExecute := FALSE);
+			nErrorId := fbFileOpen.nErrId;
+			eWriteState := E_FileIoState.CREATE;			
+		END_IF
+		
+	E_FileIoState.CREATE:
+		fbCreateDir.sPathName:= _sPath;
+		fbCreateDir.ePath:= PATH_GENERIC;
+		fbCreateDir(bExecute := TRUE);
+		IF NOT fbCreateDir.bBusy AND NOT fbCreateDir.bError THEN
+			nErrorId := 0;
+			fbCreateDir(bExecute := FALSE);
+			eWriteState := E_FileIoState.OPEN;
+		END_IF
+		IF fbCreateDir.bError THEN
+			nErrorId := fbCreateDir.nErrId;
+			eWriteState := E_FileIoState.ERROR;			
+		END_IF
+				
+	E_FileIoState.WRITE:
+		fbFileWrite(bExecute := TRUE);
+		IF NOT fbFileWrite.bBusy AND fbFileWrite.cbWrite = nLength AND NOT fbFileWrite.bError THEN
+			fbFileWrite(bExecute := FALSE);
+			eWriteState := E_FileIoState.CLOSE;
+		END_IF
+		IF fbFileWrite.bError THEN
+			nErrorId := fbFileWrite.nErrId;
+			eWriteState := E_FileIoState.ERROR;
+		END_IF
+		
+	E_FileIoState.CLOSE:
+		IF  nHFile <> 0 THEN
+			fbFileClose(hFile := nHFile, bExecute := TRUE);
+		END_IF
+		IF NOT fbFileClose.bBusy THEN
+			fbFileClose(bExecute := FALSE);
+			nHFile := 0;
+			eWriteState := E_FileIoState.READY;
+			Write := TRUE;
+		END_IF
+
+	E_FileIoState.ERROR:
+		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', _sPath))));
+		eWriteState := E_FileIoState.CLOSE;	
+
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_FileIO">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.nBytesRead.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.nBytesRead.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.nErrorId.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.nErrorId.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.Read">
+      <LineId Id="282" Count="66" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.sNetId.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.sNetId.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.sPath.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.sPath.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FileIO.Write">
+      <LineId Id="302" Count="70" />
+      <LineId Id="45" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

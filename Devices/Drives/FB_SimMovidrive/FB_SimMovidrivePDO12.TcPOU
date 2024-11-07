@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovidrivePDO12" Id="{379a061f-161d-0d27-0b44-84d56e5ab5d3}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'} 
+FUNCTION_BLOCK FB_SimMovidrivePDO12 EXTENDS FB_LinkDataReal
+VAR_INPUT
+	bSTO					: BOOL := TRUE;	
+	stControlData			: ST_SimMovidriveControlData;
+	stConfig				: ST_SimMovidriveConfig;
+END_VAR                 	
+                        	
+VAR_OUTPUT              	
+	stStatusData			: ST_SimMovidriveStatusData;
+	fPosition				: REAL;
+	fVelocity 				: REAL;
+END_VAR
+
+VAR
+    {attribute 'instance-path'} 
+    {attribute 'noinit'} 
+    sPath 					: STRING; 	
+	                    	
+	fbSimMovitracFSM		: FB_SimMovitracFSM;
+	eSimMovidriveMode		: E_SimMovidriveMode := E_SimMovidriveMode.Idle;
+	fbDriveControl			: FB_DriveControl;
+	                    	
+	pControlData			: POINTER TO BYTE; //Addr. Process Output (PO), 12 BYTES FROM FIELDBUS
+	pStatusData				: POINTER TO BYTE; //Addr. Process Input (PI), 12 BYTES TO FIELDBUS
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+InitRun();
+
+GetControlData(stControlData, pControlData, stConfig.bSwapProcessData);
+ControlLogic();
+SetStatusData(stStatusData, pStatusData, stConfig.bSwapProcessData);
+]]></ST>
+    </Implementation>
+    <Method Name="SetStatusData" Id="{4c8261b6-9ec5-0447-3b5a-b5ce83f3a704}">
+      <Declaration><![CDATA[METHOD INTERNAL SetStatusData
+VAR_INPUT
+	stStatus 		: ST_SimMovidriveStatusData;
+	pAddr			: ULINT;
+	bSwap 			: BOOL;
+END_VAR
+
+VAR
+	nStatusWord 	: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF pAddr <= 0 THEN RETURN; END_IF
+
+IF bSwap THEN 
+	MEMCPY(ADR(nStatusWord), ADR(stStatus), 2);
+	nStatusWord := HOST_TO_BE16(nStatusWord);
+	MEMCPY(pAddr, ADR(nStatusWord), 2);
+	
+	stStatus.nActPosition := DWORD_TO_DINT(HOST_TO_BE32(DINT_TO_DWORD(stStatus.nActPosition)));
+	MEMCPY(pAddr + 2, ADR(stStatus.nActPosition), 4);
+	
+	stStatus.nActVelocity := HOST_TO_BE16(stStatus.nActVelocity);
+	MEMCPY(pAddr + 6, ADR(stStatus.nActVelocity), 2);
+	
+	stStatus.nActCurrent := HOST_TO_BE16(stStatus.nActCurrent);
+	MEMCPY(pAddr + 8, ADR(stStatus.nActCurrent), 2);
+	
+	stStatus.nActUnit := HOST_TO_BE16(stStatus.nActUnit);
+	MEMCPY(pAddr + 10, ADR(stStatus.nActUnit), 2);
+ELSE
+	MEMCPY(pAddr, ADR(stStatus), 12);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetControlData" Id="{56e1d7d6-4d4b-0114-1ebb-fa6824f00f30}">
+      <Declaration><![CDATA[METHOD INTERNAL GetControlData : BOOL
+VAR_INPUT
+	stControl 		: REFERENCE TO ST_SimMovidriveControlData;
+	pAddr			: ULINT; //PO adress
+	bSwap 			: BOOL; //Swap BE_TO_HOST
+END_VAR
+
+VAR	
+	nControlWord 	: WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF pAddr <= 0 THEN RETURN; END_IF
+
+IF bSwap THEN 
+	MEMCPY(ADR(nControlWord), pAddr, 2);
+	nControlWord := BE16_TO_HOST(nControlWord);
+	MEMCPY(ADR(stControl), ADR(nControlWord), 2);
+	
+	MEMCPY(ADR(stControl.nTargetPosition), pAddr + 2, 4);
+	stControl.nTargetPosition := DWORD_TO_DINT(BE32_TO_HOST(DINT_TO_DWORD(stControl.nTargetPosition)));
+	
+	MEMCPY(ADR(stControl.nVelocity), pAddr + 6, 2);
+	stControl.nVelocity := BE16_TO_HOST(stControl.nVelocity);
+	
+	MEMCPY(ADR(stControl.nAcceleration), pAddr + 8, 2);
+	stControl.nAcceleration := BE16_TO_HOST(stControl.nAcceleration);
+	
+	MEMCPY(ADR(stControl.nDeceleration), pAddr + 10, 2);
+	stControl.nDeceleration := BE16_TO_HOST(stControl.nDeceleration);	
+ELSE
+	MEMCPY(ADR(stControl), pAddr, 12);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ControlLogic" Id="{96a5ff34-5bbf-0ac0-0a6d-ee0dfda4cecb}">
+      <Declaration><![CDATA[METHOD INTERNAL ControlLogic
+VAR_INST
+	fSetpointVel		: REAL;
+	fSetpointAcc		: REAL;
+	fSetpointDec		: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF SUPER^.Status.7 THEN	
+	fbDriveControl.fPosition := SUPER^.StatusData;
+END_IF
+
+eSimMovidriveMode := GetControlMode(stControlData);
+
+(* Copy setpoint values *)
+	fSetpointVel 	:= stControlData.nVelocity * stConfig.fRatioVelocity; 
+	fSetpointAcc 	:= stControlData.nAcceleration * stConfig.fRatioAccDec;
+	fSetpointDec 	:= stControlData.nDeceleration * stConfig.fRatioAccDec;
+
+(* Base state of the controller *)
+	fbSimMovitracFSM(
+		bControllerInhibit:= stControlData.bControllerInhibit, 
+		bRapidStop:= stControlData.bRapidStop, 
+		bStop:= stControlData.bStop, 
+		bHoldControl:= FALSE);
+
+(* Set parameter *)	
+	fbDriveControl.fPositionLimitMin := DINT_TO_REAL(stConfig.nSoftwareLimitMin);
+	fbDriveControl.fPositionLimitMax := DINT_TO_REAL(stConfig.nSoftwareLimitMax);
+	fbDriveControl.fAccMax := stConfig.fDecRapidStop;
+	fbDriveControl.fTolerance := 0.1;
+
+(* Evaluate base state *)
+	CASE fbSimMovitracFSM.eState OF
+		
+	(* Coast stop *)
+		E_SimMovitracState.ControllerInhibit:
+			fbDriveControl.Stop(stConfig.fDecCoastStop);
+		
+	(* Rapid stop *)
+		E_SimMovitracState.RapidStop:
+			fbDriveControl.Stop(stConfig.fDecRapidStop);
+		
+	(* Ramp stop *)
+		E_SimMovitracState.Halt:
+			fbDriveControl.Stop(stConfig.fDecRampStop);
+		
+	(* Enable *)
+		E_SimMovitracState.Enable:
+			CASE eSimMovidriveMode OF
+		
+			(* Jog mode *)	
+				E_SimMovidriveMode.Jog:
+					IF stControlData.bJog1 AND NOT stControlData.bJog2 THEN
+						fbDriveControl.MoveVelocity(
+							fSetpointVel,
+							fSetpointAcc,
+							fSetpointDec);
+					ELSIF NOT stControlData.bJog1 AND stControlData.bJog2 THEN
+						fbDriveControl.MoveVelocity(
+							-fSetpointVel,
+							fSetpointAcc,
+							fSetpointDec);
+					ELSE
+						fbDriveControl.Stop(fSetpointDec);
+					END_IF
+				
+			(* Ref mode *)
+				E_SimMovidriveMode.Ref:
+					IF stControlData.bStart THEN
+						fbDriveControl.MoveAbsolute(0.0,
+							fSetpointVel,
+							fSetpointAcc,
+							fSetpointDec);
+					ELSE
+						fbDriveControl.Stop(fSetpointDec);
+					END_IF
+									
+			(* Auto mode *)
+				E_SimMovidriveMode.Auto:
+					IF stControlData.bStart THEN
+						fbDriveControl.MoveAbsolute(
+							DINT_TO_REAL(stControlData.nTargetPosition),
+							fSetpointVel,
+							fSetpointAcc,
+							fSetpointDec);
+					ELSE
+						fbDriveControl.Stop(fSetpointDec);
+					END_IF	
+			END_CASE	
+	END_CASE
+	
+(* Safe Torque Off *)
+	IF NOT bSTO THEN
+		fbDriveControl.Stop(stConfig.fDecRapidStop);
+	END_IF
+	
+(* Assign values *)
+	fPosition := fbDriveControl.fPosition * stConfig.fRatioPosition;
+	fVelocity := fbDriveControl.fVelocity;
+	THIS^.ControlData := fPosition;
+	
+(* Status Word *)
+	stStatusData.bMotorTurning			:= fbDriveControl.bIsMoving;
+	stStatusData.bInverterReady			:= TRUE;
+	stStatusData.bReferenced			:= TRUE;
+	stStatusData.bTargetPositionReached	:= fbDriveControl.bIsPositionReached;
+	stStatusData.bBrakeReleased			:= fbSimMovitracFSM.eState > E_SimMovitracState.ControllerInhibit;
+	stStatusData.bError					:= FALSE;
+	stStatusData.bLimitSwitchCW			:= REAL_TO_DINT(fbDriveControl.fPosition) >= stConfig.nSoftwareLimitMax;
+	stStatusData.bLimitSwitchCCW		:= REAL_TO_DINT(fbDriveControl.fPosition) <= stConfig.nSoftwareLimitMin;
+	stStatusData.nStatus				:= 0;
+
+(* Status values *)
+	stStatusData.nActPosition			:= REAL_TO_DINT(fbDriveControl.fPosition);
+	stStatusData.nActVelocity			:= REAL_TO_UINT(fbDriveControl.fVelocity / stConfig.fRatioVelocity);
+	stStatusData.nActCurrent			:= 0;
+	stStatusData.nActUnit				:= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InitRun" Id="{c7fb5456-076a-0ef5-26b1-ceb31f412255}">
+      <Declaration><![CDATA[METHOD INTERNAL InitRun : BOOL
+VAR_INST
+	bInitRun : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+bInitRun := FALSE;
+
+IF pControlData = 0 OR pStatusData = 0 THEN
+	ADSLOGSTR(ADSLOG_MSGTYPE_WARN, CONCAT(sPath, ': %s'), 'Plc address not set.');
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AssignProcessData" Id="{d696be17-805b-003c-1e2d-01463ce61505}">
+      <Declaration><![CDATA[(*Assign Process Data Objects to device*)
+METHOD PUBLIC AssignProcessData : BOOL
+VAR_INPUT
+	aControlData 		: ANY; //Addr. Process Output (PO), 12 BYTES FROM FIELDBUS
+	aStatusData 		: ANY; //Addr. Process Input (PI), 12 BYTES TO FIELDBUS
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.pControlData := aControlData.pValue;
+THIS^.pStatusData := aStatusData.pValue;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetControlMode" Id="{e9212a72-361c-0e6a-3e5f-1b4fd7be4b64}">
+      <Declaration><![CDATA[METHOD INTERNAL GetControlMode : E_SimMovidriveMode
+VAR_INPUT
+	stControl : ST_SimMovidriveControlData;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT stControl.bModeLow AND NOT stControl.bModeHigh THEN
+	GetControlMode := E_SimMovidriveMode.Idle;
+ELSIF stControl.bModeLow AND NOT stControl.bModeHigh THEN
+	GetControlMode := E_SimMovidriveMode.Jog;
+ELSIF NOT stControl.bModeLow AND stControl.bModeHigh THEN
+	GetControlMode := E_SimMovidriveMode.Ref;
+ELSE
+	GetControlMode := E_SimMovidriveMode.Auto;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

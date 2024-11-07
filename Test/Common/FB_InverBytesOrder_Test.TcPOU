@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InverBytesOrder_Test" Id="{140c23b6-c900-0392-3cfd-b22c9301fc15}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InverBytesOrder_Test EXTENDS TcUnit.FB_TestSuite
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestWord('Invert WORD_1', nData := 16#1234, nExpected:= 16#3412);
+TestWord('Invert WORD_2', nData := 16#4321, nExpected:= 16#2143);
+
+TestDWord('Invert DWORD_1', nData := 16#12345678, nExpected:= 16#78563412);
+TestDWord('Invert DWORD_2', nData := 16#87654321, nExpected:= 16#21436587);
+
+TestLWord('Invert LWORD_1', nData := 16#1234567812345678, nExpected:= 16#7856341278563412);
+TestLWord('Invert LWORD_2', nData := 16#8765432187654321, nExpected:= 16#2143658721436587);]]></ST>
+    </Implementation>
+    <Method Name="TestDWord" Id="{b3014372-fae4-02ff-0242-ab66131b9271}">
+      <Declaration><![CDATA[METHOD TestDWord
+VAR_INPUT
+	sName : T_MaxString;	
+	nData 	: DWORD;
+	nExpected : DWORD;
+END_VAR
+
+VAR		
+	nResult : DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+
+F_InverBytesOrder(nData);
+AssertEquals(Expected := nExpected,
+             Actual := nData,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestLWord" Id="{4460bd71-9918-088c-31e6-d81993e65c66}">
+      <Declaration><![CDATA[METHOD TestLWord
+VAR_INPUT
+	sName : T_MaxString;	
+	nData 	: LWORD;
+	nExpected : LWORD;
+END_VAR
+
+VAR		
+	nResult : LWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+
+F_InverBytesOrder(nData);
+AssertEquals(Expected := nExpected,
+             Actual := nData,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestWord" Id="{66c44461-15cc-0aaf-1902-8868fd540106}">
+      <Declaration><![CDATA[METHOD TestWord
+VAR_INPUT
+	sName : T_MaxString;	
+	nData 	: WORD;
+	nExpected : WORD;
+END_VAR
+
+VAR		
+	nResult : WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+
+F_InverBytesOrder(nData);
+AssertEquals(Expected := nExpected,
+             Actual := nData,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_InverBytesOrder_Test">
+      <LineId Id="113" Count="0" />
+      <LineId Id="120" Count="2" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="124" Count="1" />
+      <LineId Id="123" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InverBytesOrder_Test.TestDWord">
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="15" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InverBytesOrder_Test.TestLWord">
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="15" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InverBytesOrder_Test.TestWord">
+      <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="15" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

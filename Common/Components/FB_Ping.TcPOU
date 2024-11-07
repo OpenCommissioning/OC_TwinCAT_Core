@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Ping" Id="{d1554898-fcd3-0dd1-02a0-76cebf986dbb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Ping
+VAR_INPUT	
+	bFeedback 		: BOOL;	// bit from unity status
+END_VAR
+
+VAR_OUTPUT
+	bTrigger		: BOOL;	// bit to unity control
+	nActET			: DWORD;  // elapsed time in ms
+	nMaxET			: DWORD;  // max. elapsed time in ms
+END_VAR
+
+VAR	
+	bEnable			: BOOL;
+	fbTrigStart		: R_TRIG;
+	fbTrigStop		: R_TRIG;
+	fbTrigRestart 	: F_TRIG;
+	nTimeStart 		: TIME;
+	nTimeStop 		: TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[InitRun();
+
+fbTrigStart(CLK := bEnable);
+fbTrigStop(CLK := bFeedback);
+fbTrigRestart(CLK := bFeedback);
+
+IF fbTrigStart.Q OR fbTrigRestart.Q THEN
+	nActET := 0;
+	bTrigger := TRUE;
+	nTimeStart := TIME();
+END_IF
+
+
+IF fbTrigStop.Q THEN
+	bTrigger := FALSE;
+	nTimeStop := TIME();
+	nActET := TIME_TO_DWORD(nTimeStop - nTimeStart);
+	IF nActET >= nMaxET THEN
+		nMaxET := nActET;
+	END_IF
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="InitRun" Id="{b5327961-1ec9-0037-16fe-03f57ffa1046}">
+      <Declaration><![CDATA[METHOD INTERNAL InitRun
+VAR_INST
+	bInitRun : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+
+bInitRun := FALSE;
+nActET := 0;
+nMaxET := 0;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Ping">
+      <LineId Id="21" Count="2" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="25" Count="12" />
+      <LineId Id="56" Count="2" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Ping.InitRun">
+      <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_SimMovitracAssign" Id="{19be979a-1cb7-0da6-103f-a1ea734a894b}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_SimMovitracAssign :
+(
+	ProcessData1 := 0,
+	ProcessData2 := 2,
+	ProcessData3 := 4,
+	NoAssignment := 99
+)DWORD;
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Drive_Test" Id="{08c3b536-195d-0dc2-3542-272a6e1f5fa0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Drive_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbDrive : FB_Drive;
+	nExpectedByte : BYTE;
+	nResultByte : BYTE;
+	fExpectedReal : REAL;
+	fResultReal : REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nControl');
+nExpectedByte := 255;
+fbDrive.nControl := nExpectedByte;
+fbDrive();
+nResultByte := fbDrive.GetControl();
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nStatus');
+nExpectedByte := 255;
+fbDrive.SetStatus(nExpectedByte);
+fbDrive();
+nResultByte := fbDrive.nStatus;
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Set fTargetValue_1');
+fExpectedReal := 1000;
+fbDrive.fTargetValue := fExpectedReal;
+fbDrive();
+fResultReal := fbDrive.GetLinkControlData();
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Set fTargetValue_2');
+fExpectedReal := -1000;
+fbDrive.fTargetValue := fExpectedReal;
+fbDrive();
+fResultReal := fbDrive.GetLinkControlData();
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get fActualValue_1');
+fExpectedReal := 1000;
+fbDrive.SetLinkStatusData(fExpectedReal);
+fbDrive();
+fResultReal := fbDrive.fActualValue;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get fActualValue_2');
+fExpectedReal := -1000;
+fbDrive.SetLinkStatusData(fExpectedReal);
+fbDrive();
+fResultReal := fbDrive.fActualValue;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

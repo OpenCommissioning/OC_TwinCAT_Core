@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LibraryCategories xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LibraryCategories.xsd">
+    <LibraryCategory>
+        <Id>41661a1f-00b4-4855-90c5-5a3bdd03b62b</Id>
+        <Version>1.0.0.0</Version>
+        <DefaultName>OpenCommissioning</DefaultName>
+    </LibraryCategory>    
+</LibraryCategories>

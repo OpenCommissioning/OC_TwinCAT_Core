@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovitracB_Test" Id="{72eed4b3-2268-0136-2b6d-5ff8bc4736e0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimMovitracB_Test EXTENDS FB_TestSuite
+VAR
+	fbMovitracB : FB_SimMovitracB;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// No Movement
+TestCase_SimMovitracB('No Movement, No STO', FALSE, FALSE, TRUE, TRUE, 32767, 0, FALSE);
+TestCase_SimMovitracB('No Movement, ControllerInhibit', TRUE, TRUE, TRUE, TRUE, 32767, 0, FALSE);
+TestCase_SimMovitracB('No Movement, No RapidStop', TRUE, FALSE, FALSE, TRUE, 32767, 0, FALSE);
+TestCase_SimMovitracB('No Movement, No Stop', TRUE, FALSE, TRUE, FALSE, 32767, 0, FALSE);
+
+// Movement
+TestCase_SimMovitracB('Velocity postive', TRUE, FALSE, TRUE, TRUE, 32767, 3000, TRUE);
+TestCase_SimMovitracB('Velocity negative', TRUE, FALSE, TRUE, TRUE, -32767, -3000, TRUE);
+TestCase_SimMovitracB('Velocity 0', TRUE, FALSE, TRUE, TRUE, 0, 0, FALSE);
+
+// Stop
+TestCase_SimMovitracB('Velocity to Stop', TRUE, FALSE, TRUE, TRUE, 32767, 3000, TRUE);
+TestCase_SimMovitracB('Stop', TRUE, FALSE, TRUE, FALSE, 0, 0, FALSE);
+
+// STO Stop
+TestCase_SimMovitracB('Velocity to STO Stop', TRUE, FALSE, TRUE, TRUE, 32767, 3000, TRUE);
+TestCase_SimMovitracB('STO Stop', FALSE, FALSE, TRUE, TRUE, 0, 0, FALSE);
+
+// Rapid Stop
+TestCase_SimMovitracB('Velocity to Rapid Stop', TRUE, FALSE, TRUE, TRUE, 32767, 3000, TRUE);
+TestCase_SimMovitracB('Rapid Stop', TRUE, FALSE, FALSE, TRUE, 0, 0, FALSE);
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCase_SimMovitracB" Id="{1ec05fd8-85a3-0862-1b64-244737c595f2}">
+      <Declaration><![CDATA[METHOD TestCase_SimMovitracB
+VAR
+	nCycleCount : INT;
+	bResultOutputStage : BOOL;
+END_VAR
+VAR_INPUT
+	sTestInfo			: T_MaxString;
+	bSto				: BOOL;
+	bControllerInhibit	: BOOL;
+	bRapidStop			: BOOL;
+	bStop				: BOOL;
+	nSetpointSpeed		: INT;	
+	eExpectedSpeed		: REAL;
+	bExpectedOutputStage: BOOL;		
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sTestInfo);
+
+fbMovitracB.bSTO := bSTO;
+fbMovitracB.stControlData.bControllerInhibit := bControllerInhibit;
+fbMovitracB.stControlData.bRapidStop := bRapidStop;
+fbMovitracB.stControlData.bStop := bStop;
+fbMovitracB.stControlData.nSetpointSpeed := nSetpointSpeed; 
+
+fbMovitracB();
+
+bResultOutputStage := fbMovitracB.stStatusData.bEnableOutputStage;
+
+AssertEquals(Expected := eExpectedSpeed,
+             Actual := fbMovitracB.fVelocity,
+             Message := 'Velocity/Speed is not correct');
+			 
+AssertEquals(Expected := bExpectedOutputStage,
+             Actual := bResultOutputStage,
+             Message := 'EnableOutputStage is not correct');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_SimMovitracB_Test">
+      <LineId Id="106" Count="22" />
+      <LineId Id="86" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SimMovitracB_Test.TestCase_SimMovitracB">
+      <LineId Id="105" Count="0" />
+      <LineId Id="295" Count="5" />
+      <LineId Id="351" Count="1" />
+      <LineId Id="332" Count="1" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="307" Count="1" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="309" Count="1" />
+      <LineId Id="302" Count="0" />
+      <LineId Id="301" Count="0" />
+      <LineId Id="76" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

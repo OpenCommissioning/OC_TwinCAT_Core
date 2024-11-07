@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_StarterStatusData" Id="{49553381-b829-0cd7-0cb8-481d72aefffe}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_StarterStatusData:
+	STRUCT
+		Ready           			: BIT; 		//0  
+		MotorON		      			: BIT; 		//1  
+		GroupFault					: BIT; 		//2  
+		GroupWarn          			: BIT; 		//3  
+		Input1	        			: BIT; 		//4  
+		Input2		      			: BIT; 		//5  
+		Input3          			: BIT; 		//6  
+		Input4			   			: BIT; 		//7 
+		MotorCurrent0	   			: BIT; 		//08  
+		MotorCurrent1	   			: BIT; 		//09  
+		MotorCurrent2	   			: BIT; 		//10  
+		MotorCurrent3	   			: BIT; 		//11  
+		MotorCurrent4	   			: BIT; 		//12  
+		MotorCurrent5	   			: BIT; 		//13  
+		ManualLocalMode	   			: BIT; 		//14  
+		RampOperation	   			: BIT; 		//15  
+	END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_Clamp01" Id="{8b7c9793-6c86-01cf-298d-98158576c883}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_Clamp01 : REAL
+VAR_INPUT
+	fValue : REAL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_Clamp01:= LIMIT(0, fValue, 1);
+	
+]]></ST>
+    </Implementation>
+    <LineIds Name="F_Clamp01">
+      <LineId Id="19" Count="0" />
+      <LineId Id="12" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

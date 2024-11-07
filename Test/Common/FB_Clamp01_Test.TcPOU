@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Clamp01_Test" Id="{25fbacd2-212e-077a-2ecf-41abb0aa3aa3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Clamp01_Test EXTENDS TcUnit.FB_TestSuite
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCase('Value Limit Min Overflow', fValue := -0.1, fExpected:= 0);
+TestCase('Value Limit Min',fValue := 0.0, fExpected:= 0);
+TestCase('Value In Range ',fValue := 0.5, fExpected:= 0.5);
+TestCase('Value Limit Max',fValue := 1, fExpected:= 1);
+TestCase('Value Limit Max Overflow',fValue := 1.1, fExpected:= 1);
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCase" Id="{99da69e4-852b-0a97-230b-10782ad258b3}">
+      <Declaration><![CDATA[METHOD TestCase
+VAR_INPUT
+	sName : T_MaxString;
+	fValue : REAL;
+	fExpected : REAL;
+END_VAR
+
+VAR	
+	fResult : REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+	
+fResult := F_Clamp01(fValue);
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Clamp01_Test">
+      <LineId Id="52" Count="6" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Clamp01_Test.TestCase">
+      <LineId Id="13" Count="1" />
+      <LineId Id="36" Count="2" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

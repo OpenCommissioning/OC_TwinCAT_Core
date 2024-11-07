@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_DS402Config" Id="{9b3e5823-9e37-0e5b-17ce-f98de707d240}">
+    <Declaration><![CDATA[TYPE ST_DS402Config :
+STRUCT	
+	eControlMode 			: E_ControlMode := E_ControlMode.Position;
+	eLinkControlMode 		: E_ControlMode := E_ControlMode.Position;
+	fReferenceVelocity 		: REAL := 1000.0;
+	fPositionOffset			: REAL := 0.0;	
+	
+	fEncoderNumerator		: REAL := 0.0001; //[unit/INC]
+	fEncoderDenominator		: REAL := 1.0; //Scaling
+	fEncoderModulo			: REAL := 0; //[unit]	
+	
+	fGearFactor				: REAL := 1.0;
+	fEncoderOutputFactor	: REAL := 1.0;
+	fLinkOutputFactor 		: REAL := 1.0;
+	
+	bSwapProcessData		: BOOL; //SWAP Process Data from/to FIELDBUS
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

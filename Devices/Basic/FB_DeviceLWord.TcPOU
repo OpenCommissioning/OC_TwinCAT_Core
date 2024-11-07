@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DeviceLWord" Id="{ebc2de75-3ab5-0d8f-0ee5-fb01e22b2b7a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DeviceLWord EXTENDS FB_LinkDataLWord
+VAR_INPUT		
+	nControl  			: BYTE;
+	nControlData  		: LWORD;
+END_VAR
+
+VAR_OUTPUT
+	nStatus  			: BYTE;
+	nStatusData  		: LWORD;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+ControlData := nControlData;
+nStatus := Status;
+nStatusData := StatusData;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

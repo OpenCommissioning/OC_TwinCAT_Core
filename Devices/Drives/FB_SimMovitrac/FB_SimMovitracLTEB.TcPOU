@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovitracLTEB" Id="{b85569b4-4df2-05df-0b3a-062e09740426}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimMovitracLTEB EXTENDS FB_LinkDataReal
+VAR_INPUT
+	bSTO					: BOOL := TRUE;
+	bEnable 				: BOOL;
+	bReverse				: BOOL;
+	nTargetSpeed			: UINT; // Unit [INC]
+	stConfig				: ST_SimMovitracConfig;
+END_VAR
+
+VAR_OUTPUT
+	fActualSpeed			: REAL; // Units [RPM]
+	bReady 					: BOOL;
+	bRunning 				: BOOL;
+END_VAR
+
+VAR
+	fAcc 					: REAL;
+END_VAR
+
+VAR CONSTANT
+	
+	MAX_VALUE_UINT 			: UINT := 65535; 
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+InitRun();
+ControlLogic();]]></ST>
+    </Implementation>
+    <Method Name="ControlLogic" Id="{5747c459-a6bd-01e8-0efb-73bf849fe8bb}">
+      <Declaration><![CDATA[METHOD PRIVATE ControlLogic
+VAR
+	fTargetSpeedInPercent	: REAL;
+	fTargetSpeed 			: REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Start inverter 
+IF bEnable AND bSTO THEN
+	fTargetSpeedInPercent := F_Norm(0, MAX_VALUE_UINT, ABS(UINT_TO_REAL(nTargetSpeed))); // [INC] to [%] 
+	fTargetSpeed := stConfig.fReferenceVelocity * fTargetSpeedInPercent; // [RPM]
+	
+	IF bReverse THEN
+		ControlData := fTargetSpeed * -1;
+	ELSE 
+		ControlData := fTargetSpeed;
+	END_IF
+ELSE 
+	ControlData := 0; 
+END_IF
+
+// Send values to the simulation interface
+Control.0 := bEnable AND bSTO;
+
+// Receive values from the simulation interface 
+fActualSpeed := StatusData * stConfig.fGearFactor;
+bReady  	 := NOT bEnable AND bSTO;
+bRunning 	 := Status.0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InitRun" Id="{91ce9381-fd85-0696-2c65-953c7cb75e28}">
+      <Declaration><![CDATA[METHOD PRIVATE InitRun
+VAR_INST
+	bInitRun : BOOL := TRUE;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+bInitRun := FALSE;
+
+fAcc := stConfig.fReferenceVelocity * 1000 / stConfig.fProcessRamp;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_System_Test" Id="{b63e147c-75bf-0bab-19ac-fcb11587783f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_System_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbSystem : FB_System;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestInitialization();
+TestProperties();]]></ST>
+    </Implementation>
+    <Method Name="TestInitialization" Id="{770f9dc1-e523-003a-32ad-e3dd6b6e5f7f}">
+      <Declaration><![CDATA[METHOD TestInitialization
+VAR
+	fbGetCurTaskIdx 	: TC2_SYSTEM.GETCURTASKINDEX;
+	fResult 	: REAL;
+	fExpected 	: REAL;
+	bResult 	: BOOL;
+	bExpected 	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Before InitRun fTimeScaling is 0');
+fExpected := 0;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Before InitRun fDeltaTime is 0');
+fExpected := 0;
+fResult := fbSystem.fDeltaTime;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+TEST_FINISHED();
+
+TEST('Before InitRun GVL_IOSEF.refSystem is NULL');
+bExpected := FALSE;
+bResult := __ISVALIDREF(GVL_Core.refSystem);
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Result value is not correct');	
+TEST_FINISHED();
+
+fbSystem();
+
+TEST('After InitRun fTimeScaling > 0');
+fExpected := 1;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('After InitRun fDeltaTime > 0');
+fbGetCurTaskIdx();
+fExpected := UDINT_TO_REAL(TwinCAT_SystemInfoVarList._TaskInfo[fbGetCurTaskIdx.index].CycleTime / 10000) / 1000.0;
+fResult := fbSystem.fDeltaTime;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+TEST_FINISHED();
+
+TEST('After InitRun GVL_IOSEF.refSystem is Valid');
+bExpected := TRUE;
+bResult := __ISVALIDREF(GVL_Core.refSystem);
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Result value is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestProperties" Id="{68ce1d1e-3fa5-08f7-1698-d31eaaaf1320}">
+      <Declaration><![CDATA[METHOD TestProperties : REFERENCE TO FB_Test
+VAR
+	fbGetCurTaskIdx 	: TC2_SYSTEM.GETCURTASKINDEX;
+	fResult 	: REAL;
+	fExpected 	: REAL;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test Property: bDebug');
+fbSystem.bDebug := TRUE;
+AssertTRUE(Condition := fbSystem.bDebug,  Message := 'Property value is not correct');	
+TEST_FINISHED();
+
+TEST('Test Property: bVerbose');
+fbSystem.bVerbose := TRUE;
+AssertTRUE(Condition := fbSystem.bVerbose,  Message := 'Property value is not correct');	
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling Initial');
+fExpected := 1;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling Zero');
+fbSystem.fTimeScaling := 0;
+fExpected := 1;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling Limit Min');
+fbSystem.fTimeScaling := -1;
+fExpected := 0.01000001;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling Limit Max');
+fbSystem.fTimeScaling := 1E+6;
+fExpected := 100;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling In Range_1');
+fbSystem.fTimeScaling := 2;
+fExpected := 2;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTimeScaling In Range_2');
+fbSystem.fTimeScaling := 1;
+fExpected := 1;
+fResult := fbSystem.fTimeScaling;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_System_Test">
+      <LineId Id="13" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_System_Test.TestInitialization">
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="7" />
+      <LineId Id="17" Count="4" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="46" Count="6" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="39" Count="5" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="29" Count="7" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="56" Count="6" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_System_Test.TestProperties">
+      <LineId Id="188" Count="3" />
+      <LineId Id="197" Count="4" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="203" Count="10" />
+      <LineId Id="261" Count="0" />
+      <LineId Id="214" Count="7" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="222" Count="7" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="230" Count="7" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="238" Count="7" />
+      <LineId Id="265" Count="0" />
+      <LineId Id="246" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_MoveVelocity_Test" Id="{22044dc0-8dc7-05bd-3f30-832d4a4177fd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveVelocity_Test EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCaseMove('Set Init',0, 0, 1000, 1000, TRUE);
+
+TestCaseMove('Set Valid Motion_1',0, 1000, 1000, 1000, FALSE);
+TestCaseMove('Set Valid Motion_2',0, 100, 1000, 1000, FALSE);
+TestCaseMove('Set Valid Motion_3',0, 10, 1000, 1000, TRUE);	
+TestCaseMove('Set Valid Motion_4',0, -1000, -1000, -1000, FALSE);
+TestCaseMove('Set Valid Motion_5',0, -100, -1000, -1000, FALSE);
+TestCaseMove('Set Valid Motion_6',0, -10, -1000, -1000, TRUE);
+
+TestCaseMove('Set 2Zone Motion_1',-5, 1000, 1000, 1000, FALSE);
+TestCaseMove('Set 2Zone Motion_2',-5, 100, 1000, 1000, FALSE);
+TestCaseMove('Set 2Zone Motion_3',-5, 10, 2000, 2000, TRUE);	
+TestCaseMove('Set 2Zone Motion_4',5, -1000, -1000, -1000, FALSE);
+TestCaseMove('Set 2Zone Motion_5',5, -100, -1000, -1000, FALSE);
+TestCaseMove('Set 2Zone Motion_6',5, -10, -2000, -2000, TRUE);
+
+TestCaseMove('Set Dirty Motion_1',0, 10, 0.001, 0.001, FALSE);
+TestCaseMove('Set Dirty Motion_2',0, 10, 0, 0, FALSE);
+TestCaseMove('Set Dirty Motion_3',0, 10, 1E+12, 1E+12, TRUE);	
+TestCaseMove('Set Dirty Motion_4',0, -1E+3, 1E+12, 1E+12, TRUE);	
+
+TestCaseMove('Set Dirty ACC/DEC_1',0, 1000, -1000, -1000, FALSE);
+TestCaseMove('Set Dirty ACC/DEC_2',0, 100, -1000, -1000, FALSE);
+TestCaseMove('Set Dirty ACC/DEC_3',0, 10, -1000, -1000, TRUE);
+TestCaseMove('Set Dirty ACC/DEC_4',0, -1000, 1000, 1000, FALSE);
+TestCaseMove('Set Dirty ACC/DEC_5',0, -100, 1000, 1000, FALSE);
+TestCaseMove('Set Dirty ACC/DEC_6',0, -10, 1000, 1000, TRUE);	
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCaseMove" Id="{45e9bff8-3120-05a7-27c5-ce7653ced786}">
+      <Declaration><![CDATA[METHOD TestCaseMove
+VAR_INPUT
+	sName 				: T_MaxString;
+	fInitVelocity 		: REAL;
+	fVelocity 			: REAL;
+	fAcceleration 		: REAL;
+	fDeceleration 		: REAL;
+	bExpected 			: BOOL;
+END_VAR
+
+VAR
+	fbMoveVelocity 		: FB_MoveVelocity;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;
+	fResult 			: REAL;
+	fAcc 				: REAL;
+	fExpectedAcc 		: REAL := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+	
+fbMoveVelocity.fVelocity := fInitVelocity;
+
+FOR nCycleCount := 0 TO 10 DO
+    fbMoveVelocity(fTargetVelocity := fVelocity, fAccMax := fAcceleration, fDecMax := fDeceleration);
+END_FOR;
+
+bResult := fbMoveVelocity.bIsReached;
+fResult := fbMoveVelocity.fVelocity;
+fAcc := fbMoveVelocity.fAcc;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not reached');	
+			 
+IF bExpected THEN
+	AssertEquals(Expected := fVelocity,
+             Actual := fResult,
+             Message := 'Velocity value is not correct');	
+	AssertEquals(Expected := fExpectedAcc,
+             Actual := fAcc,
+             Message := 'Acc value is not correct');	
+END_IF
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_MoveVelocity_Test">
+      <LineId Id="39" Count="1" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="33" Count="5" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="16" Count="2" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity_Test.TestCaseMove">
+      <LineId Id="17" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="19" Count="3" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

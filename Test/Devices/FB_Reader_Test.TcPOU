@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Reader_Test" Id="{2c28921f-80d5-06ca-1413-456e8e93c33d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Reader_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbDevice : FB_Reader;
+	nExpected : LWORD;
+	nResult : LWORD;
+	nValue : LWORD := 16#FFAABBCC;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nControl');
+nExpected := 255;
+fbDevice.nControl := 255;
+fbDevice();
+nResult := fbDevice.GetControl();
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Set nCommand');
+nExpected := nValue;
+fbDevice.nCommand := nExpected;
+fbDevice();
+nResult := fbDevice.GetLinkControlData();
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nStatus');
+nExpected := 255;
+fbDevice.SetStatus(255);
+fbDevice();
+nResult := fbDevice.nStatus;
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nResult');
+nExpected := nValue;
+fbDevice.SetLinkStatusData(nExpected);
+fbDevice();
+nResult := fbDevice.nResult;
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

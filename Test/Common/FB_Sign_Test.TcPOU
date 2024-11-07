@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Sign_Test" Id="{7fdae462-211d-06e1-0793-54b6355243c5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Sign_Test EXTENDS TcUnit.FB_TestSuite
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCase('Sign Negative_1', fValue := -0.00001, fExpected:= -1);
+TestCase('Sign Negative_2', fValue := -0.1, fExpected:= -1);
+TestCase('Sign Negative_3', fValue := -1, fExpected:= -1);
+
+TestCase('Sign Positive_1', fValue := 0, fExpected:= 1);
+TestCase('Sign Positive_2', fValue := 0.00001, fExpected:= 1);
+TestCase('Sign Positive_3', fValue := 0.1, fExpected:= 1);
+TestCase('Sign Positive_4', fValue := 1, fExpected:= 1);]]></ST>
+    </Implementation>
+    <Method Name="TestCase" Id="{dbae30a7-c218-0547-0ca3-ce305f478e4d}">
+      <Declaration><![CDATA[METHOD TestCase
+VAR_INPUT
+	sName : T_MaxString;	
+	fValue : REAL; 
+	fExpected : REAL;
+END_VAR
+
+VAR	
+	fResult : REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+	
+fResult := F_Sign(fValue);
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Sign_Test">
+      <LineId Id="94" Count="0" />
+      <LineId Id="97" Count="1" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="101" Count="2" />
+    </LineIds>
+    <LineIds Name="FB_Sign_Test.TestCase">
+      <LineId Id="13" Count="6" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

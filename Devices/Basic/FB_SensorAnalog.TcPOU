@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SensorAnalog" Id="{4c4220ea-803a-0cce-2f5a-0ed9e84376d8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SensorAnalog EXTENDS FB_LinkDataReal 
+VAR_INPUT
+	nControl  		: BYTE;
+	stConfig		: ST_ScaleConfig;
+END_VAR
+
+VAR_OUTPUT	
+	nStatus  		: BYTE;
+	nValue			: UINT;
+	fValue			: REAL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+fValue := StatusData;
+nValue := LREAL_TO_UINT(F_ScaleLREAL(fValue, stConfig.fInputMin, stConfig.fInputMax, stConfig.fOutputMin, stConfig.fOutputMax));
+nStatus := Status;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_ScaleLREAL" Id="{846ff3a0-9af9-020d-08ce-3f919691f86f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_ScaleLREAL : LREAL
+VAR_INPUT
+	fValue 		: LREAL;
+	fInputMin 	: LREAL;
+	fInputMax 	: LREAL;
+	fOutputMin 	: LREAL;
+	fOutputMax 	: LREAL;
+END_VAR
+
+VAR
+	fNormalized : LREAL;
+END_VAR
+
+VAR_OUTPUT
+	bError 		: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[bError := (fInputMin >= fInputMax) OR (fOutputMin >= fOutputMax);
+
+IF bError THEN
+	F_ScaleLREAL := 0.0;
+	RETURN;
+END_IF
+
+IF fValue < fInputMin THEN
+	fNormalized := 0.0;
+ELSIF fValue > fInputMax THEN
+	fNormalized := 1.0;
+ELSE
+	fNormalized := (fValue - fInputMin) / (fInputMax - fInputMin);
+END_IF
+
+F_ScaleLREAL := fNormalized * (fOutputMax - fOutputMin) + fOutputMin;
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="F_ScaleLREAL">
+      <LineId Id="183" Count="16" />
+      <LineId Id="32" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_MoveAbsolute_Test" Id="{d2f77918-5118-045a-3fd5-ac7758034c7e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveAbsolute_Test EXTENDS TcUnit.FB_TestSuite
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCaseMoveTo('Set Init', fInitPosition := 0, fInitVelocity := 0, fPosition := 0, fVelocity := 100, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+
+TestCaseMoveTo('Set Valid Motion_1', fInitPosition := 0, fInitVelocity := 0, fPosition := 1, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Valid Motion_2', fInitPosition := 0, fInitVelocity := 0, fPosition := 10, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Valid Motion_3', fInitPosition := 0, fInitVelocity := 0, fPosition := 100, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, FALSE);
+TestCaseMoveTo('Set Valid Motion_4', fInitPosition := 0, fInitVelocity := 0, fPosition := 1000, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, FALSE);
+
+TestCaseMoveTo('Set 2Zone Motion_1', fInitPosition := -5, fInitVelocity := 0, fPosition := 1, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set 2Zone Motion_2', fInitPosition := -5, fInitVelocity := 0, fPosition := 5, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set 2Zone Motion_3', fInitPosition := 5, fInitVelocity := 0, fPosition := -1, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set 2Zone Motion_4', fInitPosition := 5, fInitVelocity := 0, fPosition := -5, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+
+TestCaseMoveTo('Set Dirty Motion_1', fInitPosition := 0, fInitVelocity := 0, fPosition := 1, fVelocity := -1000, fAcceleration := -1E+6, fDeceleration := -1E+6, TRUE);
+TestCaseMoveTo('Set Dirty Motion_2', fInitPosition := 0, fInitVelocity := 0, fPosition := 10, fVelocity := -1000, fAcceleration := -1E+6, fDeceleration := -1E+6, TRUE);
+TestCaseMoveTo('Set Dirty Motion_3', fInitPosition := 0, fInitVelocity := 0, fPosition := 100, fVelocity := -1000, fAcceleration := -1E+6, fDeceleration := -1E+6, FALSE);
+TestCaseMoveTo('Set Dirty Motion_4', fInitPosition := 0, fInitVelocity := 0, fPosition := 1000, fVelocity := -1000, fAcceleration := -1E+6, fDeceleration := -1E+6, FALSE);
+
+TestCaseMoveTo('Set Init Velocity_1', fInitPosition := 0, fInitVelocity := 1000, fPosition := 1, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Init Velocity_2', fInitPosition := 0, fInitVelocity := 1000, fPosition := 10, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Init Velocity_3', fInitPosition := 0, fInitVelocity := 1000, fPosition := 100, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, FALSE);
+TestCaseMoveTo('Set Init Velocity_4', fInitPosition := 0, fInitVelocity := 1000, fPosition := 1000, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, FALSE);
+
+TestCaseMoveTo('Set Init Position_1', fInitPosition := 1, fInitVelocity := 1000, fPosition := 1, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Init Position_2', fInitPosition := 10, fInitVelocity := 1000, fPosition := 10, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Init Position_3', fInitPosition := 100, fInitVelocity := 1000, fPosition := 100, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
+TestCaseMoveTo('Set Init Position_4', fInitPosition := 1000, fInitVelocity := 1000, fPosition := 1000, fVelocity := 1000, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);]]></ST>
+    </Implementation>
+    <Method Name="TestCaseMoveTo" Id="{1c7155c6-d490-0c0d-30cf-fcbaf894e42b}">
+      <Declaration><![CDATA[METHOD TestCaseMoveTo : REFERENCE TO FB_Test
+VAR_INPUT
+	sName 				: T_MaxString;
+	fInitPosition 		: REAL;
+	fInitVelocity 		: REAL;
+	fPosition 			: REAL;	
+	fVelocity 			: REAL; 
+	fAcceleration 		: REAL; 
+	fDeceleration 		: REAL;	
+	bExpected 			: BOOL;
+END_VAR
+
+VAR
+	fbMoveAbsolute 		: FB_MoveAbsolute;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;
+	fResult 			: REAL;
+	fVel 				: REAL;
+	fExpectedVel 		: REAL := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbMoveAbsolute.fPosition := fInitPosition;
+fbMoveAbsolute.fVelocity := fInitVelocity;
+
+FOR nCycleCount := 0 TO 10 DO
+    fbMoveAbsolute( fTargetPosition:= fPosition, 
+					fTargetVelocity := fVelocity, 
+					fAccMax := fAcceleration, 
+					fDecMax := fDeceleration);
+END_FOR
+
+bResult := fbMoveAbsolute.bIsReached;
+fResult := fbMoveAbsolute.fPosition;
+fVel := fbMoveAbsolute.fVelocity;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not reached');
+
+IF bExpected THEN
+	AssertEquals(Expected := fPosition,
+             Actual := fResult,
+             Message := 'Position value is not correct');	
+	AssertEquals(Expected := fExpectedVel,
+             Actual := fVel,
+             Message := 'Velocity value is not correct');	
+END_IF
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_MoveAbsolute_Test">
+      <LineId Id="36" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="15" Count="3" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="27" Count="3" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="32" Count="3" />
+      <LineId Id="31" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveAbsolute_Test.TestCaseMoveTo">
+      <LineId Id="5" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="3" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="43" Count="9" />
+      <LineId Id="42" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

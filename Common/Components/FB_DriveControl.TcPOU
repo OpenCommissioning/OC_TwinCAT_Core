@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DriveControl" Id="{dc56c267-b627-0528-22c2-e554d07a3d58}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
+FUNCTION_BLOCK INTERNAL FB_DriveControl
+VAR
+	_fPosition 				: REAL;
+	_fVelocity 				: REAL;		
+	_bIsPositionReached 	: BOOL := TRUE;		
+	
+	_fPositionLimitMin 		: REAL := -1E+12;
+	_fPositionLimitMax 		: REAL := 1E+12;
+	_fAccMax				: REAL := 1E+12;	
+	_fTolerance				: REAL := 1E-6;
+	
+	fbMoveAbsolute 			: FB_MoveAbsolute();
+	fbMoveVelocity			: FB_MoveVelocity();
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="bIsMoving" Id="{73e19af7-d622-0b70-2ddc-0e44cd6fc384}">
+      <Declaration><![CDATA[PROPERTY bIsMoving : BOOL]]></Declaration>
+      <Get Name="Get" Id="{34506e92-9377-0421-1027-96ada56082df}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bIsMoving := NOT F_Compare(_fVelocity, 0, 1E-3);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="bIsPositionReached" Id="{8f4cebef-1a01-0cb4-2c9b-b39a96d04003}">
+      <Declaration><![CDATA[PROPERTY bIsPositionReached : BOOL]]></Declaration>
+      <Get Name="Get" Id="{0c10a029-e5d5-06f2-3cec-034889a553cf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bIsPositionReached := _bIsPositionReached;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="fAccMax" Id="{cbc5a371-916a-036a-36ba-312db2ce89eb}">
+      <Declaration><![CDATA[PROPERTY fAccMax : REAL]]></Declaration>
+      <Get Name="Get" Id="{833d2f7c-2121-0dd5-0aa5-7a1eceeb4fdd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fAccMax := _fAccMax;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{76e4d8b1-b2da-0ecb-0ba6-0535e0f7b081}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fAccMax := fAccMax;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fPosition" Id="{059e2d77-deb5-0e01-35eb-131abdf4b729}">
+      <Declaration><![CDATA[PROPERTY fPosition : REAL]]></Declaration>
+      <Get Name="Get" Id="{c931bd96-dda6-09e5-0854-c99182dbe955}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fPosition := _fPosition;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a61cb87a-1253-04f5-0264-b5565a3ea35a}">
+        <Declaration><![CDATA[
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fPosition := fPosition;	
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fPositionLimitMax" Id="{fa7b5bed-e9f1-00b0-2694-7fd5d07b2165}">
+      <Declaration><![CDATA[PROPERTY fPositionLimitMax : REAL]]></Declaration>
+      <Get Name="Get" Id="{30579d96-7fa8-044c-298c-52dedd9f6e10}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fPositionLimitMax := _fPositionLimitMax;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a9b2a74c-3cbd-09e3-2f97-44ede0ae5a1c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fPositionLimitMax := fPositionLimitMax;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fPositionLimitMin" Id="{4154ad98-973b-0b01-179b-6e880cfaa026}">
+      <Declaration><![CDATA[PROPERTY fPositionLimitMin : REAL]]></Declaration>
+      <Get Name="Get" Id="{328a948d-81a9-0388-23f2-1bd27eef4930}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fPositionLimitMin := _fPositionLimitMin;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{4b6b1684-e68e-0cb9-2478-e4b4232650c2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fPositionLimitMin := fPositionLimitMin;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fTolerance" Id="{77ed7496-39fc-05df-196f-13e6115f8789}">
+      <Declaration><![CDATA[PROPERTY fTolerance : REAL]]></Declaration>
+      <Get Name="Get" Id="{0b58fdbc-bb13-0dbf-21d4-f64d65aea821}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fTolerance := _fTolerance;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{0d15f425-9688-0993-1418-3e88fc0cd39d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fTolerance := fTolerance;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fVelocity" Id="{51a8cd0e-a3fd-0189-3eb3-54ee4c21bc32}">
+      <Declaration><![CDATA[PROPERTY fVelocity : REAL]]></Declaration>
+      <Get Name="Get" Id="{7bedfb7c-fa77-0e4d-1c13-7cb05df11252}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fVelocity := _fVelocity;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{2e195c7c-d9e4-08a9-2399-1b5019693925}">
+        <Declaration><![CDATA[
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fVelocity := fVelocity;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="MoveAbsolute" Id="{be210045-6d8a-0f76-38f1-25a7a667b3e2}">
+      <Declaration><![CDATA[METHOD INTERNAL MoveAbsolute
+VAR_INPUT
+	fPosition 			: REAL;
+	fVelocity			: REAL;
+	fAcceleration		: REAL;
+	fDeceleration   	: REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveAbsolute.fPosition := _fPosition;
+fbMoveAbsolute.fVelocity := _fVelocity;
+
+fbMoveAbsolute(
+	fTargetPosition := LIMIT(_fPositionLimitMin, fPosition, _fPositionLimitMax),
+	fTargetVelocity := fVelocity,
+	fAccMax := fAcceleration,
+	fDecMax := fDeceleration,
+	fTolerance := _fTolerance);					
+
+_fVelocity := fbMoveAbsolute.fVelocity;
+_fPosition := fbMoveAbsolute.fPosition;
+
+_bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="MoveVelocity" Id="{67902dcb-c091-0097-0c26-f6a25649f8cd}">
+      <Declaration><![CDATA[METHOD INTERNAL MoveVelocity
+VAR_INPUT
+	fVelocity 			: REAL;
+	fAcceleration 		: REAL;
+	fDeceleration 		: REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMoveVelocity.fVelocity := _fVelocity;
+fbMoveVelocity.fTargetVelocity := fVelocity;
+fbMoveVelocity.fAccMax := fAcceleration;
+fbMoveVelocity.fDecMax := fDeceleration;	
+	
+IF _fPositionLimitMax <> 0 AND _fPositionLimitMin <> 0 THEN
+	IF _fPosition >= _fPositionLimitMax OR _fPosition <= _fPositionLimitMin THEN
+		fbMoveVelocity.fTargetVelocity := 0;
+		fbMoveVelocity.fAccMax := _fAccMax;
+		fbMoveVelocity.fDecMax := _fAccMax;
+	END_IF		
+END_IF
+	
+fbMoveVelocity();
+	
+_fVelocity := fbMoveVelocity.fVelocity;	
+
+_fPosition := _fPosition + _fVelocity * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+_bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{989f0471-080e-05a5-05a7-9d4740e325c8}">
+      <Declaration><![CDATA[METHOD INTERNAL Stop
+VAR_INPUT
+	fDeceleration 	: REAL; 
+END_VAR
+
+VAR
+	fSign 			: REAL;
+	fTolerance 		: REAL := 1E-3;
+	fAbsVelocity 	: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fSign := F_Sign(_fVelocity);
+fAbsVelocity := ABS(_fVelocity);
+
+IF fAbsVelocity > fTolerance THEN
+	fAbsVelocity := fAbsVelocity - ABS(fDeceleration) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+	fAbsVelocity := LIMIT(0, fAbsVelocity, 3.402823E+38);
+	_fVelocity := fAbsVelocity * fSign;	
+ELSE
+	_fVelocity := 0;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_DriveControl">
+      <LineId Id="297" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.bIsMoving.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.bIsPositionReached.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fAccMax.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fAccMax.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPosition.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPosition.Set">
+      <LineId Id="8" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPositionLimitMax.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPositionLimitMax.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPositionLimitMin.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fPositionLimitMin.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fTolerance.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fTolerance.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fVelocity.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.fVelocity.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.MoveAbsolute">
+      <LineId Id="293" Count="2" />
+      <LineId Id="283" Count="4" />
+      <LineId Id="259" Count="0" />
+      <LineId Id="267" Count="2" />
+      <LineId Id="298" Count="0" />
+      <LineId Id="162" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.MoveVelocity">
+      <LineId Id="367" Count="17" />
+      <LineId Id="344" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl.Stop">
+      <LineId Id="35" Count="1" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="48" Count="1" />
+      <LineId Id="44" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

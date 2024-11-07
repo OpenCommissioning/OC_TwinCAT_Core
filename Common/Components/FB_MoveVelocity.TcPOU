@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_MoveVelocity" Id="{9bae960a-d9ba-07f3-39f8-a131e14eb6c6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_MoveVelocity
+VAR_INPUT
+	fTargetVelocity 	: REAL;
+	fAccMax 			: REAL;
+	fDecMax 			: REAL;
+END_VAR
+
+VAR
+	_fVelocity 			: REAL;	
+	_fAcc 				: REAL;
+	_bIsReached			: BOOL;
+	fVelocityTolerance	: REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_bIsReached := FALSE;
+IF _fAcc = 0 THEN
+	IF ABS(fAccMax) > ABS(fDecMax) THEN
+		fVelocityTolerance := ABS(fAccMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+	ELSE
+		fVelocityTolerance := ABS(fDecMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+	END_IF
+ELSE
+	fVelocityTolerance := ABS(_fAcc) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+END_IF	
+
+(* Calculate acceleration *)
+//Hold velocity (velocity reached)
+IF F_Compare(fVelocity, fTargetVelocity, fVelocityTolerance) THEN
+	_fAcc := 0;
+	_fVelocity := fTargetVelocity;
+	_bIsReached := TRUE;
+	RETURN;
+END_IF
+
+IF _fVelocity - fTargetVelocity > fVelocityTolerance THEN
+	//Decelerate
+	IF _fVelocity < 0 THEN
+		_fAcc := -ABS(fAccMax);
+	ELSE
+		_fAcc := -ABS(fDecMax);
+	END_IF
+ ELSIF _fVelocity - fTargetVelocity < -fVelocityTolerance THEN
+	//Accelerate
+	IF _fVelocity < 0 THEN
+		_fAcc := ABS(fDecMax);
+	ELSE
+		_fAcc := ABS(fAccMax);
+	END_IF
+END_IF
+
+_fVelocity := _fVelocity + _fAcc * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+_bIsReached := F_Compare(_fVelocity, fTargetVelocity, fVelocityTolerance);]]></ST>
+    </Implementation>
+    <Property Name="bIsReached" Id="{1b62f692-0ce8-0ddf-04df-a2cb5441658f}">
+      <Declaration><![CDATA[PROPERTY bIsReached : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f53b033e-df5e-07b6-2792-bf6722784217}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bIsReached := THIS^._bIsReached;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="fAcc" Id="{d6f7d3ff-b9bd-097a-2fcb-bea90667f161}">
+      <Declaration><![CDATA[PROPERTY fAcc : REAL]]></Declaration>
+      <Get Name="Get" Id="{e64a8ff4-07d9-014d-1950-84da0b2118c2}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fAcc := THIS^._fAcc;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{d4288bbd-43fe-05dc-3465-dbb413486a26}">
+        <Declaration><![CDATA[
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fAcc := fAcc;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fVelocity" Id="{ba9df249-e9e4-070c-3e5e-4885a73cc59a}">
+      <Declaration><![CDATA[PROPERTY fVelocity : REAL]]></Declaration>
+      <Get Name="Get" Id="{85b8344d-47b3-05d3-3895-9954bbfd24d7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fVelocity := THIS^._fVelocity;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{ea155c37-d5a6-046b-2346-08eea0da3f92}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[THIS^._fVelocity := fVelocity;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="FB_MoveVelocity">
+      <LineId Id="103" Count="8" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="113" Count="2" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="116" Count="1" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="127" Count="3" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="131" Count="3" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="137" Count="1" />
+      <LineId Id="135" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity.bIsReached.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity.fAcc.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity.fAcc.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity.fVelocity.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_MoveVelocity.fVelocity.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Reader" Id="{c94112dd-f2e2-0458-22b0-a20c626811e2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Reader EXTENDS FB_LinkDataLWORD
+VAR_INPUT
+	nControl  		: BYTE;
+	nCommand 		: ULINT; //Command ID
+END_VAR
+
+VAR_INPUT
+	nStatus  		: BYTE;
+	nResult			: ULINT; //Result Data
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+ControlData := ULINT_TO_LWORD(nCommand);
+nStatus := Status;
+nResult := LWORD_TO_ULINT(StatusData);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

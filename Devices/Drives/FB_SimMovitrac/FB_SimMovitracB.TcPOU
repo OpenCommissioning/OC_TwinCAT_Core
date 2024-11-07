@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovitracB" Id="{80741d52-afc9-05cb-2b54-ecb35a3ec7bc}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'} 
+FUNCTION_BLOCK FB_SimMovitracB EXTENDS FB_LinkDataReal
+VAR_INPUT	
+	bSTO 						: BOOL := TRUE;	
+	stControlData				: ST_SimMovitracControlData;
+	stConfig 					: ST_SimMovitracConfig;	
+END_VAR
+
+VAR_OUTPUT
+	stStatusData				: ST_SimMovitracStatusData;	 
+	fVelocity 					: REAL; //[unit/s]	
+END_VAR
+
+
+VAR
+	{attribute 'instance-path'} 
+    {attribute 'noinit'} 
+    sPath 						: STRING; 	
+
+	fbSimMovitracFSM			: FB_SimMovitracFSM;
+	fSetPoint       			: REAL;
+	
+	pControlData				: POINTER TO BYTE; //Addr. Process Output (PO), 6 BYTES FROM FIELDBUS
+	pStatusData					: POINTER TO BYTE; //Addr. Process Input (PI), 6 BYTES TO FIELDBUS
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+InitRun();
+
+GetControlData(stControlData, pControlData, stConfig.bSwapProcessData);
+ControlLogic();
+SetStatusData(stStatusData, pStatusData, stConfig.bSwapProcessData);]]></ST>
+    </Implementation>
+    <Method Name="ControlLogic" Id="{3d93191c-5cac-095e-2bb5-3dfe80026842}">
+      <Declaration><![CDATA[METHOD INTERNAL ControlLogic
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbSimMovitracFSM(bControllerInhibit:= stControlData.bControllerInhibit, bRapidStop:= stControlData.bRapidStop,	bStop:= stControlData.bStop, bHoldControl:= FALSE);
+
+IF bSTO AND fbSimMovitracFSM.eState = E_SimMovitracState.Enable THEN
+	fSetPoint := LREAL_TO_REAL(F_ScaleLREAL(INT_TO_REAL(stControlData.nSetpointSpeed), -32767, 32767, -1.0, 1.0));
+ELSE
+	fSetPoint := 0;
+END_IF
+	
+(* Velocity value *)
+	fVelocity := stConfig.fReferenceVelocity * fSetPoint;
+	ControlData := fVelocity * stConfig.fGearFactor;
+	
+(* Status Word *)
+	stStatusData.bEnableOutputStage		:= fVelocity <> 0;
+	stStatusData.bInverterReady   		:= TRUE;
+	stStatusData.bPoDataEnable    		:= FALSE;
+	stStatusData.bReserved3       		:= FALSE;
+	stStatusData.bReserved4       		:= FALSE;
+	stStatusData.bError           		:= FALSE;
+	stStatusData.bReserved6       		:= FALSE;
+	stStatusData.bReserved7       		:= FALSE;
+	stStatusData.nStatus				:= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AssignProcessData" Id="{4d63c0fd-2646-0e9d-1b69-1fc76638376b}">
+      <Declaration><![CDATA[(*Assign Process Data Objects to device*)
+METHOD PUBLIC AssignProcessData : BOOL
+VAR_INPUT
+	aControlData 		: ANY; //Addr. Process Output (PO), 6 BYTES FROM FIELDBUS
+	aStatusData 		: ANY; //Addr. Process Input (PI), 6 BYTES TO FIELDBUS
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.pControlData := aControlData.pValue;
+THIS^.pStatusData := aStatusData.pValue;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InitRun" Id="{5894d308-991a-0d45-188e-d0539a5cd776}">
+      <Declaration><![CDATA[METHOD INTERNAL InitRun : BOOL
+VAR_INST
+	bInitRun : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+bInitRun := FALSE;
+
+IF pControlData = 0 OR pStatusData = 0 THEN
+	ADSLOGSTR(ADSLOG_MSGTYPE_WARN, CONCAT(sPath, ': %s'), 'Plc address not set.');
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetControlData" Id="{77ff8bfc-3405-0f65-1c2a-4aa6bb5069c0}">
+      <Declaration><![CDATA[METHOD INTERNAL GetControlData
+VAR_INPUT
+	stControl 		: REFERENCE TO ST_SimMovitracControlData;
+	pAddr			: ULINT; //PO adress
+	bSwap 			: BOOL; //Swap BE_TO_HOST
+END_VAR
+
+VAR
+	nCtrlIndex		: DWORD;
+	nSpeedIndex		: DWORD;
+	nRampIndex		: DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF pAddr <= 0 THEN RETURN; END_IF
+
+nCtrlIndex := stConfig.nCtrlAssign;
+nSpeedIndex := stConfig.nSpeedAssign;
+nRampIndex := stConfig.nRampAssign;
+
+IF stConfig.bSwapProcessData THEN
+	MEMCPY(ADR(stControlData) + 1, pAddr + nCtrlIndex, 1);
+	MEMCPY(ADR(stControlData), pAddr + nCtrlIndex + 1, 1);
+	MEMCPY(ADR(stControlData.nSetpointSpeed) + 1, pAddr + nSpeedIndex, 1);
+	MEMCPY(ADR(stControlData.nSetpointSpeed), pAddr + nSpeedIndex + 1, 1);
+ELSE
+	MEMCPY(ADR(stControlData), pAddr + nCtrlIndex, 2);
+	MEMCPY(ADR(stControlData.nSetpointSpeed), pAddr + nSpeedIndex, 2);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetStatusData" Id="{964b00e9-1d80-083d-2a02-0bd5a3c4b781}">
+      <Declaration><![CDATA[METHOD INTERNAL SetStatusData
+VAR_INPUT
+	stStatus 		: ST_SimMovitracStatusData;
+	pAddr			: ULINT;
+	bSwap 			: BOOL;
+END_VAR
+
+VAR
+	nStatusIndex	: DWORD;
+	nSpeedIndex	: DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF pAddr <= 0 THEN RETURN; END_IF
+
+nStatusIndex := stConfig.nStatusAssign;
+nSpeedIndex := stConfig.nSpeedActAssign;
+
+IF stConfig.bSwapProcessData THEN
+	MEMCPY(pAddr + nStatusIndex + 1, ADR(stStatusData), 1);
+	MEMCPY(pAddr + nStatusIndex, ADR(stStatusData.nStatus), 1);
+	MEMCPY(pAddr + nSpeedIndex + 1, ADR(stStatusData.nActSpeed), 1);
+	MEMCPY(pAddr + nSpeedIndex, ADR(stStatusData.nActSpeed) + 1, 1);	
+ELSE
+	MEMCPY(pAddr + nStatusIndex, ADR(stStatusData), 2);
+	MEMCPY(pAddr + nSpeedIndex, ADR(stStatusData.nActSpeed), 2);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

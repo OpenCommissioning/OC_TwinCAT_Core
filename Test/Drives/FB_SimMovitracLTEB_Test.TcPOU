@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovitracLTEB_Test" Id="{20eba083-368a-012a-2c9a-b8fe0c6cf124}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimMovitracLTEB_Test EXTENDS FB_TestSuite
+VAR
+	fbMovitracLTE : FB_SimMovitracLTEB;
+	nExpectedByte : BYTE;
+	nResultByte : BYTE;
+	fExpectedReal : REAL;
+	fResultReal : REAL;
+	bExpectedBool : BOOL;
+	bResultBool : BOOL;
+END_VAR
+	]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_DriveNotReady();
+Test_DriveReady();
+Test_DriveRunningFwd();
+Test_DriveRunningBwd();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_DriveNotReady" Id="{7c0b8885-513a-056b-20b4-6f7465bb1f1d}">
+      <Declaration><![CDATA[METHOD Test_DriveNotReady
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Drive is not ready');
+nExpectedByte := 0; 
+bExpectedBool := FALSE;
+fbMovitracLTE.bEnable := FALSE;
+fbMovitracLTE.bSTO := FALSE;
+fbMovitracLTE();
+nResultByte := fbMovitracLTE.GetControl();
+bResultBool := fbMovitracLTE.bReady;
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');
+
+AssertEquals(Expected := bExpectedBool, 
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DriveReady" Id="{8c7603b5-47fe-070d-2ea1-a74a2cc0a9cc}">
+      <Declaration><![CDATA[METHOD Test_DriveReady
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Drive is ready');
+nExpectedByte := 0; 
+bExpectedBool := TRUE;
+fbMovitracLTE.bEnable := FALSE;
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE();
+nResultByte := fbMovitracLTE.GetControl();
+bResultBool := fbMovitracLTE.bReady;
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');
+
+AssertEquals(Expected := bExpectedBool,
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DriveRunningBwd" Id="{a9c8729b-d7ee-0aac-3357-a218c2a48cf8}">
+      <Declaration><![CDATA[METHOD Test_DriveRunningBwd
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Drive is running backward with 0 speed');
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.bReverse := TRUE;
+fExpectedReal := 0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.nTargetSpeed := 0;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.GetLinkControlData();
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataOut is not correct');	
+			 
+AssertEquals(Expected := bExpectedBool,
+             Actual := bResultBool,
+             Message := 'Status is not correct');	
+			 
+TEST_FINISHED();
+//######################################################
+TEST('Feedback of Drive running backward with 0 speed');
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.bReverse := TRUE;
+fExpectedReal := 0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.nTargetSpeed := 0;
+fbMovitracLTE.SetLinkStatusData(fExpectedReal);
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.fActualSpeed;
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataIn is not correct');	
+			 
+AssertEquals(Expected := bExpectedBool,
+             Actual := bResultBool,
+             Message := 'Status is not correct');	
+			 
+TEST_FINISHED();
+//######################################################
+TEST('Drive is running backward at max speed');
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.bReverse := TRUE;
+fExpectedReal := -3000.0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.nTargetSpeed := 65535;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.GetLinkControlData();
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataOut is not correct');	
+			 
+AssertEquals(Expected := bExpectedBool,
+             Actual := bResultBool,
+             Message := 'Status is not correct');	
+			 
+TEST_FINISHED();
+//###################################################
+TEST('Feedback of Drive running backward at max speed');
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.bReverse := TRUE;
+fExpectedReal := 0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.nTargetSpeed := 0;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE.SetLinkStatusData(fExpectedReal);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.fActualSpeed;
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataIn is not correct');	
+			 
+AssertEquals(Expected := bExpectedBool,
+             Actual := bResultBool,
+             Message := 'Status is not correct');	
+			 
+TEST_FINISHED();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DriveRunningFwd" Id="{bc6b6d12-82d6-0b4a-24e7-e1cba3358b5d}">
+      <Declaration><![CDATA[METHOD Test_DriveRunningFwd
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Drive is running forward at 0');
+fExpectedReal := 0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.nTargetSpeed := 0;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.GetLinkControlData();
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataOut is not correct');	
+
+AssertEquals(Expected := bExpectedBool, 
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');
+TEST_FINISHED();
+//#################################################################
+TEST('Feedback of drive running forward at 0');
+fExpectedReal := 0;
+bExpectedBool := TRUE;
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.nTargetSpeed := 0;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE.SetLinkStatusData(fExpectedReal);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.fActualSpeed;
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataIn is not correct');	
+
+AssertEquals(Expected := bExpectedBool, 
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');
+TEST_FINISHED();
+//###################################################################
+TEST('Drive is running forward at max speed');
+fExpectedReal := 3000;
+bExpectedBool := TRUE;
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.nTargetSpeed := 65535;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.GetLinkControlData();
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataOut is not correct');	
+
+AssertEquals(Expected := bExpectedBool, 
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');
+TEST_FINISHED();
+//###################################################################
+TEST('Feedback of drive running forward at max speed');
+fExpectedReal := 3000;
+bExpectedBool := TRUE;
+fbMovitracLTE.bSTO := TRUE;
+fbMovitracLTE.nTargetSpeed := 65535;
+fbMovitracLTE.bEnable := TRUE;
+fbMovitracLTE.SetStatus(1);
+fbMovitracLTE.SetLinkStatusData(fExpectedReal);
+fbMovitracLTE();
+fResultReal := fbMovitracLTE.fActualSpeed;
+bResultBool := fbMovitracLTE.bRunning;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'DataIn is not correct');	
+
+AssertEquals(Expected := bExpectedBool, 
+			 Actual := bResultBool,
+			 Message := 'Status is not correct');
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

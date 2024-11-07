@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_AdsMessage" Id="{af86c548-10eb-0720-2cc1-1241d038b332}">
+    <Declaration><![CDATA[TYPE ST_AdsMessage :
+STRUCT
+	tNetID			: T_AmsNetID;
+	tPort			: T_AmsPort;
+	nInvokeID		: UDINT;
+	nIdxGrp			: UDINT;
+	nIdxOffs		: UDINT;
+	nLength			: UDINT;
+	nResult			: UDINT;
+	aData			: ARRAY[0..239] OF BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

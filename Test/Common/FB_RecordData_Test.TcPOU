@@ -1,0 +1,566 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_RecordData_Test" Id="{c5016b1b-f5a6-0c06-2faf-4f51e27f0af5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_RecordData_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbAdsMessageHandler 	: FB_AdsMessageHandler;
+	fbRecordData 			: FB_RecordData(refAdsMessageHandler := fbAdsMessageHandler);	
+	
+	stAdsHandlerMessage 	: ST_AdsMessage;
+	stDeviceMessage 		: ST_AdsMessage;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCasesCompare();
+TestGetReadIndication();
+TestGetWriteIndication();
+TestSendReadResponse();
+TestSendWriteResponse();
+TestAutoResponseWriteMessage();
+TestAutoResponseReadMessage();]]></ST>
+    </Implementation>
+    <Method Name="TestAutoResponseReadMessage" Id="{536c504e-947e-0d99-325f-99c4b7c76231}">
+      <Declaration><![CDATA[METHOD TestAutoResponseReadMessage : REFERENCE TO FB_Test
+VAR
+	fbAdsRead				: ADSREAD := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	stAdsMessage			: REFERENCE TO ST_AdsMessage;
+	nData					: BYTE;
+	bResult 				: BOOL;
+	bResultPort 			: T_AmsPort;
+	nExpectedPort			: T_AmsPort;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Auto Response Ads Read Message');
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+
+fbAdsRead(READ := FALSE);
+fbAdsRead(	IDXGRP := stAdsHandlerMessage.nIdxGrp, 
+			IDXOFFS := stAdsHandlerMessage.nIdxOffs, 
+        	LEN := stAdsHandlerMessage.nLength, 
+			DESTADDR := ADR(nData), 
+        	READ := TRUE);			
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;	
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+fbRecordData();		
+fbAdsMessageHandler();
+
+bResult := fbAdsMessageHandler.bIsAdsMessageReadValid;
+AssertTrue(bResult, 'AdsMessageReadValid expected TRUE');
+
+fbRecordData();	
+fbAdsMessageHandler();
+bResult := fbAdsMessageHandler.bIsAdsMessageReadValid;
+AssertFalse(bResult, 'AdsMessageReadValid expected FALSE');
+
+nExpectedPort := 0;
+bResultPort := fbAdsMessageHandler.stAdsMessageRead.tPort;
+
+AssertEquals(Expected := nExpectedPort,
+	Actual := bResultPort,
+	Message := 'tPort value is incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestAutoResponseWriteMessage" Id="{42bc730d-ba8d-0a21-340e-cc693387755a}">
+      <Declaration><![CDATA[METHOD TestAutoResponseWriteMessage : REFERENCE TO FB_Test
+VAR
+	fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	stAdsMessage			: REFERENCE TO ST_AdsMessage;
+	nData					: BYTE;
+	bResult 				: BOOL;
+	bResultPort 			: T_AmsPort;
+	nExpectedPort			: T_AmsPort;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Auto Response Ads Write Message');
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+
+fbAdsWrite(WRITE := FALSE);
+fbAdsWrite(	IDXGRP := stAdsHandlerMessage.nIdxGrp, 
+			IDXOFFS := stAdsHandlerMessage.nIdxOffs, 
+           	LEN := stAdsHandlerMessage.nLength, 
+			SRCADDR := ADR(nData), 
+           	WRITE := TRUE);			
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;	
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+fbRecordData();		
+fbAdsMessageHandler();
+
+bResult := fbAdsMessageHandler.bIsAdsMessageWriteValid;
+AssertTrue(bResult, 'AdsMessageWriteValid expected TRUE');
+
+fbRecordData();	
+fbAdsMessageHandler();
+bResult := fbAdsMessageHandler.bIsAdsMessageWriteValid;
+AssertFalse(bResult, 'AdsMessageWriteValid expected FALSE');
+
+nExpectedPort := 0;
+bResultPort := fbAdsMessageHandler.stAdsMessageWrite.tPort;
+
+AssertEquals(Expected := nExpectedPort,
+	Actual := bResultPort,
+	Message := 'tPort value is incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseCompare" Id="{ab0245b7-fae5-0e40-163f-4feef5f6d736}">
+      <Declaration><![CDATA[METHOD TestCaseCompare : REFERENCE TO FB_Test
+VAR_INPUT
+	sName 					: T_MaxString;
+	stAdsHandlerMessage 	: ST_AdsMessage;
+	stDeviceMessage 		: ST_AdsMessage;
+	bExpected				: BOOL;
+END_VAR
+
+VAR
+	bResult 				: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+bResult := fbRecordData.DataValid(stDeviceMessage, stAdsHandlerMessage);
+
+AssertEquals(Expected := bExpected,
+	Actual := bResult,
+	Message := 'Expected compare result is wrong');
+
+IF bResult AND bExpected THEN
+	bResult := stAdsHandlerMessage.tPort = 0;
+	AssertTrue(bResult, 'tPort must be 0');
+END_IF
+	
+	
+TEST_FINISHED();	]]></ST>
+      </Implementation>
+    </Method>
+    <Action Name="TestCasesCompare" Id="{a66f56b6-ad47-048e-0c48-f851d0ab85c5}">
+      <Implementation>
+        <ST><![CDATA[(*Test ADS Message compare*)
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare TRUE 1', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210011;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare TRUE - InvokeID', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210011;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare TRUE - nIdxOffs', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210011;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 16#FFFFFFFF;
+TestCaseCompare('Compare TRUE - nIdxOffs 16#FFFFFFFF', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#12340011;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210011;
+stDeviceMessage.nIdxGrp := 16#43210011;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare TRUE - nIdxGrp', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#12340011;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210011;
+stDeviceMessage.nIdxGrp := 0;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare TRUE - nIdxGrp 0', stAdsHandlerMessage, stDeviceMessage, TRUE);
+
+stAdsHandlerMessage.tPort := 0; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare FALSE - AdsHandler Port 0', stAdsHandlerMessage, stDeviceMessage, FALSE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340010;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210001;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare FALSE - InvokeID', stAdsHandlerMessage, stDeviceMessage, FALSE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#12340000;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210000;
+stDeviceMessage.nIdxGrp := 16#43210022;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare FALSE - nIdxGrp', stAdsHandlerMessage, stDeviceMessage, FALSE);
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 16#12340011;
+stAdsHandlerMessage.nIdxGrp := 16#12340000;
+stAdsHandlerMessage.nIdxOffs := 20;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 16#43210000;
+stDeviceMessage.nIdxGrp := 16#43210000;
+stDeviceMessage.nIdxOffs := 10;
+TestCaseCompare('Compare FALSE - nIdxOffs', stAdsHandlerMessage, stDeviceMessage, FALSE);]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="TestGetReadIndication" Id="{3fac2f4b-8c62-0cc9-0aba-9869cfc4d60e}">
+      <Declaration><![CDATA[METHOD TestGetReadIndication : REFERENCE TO FB_Test
+VAR	
+	fbAdsRead				: ADSREAD := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	stAdsMessage			: REFERENCE TO ST_AdsMessage;
+	nData					: BYTE;
+	bResult 				: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Get Read Indication');
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+
+fbAdsRead(READ := FALSE);
+fbAdsRead(	IDXGRP := stAdsHandlerMessage.nIdxGrp, 
+			IDXOFFS := stAdsHandlerMessage.nIdxOffs, 
+        	LEN := stAdsHandlerMessage.nLength, 
+			DESTADDR := ADR(nData), 
+        	READ := TRUE);			
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+bResult := fbRecordData.GetReadIndication(stDeviceMessage);
+stAdsMessage REF= fbAdsMessageHandler.stAdsMessageRead;
+
+AssertTrue(bResult, 'Result value is not correct');
+
+bResult := stAdsMessage.tPort = 0;
+AssertTrue(bResult, 'tPort must be 0');
+
+TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestGetWriteIndication" Id="{a880761d-7b45-0545-3979-074b0ff1ce41}">
+      <Declaration><![CDATA[METHOD TestGetWriteIndication : REFERENCE TO FB_Test
+VAR	
+	fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	stAdsMessage			: REFERENCE TO ST_AdsMessage;
+	nData					: BYTE;
+	bResult 				: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Get Write Indication');
+
+stAdsHandlerMessage.tPort := 351; 
+stAdsHandlerMessage.nInvokeID := 500;
+stAdsHandlerMessage.nIdxGrp := 16#80000001;
+stAdsHandlerMessage.nIdxOffs := 10;
+stDeviceMessage.tPort := 351;
+stDeviceMessage.nInvokeID := 500;
+stDeviceMessage.nIdxGrp := 16#80000001;
+stDeviceMessage.nIdxOffs := 10;
+
+fbAdsWrite(WRITE := FALSE);
+fbAdsWrite(	IDXGRP := stAdsHandlerMessage.nIdxGrp, 
+			IDXOFFS := stAdsHandlerMessage.nIdxOffs, 
+           	LEN := stAdsHandlerMessage.nLength, 
+			SRCADDR := ADR(nData), 
+           	WRITE := TRUE);			
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+bResult := fbRecordData.GetWriteIndication(stDeviceMessage);
+stAdsMessage REF= fbAdsMessageHandler.stAdsMessageRead;
+
+AssertTrue(bResult, 'Result value is not correct');
+
+bResult := stAdsMessage.tPort = 0;
+AssertTrue(bResult, 'tPort must be 0');
+
+TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestSendReadResponse" Id="{6deb9781-0e5a-0188-0355-e206d7bc95ea}">
+      <Declaration><![CDATA[METHOD TestSendReadResponse : REFERENCE TO FB_Test
+VAR
+	stAdsMessage : ST_AdsMessage;
+	hExpected : HRESULT;
+	hRes : HRESULT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Send Read Response');
+
+stAdsMessage.tPort := 351;
+stAdsMessage.nInvokeID := 500;
+stAdsMessage.nIdxGrp := 16#80000001;
+stAdsMessage.nIdxOffs := 10;
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+hExpected := S_OK;
+hRes := fbRecordData.SendReadResponse(stAdsMessage);
+
+AssertEquals(Expected := hExpected,
+	Actual := hRes,
+	Message := 'Expected result is not valid');
+	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestSendWriteResponse" Id="{6d9f50b4-a0c1-054a-2215-3cf6e0eae0fe}">
+      <Declaration><![CDATA[METHOD TestSendWriteResponse : REFERENCE TO FB_Test
+VAR
+	stAdsMessage : ST_AdsMessage;
+	hExpected : HRESULT;
+	hRes : HRESULT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Send Write Response');
+
+stAdsMessage.tPort := 351;
+stAdsMessage.nInvokeID := 500;
+stAdsMessage.nIdxGrp := 16#80000001;
+stAdsMessage.nIdxOffs := 10;
+
+fbAdsMessageHandler.bLog := TRUE;
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+fbRecordData.eControllerType := E_ControllerType.PlcSimAdvanced;
+
+hExpected := S_OK;
+hRes := fbRecordData.SendReadResponse(stAdsMessage);
+
+AssertEquals(Expected := hExpected,
+	Actual := hRes,
+	Message := 'Expected result is not valid');
+	
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_RecordData_Test">
+      <LineId Id="141" Count="0" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="153" Count="4" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestAutoResponseReadMessage">
+      <LineId Id="13" Count="10" />
+      <LineId Id="75" Count="4" />
+      <LineId Id="29" Count="3" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="60" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestAutoResponseWriteMessage">
+      <LineId Id="13" Count="19" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="60" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestCaseCompare">
+      <LineId Id="40" Count="13" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestCasesCompare">
+      <LineId Id="2" Count="98" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestGetReadIndication">
+      <LineId Id="39" Count="1" />
+      <LineId Id="46" Count="6" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="12" Count="6" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestGetWriteIndication">
+      <LineId Id="39" Count="1" />
+      <LineId Id="46" Count="6" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="56" Count="4" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestSendReadResponse">
+      <LineId Id="5" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="27" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_RecordData_Test.TestSendWriteResponse">
+      <LineId Id="5" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="32" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

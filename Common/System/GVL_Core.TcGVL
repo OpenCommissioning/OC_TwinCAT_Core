@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="GVL_Core" Id="{daaa4602-82dd-0eaa-0bd4-a2e6b9fa282a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'conditionalshow'}
+VAR_GLOBAL	
+	refSystem 			: REFERENCE TO FB_System;		
+END_VAR]]></Declaration>
+    <Property Name="fbSystem" Id="{d875db5b-3f7e-02b0-230c-ed0ec43a556a}">
+      <Declaration><![CDATA[PROPERTY PUBLIC fbSystem : REFERENCE TO FB_System]]></Declaration>
+      <Get Name="Get" Id="{b76067e0-6c2d-0f93-3724-711b1b967692}">
+        <Declaration><![CDATA[
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF F_IsSystemValid() THEN
+	fbSystem REF= GVL_Core.refSystem;
+END_IF]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="GVL_Core.fbSystem.Get">
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </GVL>
+</TcPlcObject>

@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SensorAnalog_Test" Id="{ccce8a1d-ae05-053e-0011-85472edf3ec4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SensorAnalog_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbSensorAnalog : FB_SensorAnalog;
+	nExpectedByte : BYTE;
+	nResultByte : BYTE;
+	nExpectedUInt : UINT;
+	nResultUInt : UINT;
+	fExpectedReal : REAL;
+	fResultReal : REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nControl');
+nExpectedByte := 255;
+fbSensorAnalog.nControl := nExpectedByte;
+fbSensorAnalog();
+nResultByte := fbSensorAnalog.GetControl();
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nStatus');
+nExpectedByte := 255;
+fbSensorAnalog.SetStatus(nExpectedByte);
+fbSensorAnalog();
+nResultByte := fbSensorAnalog.nStatus;
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+
+TEST('Get fValue');
+fExpectedReal := 50;
+nExpectedUInt := 16#8000;
+fbSensorAnalog.SetLinkStatusData(fExpectedReal);
+fbSensorAnalog();
+fResultReal := fbSensorAnalog.fValue;
+nResultUInt := fbSensorAnalog.nValue;
+
+AssertEquals(Expected := fExpectedReal,
+             Actual := fResultReal,
+             Message := 'fValue is not correct');	
+AssertEquals(Expected := nExpectedUInt,
+             Actual := nResultUInt,
+             Message := 'nValue is not correct');
+TEST_FINISHED();
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

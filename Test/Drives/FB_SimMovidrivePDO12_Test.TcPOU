@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SimMovidrivePDO12_Test" Id="{352eb663-e702-0311-2a1b-d7b2af20abdf}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SimMovidrivePDO12_Test EXTENDS TcUnit.FB_TestSuite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_GetControlMode();
+Test_GetControlData();
+Test_GetControlDataSWAP();
+Test_SetStatusData();
+Test_SetStatusDataSWAP();]]></ST>
+    </Implementation>
+    <Method Name="Test_AssignProcessData" Id="{1490a2db-da23-08ea-24f4-a373b96a5b95}">
+      <Declaration><![CDATA[METHOD Test_AssignProcessData : REFERENCE TO FB_Test
+VAR
+	fbStarter 				: FB_Starter;
+	nControlData 			: WORD;
+	nStatusData				: WORD;
+	
+	nExpectedStatusData		: WORD;
+	
+	nActualControlData 		: WORD;
+	nActualStatusData		: WORD;
+	stActualControlData 	: ST_StarterControlData;
+	stActualStatusData		: ST_StarterStatusData;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Assign Process data');
+
+nControlData := 255;
+nStatusData := 0;
+
+fbStarter.AssignProcessData(nControlData, nStatusData);
+fbStarter();
+
+stActualControlData := fbStarter.stControlData;
+stActualStatusData := fbStarter.stStatusData;
+
+MEMCPY(ADR(nActualControlData), ADR(stActualControlData), 2);
+MEMCPY(ADR(nActualStatusData), ADR(stActualStatusData), 2);
+
+AssertEquals(Expected := nControlData,
+             Actual := nActualControlData,
+             Message := 'nControlData is not correct');	
+		
+nExpectedStatusData := 1;
+	 
+AssertEquals(Expected := nExpectedStatusData,
+             Actual := nStatusData,
+             Message := 'nStatusData is not correct');	
+
+TEST_FINISHED();
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetStatusData" Id="{36e67ac2-4b7c-0eb9-3eb2-6d7d3670ab24}">
+      <Declaration><![CDATA[METHOD Test_SetStatusData : BOOL
+VAR
+	stControl 				: ST_SimMovidriveStatusData;
+	stBuffer				: ST_SimMovidriveStatusData;
+	fbMoviPos_PD12 			: FB_SimMovidrivePDO12;	                		
+	nControlStatusByte		: BYTE;
+	nActualStatusByte		: BYTE;
+	nStatusWordSwap			: WORD;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Set Status Data');
+
+nControlStatusByte := 124;
+MEMCPY(ADR(stControl), ADR(nControlStatusByte), 1);
+stControl.nStatus := 164;
+stControl.nActPosition := 100;
+stControl.nActVelocity := 200;
+stControl.nActCurrent := 300;
+stControl.nActUnit := 400;
+
+fbMoviPos_PD12.SetStatusData(stControl, ADR(stBuffer), FALSE);
+
+MEMCPY(ADR(nActualStatusByte), ADR(stBuffer), 1);
+
+AssertEquals(Expected := nControlStatusByte,
+             Actual := nActualStatusByte,
+             Message := 'nExpectedStatusByte is not equal');
+
+AssertEquals(Expected := stControl.nStatus,
+             Actual := stBuffer.nStatus,
+             Message := 'nStatus word is not equal');	
+
+AssertEquals(Expected := stControl.nActPosition,
+             Actual := stBuffer.nActPosition,
+             Message := 'nActPosition word is not equal'); 
+			 
+AssertEquals(Expected := stControl.nActVelocity,
+             Actual := stBuffer.nActVelocity,
+             Message := 'nActVelocity word is not equal');
+			 
+AssertEquals(Expected := stControl.nActCurrent,
+             Actual := stBuffer.nActCurrent,
+             Message := 'nActCurrent word is not equal');
+			 
+AssertEquals(Expected := stControl.nActUnit,
+             Actual := stBuffer.nActUnit,
+             Message := 'nActCurrent word is not equal');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetControlMode" Id="{4398ff65-0c40-018a-33fd-8b3e825824f8}">
+      <Declaration><![CDATA[METHOD Test_GetControlMode : REFERENCE TO FB_Test
+VAR
+	stControl 		: ST_SimMovidriveControlData;
+	fbMoviPos_PD12 	: FB_SimMovidrivePDO12;
+	bExpected		: BOOL;
+	bResult			: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Get Control Mode');
+
+stControl.bModeLow := FALSE;
+stControl.bModeHigh := FALSE;
+bResult := fbMoviPos_PD12.GetControlMode(stControl) = E_SimMovidriveMode.Idle;
+AssertTrue(bResult, 'Expected Idle Mode');
+
+
+stControl.bModeLow := TRUE;
+stControl.bModeHigh := FALSE;
+bResult := fbMoviPos_PD12.GetControlMode(stControl) = E_SimMovidriveMode.Jog;
+AssertTrue(bResult, 'Expected Jog Mode');
+
+stControl.bModeLow := FALSE;
+stControl.bModeHigh := TRUE;
+bResult := fbMoviPos_PD12.GetControlMode(stControl) = E_SimMovidriveMode.Ref;
+AssertTrue(bResult, 'Expected Ref Mode');
+
+stControl.bModeLow := TRUE;
+stControl.bModeHigh := TRUE;
+bResult := fbMoviPos_PD12.GetControlMode(stControl) = E_SimMovidriveMode.Auto;
+AssertTrue(bResult, 'Expected Auto Mode');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetControlData" Id="{76063065-427f-02da-23ad-f27f58dcae6b}">
+      <Declaration><![CDATA[METHOD Test_GetControlData : BOOL
+VAR
+	stDataBus 		: ST_SimMovidriveControlData;
+	stControl 		: ST_SimMovidriveControlData;
+	stExpected 		: ST_SimMovidriveControlData;
+	fbMoviPos_PD12 	: FB_SimMovidrivePDO12;
+	
+	nControlWord	: WORD;
+	nControlWordExpected	: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Get Control Data');
+
+stDataBus.bControllerInhibit := TRUE;
+stDataBus.nTargetPosition := 100;
+stDataBus.nVelocity := 200;
+stDataBus.nAcceleration := 300;
+stDataBus.nDeceleration := 400;
+
+stExpected := stDataBus;
+MEMCPY(ADR(nControlWordExpected), ADR(stExpected), 2);
+
+fbMoviPos_PD12.GetControlData(stControl, ADR(stDataBus), FALSE);
+MEMCPY(ADR(nControlWord), ADR(stControl), 2);
+
+AssertEquals(Expected := nControlWordExpected,
+             Actual := nControlWord,
+             Message := 'nControlWord is not equal');
+			 
+AssertEquals(Expected := stExpected.nTargetPosition,
+             Actual := stControl.nTargetPosition,
+             Message := 'nTargetPosition word is not equal');
+			 
+AssertEquals(Expected := stExpected.nVelocity,
+             Actual := stControl.nVelocity,
+             Message := 'nVelocity word is not equal');	
+			 
+AssertEquals(Expected := stExpected.nAcceleration,
+             Actual := stControl.nAcceleration,
+             Message := 'nAcceleration word is not equal');	
+
+AssertEquals(Expected := stExpected.nDeceleration,
+             Actual := stControl.nDeceleration,
+             Message := 'nAcceleration word is not equal');		 
+		
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetControlDataSWAP" Id="{7d329009-cece-0119-149a-df836a050a68}">
+      <Declaration><![CDATA[METHOD Test_GetControlDataSWAP : BOOL
+VAR
+	stDataBus 				: ST_SimMovidriveControlData;
+	stControl 				: ST_SimMovidriveControlData;
+	stExpected 				: ST_SimMovidriveControlData;
+	fbMoviPos_PD12 			: FB_SimMovidrivePDO12;
+	                		
+	nControlWord			: WORD;
+	nControlWordExpected	: WORD;	
+	nBusControlWord			: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Get Control Data SWAP');
+
+nControlWordExpected := 15;
+MEMCPY(ADR(stExpected), ADR(nControlWordExpected), 2);
+stExpected.nTargetPosition := 100;
+stExpected.nVelocity := 200;
+stExpected.nAcceleration := 300;
+stExpected.nDeceleration := 400;
+
+stDataBus := stExpected ;
+MEMCPY(ADR(nBusControlWord), ADR(stDataBus), 2);
+nBusControlWord := HOST_TO_BE16(nBusControlWord);
+MEMCPY(ADR(stDataBus), ADR(nBusControlWord), 2);
+
+stDataBus.nTargetPosition := DWORD_TO_DINT(HOST_TO_BE32(DINT_TO_DWORD(stDataBus.nTargetPosition)));
+stDataBus.nVelocity := HOST_TO_BE16(stDataBus.nVelocity);
+stDataBus.nAcceleration := HOST_TO_BE16(stDataBus.nAcceleration);
+stDataBus.nDeceleration := HOST_TO_BE16(stDataBus.nDeceleration);
+
+fbMoviPos_PD12.GetControlData(stControl, ADR(stDataBus), TRUE);
+MEMCPY(ADR(nControlWord), ADR(stControl), 2);
+
+AssertEquals(Expected := nControlWordExpected,
+             Actual := nControlWord,
+             Message := 'nControlWord is not equal');
+			 
+AssertEquals(Expected := stExpected.nTargetPosition,
+             Actual := stControl.nTargetPosition,
+             Message := 'nTargetPosition word is not equal');
+			 
+AssertEquals(Expected := stExpected.nVelocity,
+             Actual := stControl.nVelocity,
+             Message := 'nVelocity word is not equal');	
+			 
+AssertEquals(Expected := stExpected.nAcceleration,
+             Actual := stControl.nAcceleration,
+             Message := 'nAcceleration word is not equal');	
+
+AssertEquals(Expected := stExpected.nDeceleration,
+             Actual := stControl.nDeceleration,
+             Message := 'nAcceleration word is not equal');		 
+		
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetStatusDataSWAP" Id="{ccc1e70d-7d51-05c4-123c-d08aa7a0a985}">
+      <Declaration><![CDATA[METHOD Test_SetStatusDataSWAP : BOOL
+VAR
+	stControl 				: ST_SimMovidriveStatusData;
+	stBuffer				: ST_SimMovidriveStatusData;
+	fbMoviPos_PD12 			: FB_SimMovidrivePDO12;	                		
+	nControlStatusByte		: BYTE;
+	nActualStatusByte		: BYTE;
+	nStatusWordSwap			: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Set Status Data SWAP');
+
+nControlStatusByte := 124;
+MEMCPY(ADR(stControl), ADR(nControlStatusByte), 1);
+stControl.nStatus := 164;
+stControl.nActPosition := 100;
+stControl.nActVelocity := 200;
+stControl.nActCurrent := 300;
+stControl.nActUnit := 400;
+
+fbMoviPos_PD12.SetStatusData(stControl, ADR(stBuffer), TRUE);
+
+MEMCPY(ADR(nStatusWordSwap), ADR(stBuffer), 2);
+nStatusWordSwap := HOST_TO_BE16(nStatusWordSwap);
+MEMCPY(ADR(stBuffer), ADR(nStatusWordSwap), 2);
+stBuffer.nActPosition := DWORD_TO_DINT(HOST_TO_BE32(DINT_TO_DWORD(stBuffer.nActPosition)));
+stBuffer.nActVelocity := HOST_TO_BE16(stBuffer.nActVelocity);
+stBuffer.nActCurrent := HOST_TO_BE16(stBuffer.nActCurrent);
+stBuffer.nActUnit := HOST_TO_BE16(stBuffer.nActUnit);
+
+MEMCPY(ADR(nActualStatusByte), ADR(stBuffer), 1);
+
+AssertEquals(Expected := nControlStatusByte,
+             Actual := nActualStatusByte,
+             Message := 'nExpectedStatusByte is not equal');
+
+AssertEquals(Expected := stControl.nStatus,
+             Actual := stBuffer.nStatus,
+             Message := 'nStatus word is not equal');	
+
+AssertEquals(Expected := stControl.nActPosition,
+             Actual := stBuffer.nActPosition,
+             Message := 'nActPosition word is not equal'); 
+			 
+AssertEquals(Expected := stControl.nActVelocity,
+             Actual := stBuffer.nActVelocity,
+             Message := 'nActVelocity word is not equal');
+			 
+AssertEquals(Expected := stControl.nActCurrent,
+             Actual := stBuffer.nActCurrent,
+             Message := 'nActCurrent word is not equal');
+			 
+AssertEquals(Expected := stControl.nActUnit,
+             Actual := stBuffer.nActUnit,
+             Message := 'nActUnit word is not equal');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

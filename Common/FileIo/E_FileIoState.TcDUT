@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_FileIoState" Id="{4854109e-df86-00cf-045f-e0846b5675bd}">
+    <Declaration><![CDATA[{attribute 'conditionalshow'}
+TYPE E_FileIoState :
+(
+	READY := 0,
+	OPEN,
+	CREATE,
+	READ,
+	WRITE,
+	CLOSE,
+	ERROR
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

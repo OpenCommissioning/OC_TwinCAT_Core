@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Button_Test" Id="{1d01b343-9218-07c7-1af2-fff3bf9f86c7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Button_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbButton : FB_Button;
+	nExpected : BYTE;
+	nResult : BYTE;
+	bExpected : BOOL;
+	bResult : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set bEnable TRUE');			 
+fbButton.bEnable := TRUE; 
+fbButton();
+nExpected := 1;
+nResult := fbButton.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+TEST('Set bEnable FALSE');			 
+fbButton.bEnable := FALSE; 
+fbButton();
+nExpected := 0;
+nResult := fbButton.GetControl();
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();
+
+
+TEST('Get bValue FALSE');
+fbButton.SetStatus(0);
+fbButton();
+bExpected := FALSE;
+bResult := fbButton.bValue;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get bValue TRUE');	
+fbButton.SetStatus(1);
+fbButton();
+bExpected := 1;
+bResult := fbButton.bValue;
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Control value is not correct');	 
+TEST_FINISHED();]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Button_Test">
+      <LineId Id="30" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="69" Count="8" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="38" Count="9" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="50" Count="4" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

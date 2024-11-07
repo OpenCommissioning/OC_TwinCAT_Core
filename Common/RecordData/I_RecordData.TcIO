@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_RecordData" Id="{f6bd55c8-7a89-0ed1-0659-2974f04d2975}">
+    <Declaration><![CDATA[{attribute 'conditionalshow'}
+INTERFACE I_RecordData]]></Declaration>
+    <Method Name="SendReadResponse" Id="{088d910c-bccb-0d85-260d-50c4bcf6d1ec}">
+      <Declaration><![CDATA[(*Send ADS Read Response message*)
+METHOD SendReadResponse : HRESULT
+VAR_INPUT
+	stAdsMessage : ST_AdsMessage; //Response ADS Message
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SendWriteResponse" Id="{68ee96ce-c1f0-0ee9-1b6b-6f39189fb85f}">
+      <Declaration><![CDATA[(*Send ADS Write Response message*)
+METHOD SendWriteResponse : HRESULT
+VAR_INPUT
+	stAdsMessage : ST_AdsMessage; //Response ADS Message
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="GetReadIndication" Id="{8b16589a-d336-0775-325a-e785a1a0118f}">
+      <Declaration><![CDATA[(*Try to get a valid ADR read message. If the message is valid, the data in the input structure will be overwritten*)
+METHOD GetReadIndication : BOOL
+VAR_INPUT
+	refDeviceAdsMessage : REFERENCE TO ST_AdsMessage; //Reference ADS Message
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Subscribe" Id="{914ab674-e2b8-0d47-3072-eccb412bf989}">
+      <Declaration><![CDATA[(*Subscribe the RecordIdent device to the RecordData services. The RecordIdent device is initialised during subscription*)
+METHOD Subscribe
+VAR_INPUT
+	pRecordIdent	: POINTER TO ST_RecordIdent; //Pointet to RecordIdent Device
+	stAdsMessage 	: REFERENCE TO ST_AdsMessage; //Reference to the initial ADS message configuration of the device
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="GetWriteIndication" Id="{c160d905-1b75-0bd7-1005-2335cd25426b}">
+      <Declaration><![CDATA[(*Try to get a valid ADR write message. If the message is valid, the data in the input structure will be overwritten*)
+METHOD GetWriteIndication : BOOL
+VAR_INPUT
+	refDeviceAdsMessage : REFERENCE TO ST_AdsMessage; //Reference ADS Message
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

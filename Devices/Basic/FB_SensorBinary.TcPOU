@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SensorBinary" Id="{a825ddc3-4f91-07fd-3487-992ee91de2b5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SensorBinary EXTENDS FB_LinkDevice 
+VAR_OUTPUT
+	bValue		: BOOL; 
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+bValue := Status.0;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_SensorBinary">
+      <LineId Id="957" Count="0" />
+      <LineId Id="309" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

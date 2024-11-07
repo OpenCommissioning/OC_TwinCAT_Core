@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Switch_Test" Id="{a6702d73-a8b2-0087-133f-37c267a44a11}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Switch_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbDevice : FB_Switch;
+	nExpected : BYTE;
+	nResult : BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nControl');
+nExpected := 255;
+fbDevice.nControl := nExpected;
+fbDevice();
+nResult := fbDevice.GetControl();
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nStatus');
+nExpected := 255;
+fbDevice.SetStatus(nExpected);
+fbDevice();
+nResult := fbDevice.nStatus;
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Switch_Test">
+      <LineId Id="72" Count="9" />
+      <LineId Id="93" Count="9" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

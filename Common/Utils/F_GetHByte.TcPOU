@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_GetHByte" Id="{b6d0b208-31fd-0a3d-1994-654b2df0e207}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_GetHByte : BYTE
+VAR_INPUT
+	nWord	: WORD;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_GetHByte := WORD_TO_BYTE(SHR(nWord, 8));]]></ST>
+    </Implementation>
+    <LineIds Name="F_GetHByte">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

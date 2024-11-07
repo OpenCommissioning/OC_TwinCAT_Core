@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ClockAdvanced" Id="{7277947e-7a06-065e-1e0d-db14ba7e581d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ClockAdvanced
+VAR_INPUT
+	bEnable				: BOOL;
+	tHighImpulsePT		: TIME;
+	tLowImpulsePT		: TIME;
+	tDelay				: TIME;
+	bInvert				: BOOL;
+END_VAR
+
+VAR_OUTPUT
+	bQ					: BOOL;
+END_VAR
+
+VAR
+	fbTon1				: TON;
+	fbTon2				: TON;
+	fbTonDelay 			: TON;
+	bLocalGenerator 	: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbTonDelay.IN := bEnable;
+fbTonDelay.PT := tDelay;
+fbTonDelay();
+
+IF NOT bEnable THEN
+	bQ := FALSE;
+	fbTon1(IN := FALSE);
+	fbTon2(IN := FALSE);
+	RETURN;
+END_IF
+
+IF fbTonDelay.Q THEN
+	IF bInvert THEN
+		fbTon1.PT := tHighImpulsePT;
+		fbTon2.PT := tLowImpulsePT;
+	ELSE
+		fbTon1.PT := tLowImpulsePT;
+		fbTon2.PT := tHighImpulsePT;
+	END_IF
+	
+	fbTon1(IN := NOT bLocalGenerator);
+	fbTon2(IN := bLocalGenerator);
+	
+	IF fbTon1.Q THEN
+		bLocalGenerator := TRUE;
+	END_IF
+	
+	IF fbTon2.Q THEN
+		bLocalGenerator := FALSE;
+	END_IF
+	
+	bQ := bLocalGenerator;
+	
+	IF bInvert THEN
+		bQ := NOT bLocalGenerator;
+	END_IF
+	
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ClockAdvanced">
+      <LineId Id="100" Count="36" />
+      <LineId Id="63" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

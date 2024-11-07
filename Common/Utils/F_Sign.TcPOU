@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_Sign" Id="{60b99345-8786-0015-08b7-72f2bf3aa665}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+FUNCTION F_Sign : REAL
+VAR_INPUT
+	fValue 	: REAL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF (fValue >= 0) THEN
+	F_Sign := 1;
+ELSE
+	F_Sign := -1;	
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="F_Sign">
+      <LineId Id="10" Count="3" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

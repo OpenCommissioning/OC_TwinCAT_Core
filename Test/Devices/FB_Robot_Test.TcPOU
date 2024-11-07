@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Robot_Test" Id="{99b9641c-183a-08b8-2001-145a6234eb71}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Robot_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbRobot : FB_Robot;
+	nExpectedByte : BYTE;
+	nResultByte : BYTE;
+	aExpectedJoints : ARRAY[0..11] OF REAL := [11, 22, 33, 44, 55, 66, 77, 88, 99, 1010, 1111, 1212];	
+	aResultJoints : ARRAY[0..11] OF REAL;	
+	nJointCount : INT := 12;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nControl');
+nExpectedByte := 255;
+fbRobot.nControl := nExpectedByte;
+fbRobot();
+nResultByte := fbRobot.GetControl();
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nStatus');
+nExpectedByte := 255;
+fbRobot.SetStatus(nExpectedByte);
+fbRobot();
+nResultByte := fbRobot.nStatus;
+
+AssertEquals(Expected := nExpectedByte,
+             Actual := nResultByte,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TestSetJoint('Set Joint 1', 0, 100);
+TestSetJoint('Set Joint 2', 1, 100);
+TestSetJoint('Set Joint 3', 2, 100);
+TestSetJoint('Set Joint 4', 3, 100);
+TestSetJoint('Set Joint 5', 4, 100);
+TestSetJoint('Set Joint 6', 5, 100);
+TestSetJoint('Set Joint EXT1', 6, 100);
+TestSetJoint('Set Joint EXT2', 7, 100);
+TestSetJoint('Set Joint EXT3', 8, 100);
+TestSetJoint('Set Joint EXT4', 9, 100);
+TestSetJoint('Set Joint EXT5', 10, 100);
+TestSetJoint('Set Joint EXT6', 11, 100);
+
+TestGetJoint('Get Joint 1', 0, 100);
+TestGetJoint('Get Joint 2', 1, 100);
+TestGetJoint('Get Joint 3', 2, 100);
+TestGetJoint('Get Joint 4', 3, 100);
+TestGetJoint('Get Joint 5', 4, 100);
+TestGetJoint('Get Joint 6', 5, 100);
+TestGetJoint('Get Joint EXT1', 6, 100);
+TestGetJoint('Get Joint EXT2', 7, 100);
+TestGetJoint('Get Joint EXT3', 8, 100);
+TestGetJoint('Get Joint EXT4', 9, 100);
+TestGetJoint('Get Joint EXT5', 10, 100);
+TestGetJoint('Get Joint EXT6', 11, 100);
+
+TEST('Set Joints wia Pointer');
+fbRobot.ConnectJoints(aExpectedJoints, 12);
+fbRobot();
+aResultJoints := fbRobot.GetJointsTarget();
+AssertEquals(Expected := aExpectedJoints,
+             Actual := aResultJoints,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestGetJoint" Id="{f6559956-0ea3-00bb-0742-5e432ec03a0f}">
+      <Declaration><![CDATA[METHOD TestGetJoint : BOOL
+VAR_INPUT
+	sName : T_MaxString;
+	nJointIndex : INT;
+	fValue : REAL;
+END_VAR
+
+VAR
+	fbRobot : FB_Robot;	
+	fResult : REAL;		
+	aExpectedJoints : ARRAY[0..11] OF REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+aExpectedJoints[nJointIndex] := fValue;
+fbRobot.SetJointsStatus(aExpectedJoints);
+fbRobot();
+fResult := fbRobot.aJointStatus[nJointIndex];
+
+AssertEquals(Expected := fValue,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestSetJoint" Id="{d77f4042-a122-0543-3c6d-61d236ae6374}">
+      <Declaration><![CDATA[METHOD TestSetJoint : BOOL
+VAR_INPUT
+	sName : T_MaxString;
+	nJointIndex : INT;
+	fValue : REAL;
+END_VAR
+
+VAR
+	fbRobot : FB_Robot;	
+	fResult : REAL;		
+	aResultJoints : ARRAY[0..11] OF REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbRobot.aJointTarget[nJointIndex] := fValue;
+fbRobot();
+aResultJoints := fbRobot.GetJointsTarget();
+fResult := aResultJoints[nJointIndex];
+
+AssertEquals(Expected := fValue,
+             Actual := fResult,
+             Message := 'Result value is not correct');	
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Robot_Test">
+      <LineId Id="13" Count="19" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="50" Count="10" />
+      <LineId Id="62" Count="11" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="79" Count="1" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="86" Count="2" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="74" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Robot_Test.TestGetJoint">
+      <LineId Id="19" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="21" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Robot_Test.TestSetJoint">
+      <LineId Id="19" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="21" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

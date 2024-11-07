@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Clock" Id="{9d8d5595-60d8-0652-1941-c6468040be69}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Clock
+VAR_INPUT
+	tPT		: TIME;
+END_VAR
+
+VAR_OUTPUT
+	bQ		: BOOL;
+END_VAR
+
+VAR
+	fbTon1	: TON;
+	fbTon2	: TON;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbTon1.PT := tPT;
+fbTon2.PT := tPT;
+
+fbTon1(IN := NOT bQ);
+fbTon2(IN := bQ);
+
+IF fbTon1.Q THEN
+	bQ := TRUE;
+END_IF
+
+IF fbTon2.Q THEN
+	bQ := FALSE;
+END_IF
+
+]]></ST>
+    </Implementation>
+    <ObjectProperties>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="LicenseProperty">
+            <l2 n="Licenses" />
+          </o>
+        </Data>
+        <TypeList>
+          <Type n="LicenseProperty">{ec6b18ef-cd41-4646-b1b3-985c60f930b9}</Type>
+        </TypeList>
+      </XmlArchive>
+    </ObjectProperties>
+    <LineIds Name="FB_Clock">
+      <LineId Id="67" Count="13" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

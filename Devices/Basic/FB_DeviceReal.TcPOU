@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DeviceReal" Id="{87a52e17-6f15-0348-1881-2797e6232087}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DeviceReal EXTENDS FB_LinkDataReal
+VAR_INPUT		
+	nControl  			: BYTE;
+	fControlData  		: REAL;
+END_VAR
+
+VAR_OUTPUT
+	nStatus  			: BYTE;
+	fStatusData  		: REAL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+ControlData := fControlData;
+nStatus := Status;
+fStatusData := StatusData;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

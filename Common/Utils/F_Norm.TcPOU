@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_Norm" Id="{decdff22-50cb-0d66-3778-8a2b19b7d782}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_Norm : REAL
+VAR_INPUT
+	fMin 		: REAL;
+	fMax 		: REAL;
+	fValue 		: REAL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_Norm := F_Clamp01((fValue - fMin)/(fMax - fMin));]]></ST>
+    </Implementation>
+    <LineIds Name="F_Norm">
+      <LineId Id="21" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

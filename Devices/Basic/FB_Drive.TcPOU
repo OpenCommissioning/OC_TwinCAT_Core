@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Drive" Id="{a1a15448-403e-0037-1891-471a9590d7d4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Drive EXTENDS FB_LinkDataREAL
+VAR_INPUT
+	nControl  		: BYTE;
+	fTargetValue 	: REAL; //Target value to drive
+END_VAR
+
+VAR_OUTPUT
+	nStatus  		: BYTE;
+	fActualValue 	: REAL; //Actual value from drive
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+ControlData := fTargetValue;
+nStatus := Status;
+fActualValue := StatusData;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

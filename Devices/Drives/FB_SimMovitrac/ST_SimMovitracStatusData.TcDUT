@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_SimMovitracStatusData" Id="{fafb80a5-1d2f-0987-1cad-7a70400065ee}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_SimMovitracStatusData :
+STRUCT
+	bEnableOutputStage		: BIT;	//0			1 = Output stage enabled
+	bInverterReady			: BIT;	//1			1 = Inverter is ready
+	bPoDataEnable			: BIT;	//2			1 = PO data enabled
+	bReserved3				: BIT;	//3			Currently not used
+	bReserved4				: BIT;	//4			Currently not used
+	bError					: BIT;	//5			1 = Error
+	bReserved6		  		: BIT;	//6			Currently not used
+	bReserved7				: BIT;	//7			Currently not used
+	nStatus					: BYTE;	//8..15		Status / Errorcode
+	nActSpeed				: INT;	//			Actual speed in 0.2 rpm
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

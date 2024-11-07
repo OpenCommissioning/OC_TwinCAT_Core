@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_AdsMessageHandler_Test" Id="{d0a621dd-f611-0c4b-1159-2e949b20cfc0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_AdsMessageHandler_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	stAdsMessageSend 		: ST_AdsMessage;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[stAdsMessageSend.nIdxGrp := 16#80000005;
+stAdsMessageSend.nIdxOffs := 7;
+TestCaseWrite('ADS Write Indication 1', stAdsMessageSend);
+
+stAdsMessageSend.nIdxGrp := 16#80000006;
+stAdsMessageSend.nIdxOffs := 8;
+TestCaseWrite('ADS Write Indication 2', stAdsMessageSend);
+
+stAdsMessageSend.nIdxGrp := 16#80000007;
+stAdsMessageSend.nIdxOffs := 9;
+TestCaseWrite('ADS Write Indication 3', stAdsMessageSend);
+
+stAdsMessageSend.nIdxGrp := 16#80000005;
+stAdsMessageSend.nIdxOffs := 7;
+TestCaseRead('ADS Read Indication 1', stAdsMessageSend);
+
+stAdsMessageSend.nIdxGrp := 16#80000006;
+stAdsMessageSend.nIdxOffs := 8;
+TestCaseRead('ADS Read Indication 2', stAdsMessageSend);
+
+stAdsMessageSend.nIdxGrp := 16#80000007;
+stAdsMessageSend.nIdxOffs := 9;
+TestCaseRead('ADS Read Indication 3', stAdsMessageSend);
+
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCaseRead" Id="{4c32b62f-aa2f-006e-32fe-6cc8960fb119}">
+      <Declaration><![CDATA[METHOD TestCaseRead : REFERENCE TO FB_Test
+VAR_INPUT
+	sName 					: T_MaxString;
+	stAdsMessage 			: ST_AdsMessage;
+END_VAR
+
+VAR
+	fbAdsMessageHandler 	: FB_AdsMessageHandler;		
+	fbAdsRead				: ADSREAD := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	aData 					: ARRAY[0..5] OF BYTE;
+	bResult 				: BOOL; 	
+	stAdsMessageResult 	: ST_AdsMessage;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbAdsRead(READ := FALSE);
+fbAdsRead(IDXGRP := stAdsMessageSend.nIdxGrp, 
+		IDXOFFS := stAdsMessageSend.nIdxOffs, 
+        LEN := stAdsMessageSend.nLength, 
+		DESTADDR := ADR(aData), 
+        READ := TRUE);			
+
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+bResult := fbAdsMessageHandler.bIsAdsMessageReadValid;
+stAdsMessageResult := fbAdsMessageHandler.stAdsMessageRead;
+
+AssertTrue(bResult, 'Result value is not correct');
+
+AssertEquals(Expected := stAdsMessage.tNetID,
+Actual := stAdsMessageResult.tNetID,
+Message := 'tNetID is not valid');
+
+AssertEquals(Expected := stAdsMessage.nIdxGrp,
+Actual := stAdsMessageResult.nIdxGrp,
+Message := 'nIdxGrp is not valid');
+
+AssertEquals(Expected := stAdsMessage.nIdxOffs,
+Actual := stAdsMessageResult.nIdxOffs,
+Message := 'nIdxOffs is not valid');
+
+AssertEquals(Expected := stAdsMessage.nLength,
+Actual := stAdsMessageResult.nLength,
+Message := 'nLength is not valid');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseWrite" Id="{060e9f29-ed59-06a2-0b8f-5f4ca0f381b2}">
+      <Declaration><![CDATA[METHOD TestCaseWrite : REFERENCE TO FB_Test
+VAR_INPUT
+	sName 					: T_MaxString;
+	stAdsMessage 			: ST_AdsMessage;
+END_VAR
+
+VAR
+	fbAdsMessageHandler 	: FB_AdsMessageHandler;		
+	fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	aData 					: ARRAY[0..5] OF BYTE;
+	bResult 				: BOOL; 	
+	stAdsMessageResult 	: ST_AdsMessage;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbAdsWrite(WRITE := FALSE);
+fbAdsWrite(	IDXGRP := stAdsMessageSend.nIdxGrp, 
+			IDXOFFS := stAdsMessageSend.nIdxOffs, 
+            LEN := stAdsMessageSend.nLength, 
+			SRCADDR := ADR(aData), 
+            WRITE := TRUE);			
+
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
+
+bResult := fbAdsMessageHandler.bIsAdsMessageWriteValid;
+stAdsMessageResult := fbAdsMessageHandler.stAdsMessageWrite;
+
+AssertTrue(bResult, 'Result value is not correct');
+
+AssertEquals(Expected := stAdsMessage.tNetID,
+Actual := stAdsMessageResult.tNetID,
+Message := 'tNetID is not valid');
+
+AssertEquals(Expected := stAdsMessage.nIdxGrp,
+Actual := stAdsMessageResult.nIdxGrp,
+Message := 'nIdxGrp is not valid');
+
+AssertEquals(Expected := stAdsMessage.nIdxOffs,
+Actual := stAdsMessageResult.nIdxOffs,
+Message := 'nIdxOffs is not valid');
+
+AssertEquals(Expected := stAdsMessage.nLength,
+Actual := stAdsMessageResult.nLength,
+Message := 'nLength is not valid');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_AdsMessageHandler_Test">
+      <LineId Id="71" Count="9" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="56" Count="3" />
+      <LineId Id="62" Count="3" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="42" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AdsMessageHandler_Test.TestCaseRead">
+      <LineId Id="11" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="75" Count="2" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="79" Count="1" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="88" Count="1" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AdsMessageHandler_Test.TestCaseWrite">
+      <LineId Id="11" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="49" Count="6" />
+      <LineId Id="60" Count="7" />
+      <LineId Id="72" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

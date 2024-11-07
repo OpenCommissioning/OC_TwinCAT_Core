@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Cylinder" Id="{b9ebcc05-3d13-0294-06b6-52d4fab02c22}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Cylinder EXTENDS FB_LinkDevice 
+VAR_INPUT
+	bRetract : BOOL; //Move to MIN
+	bExtend : BOOL; //Move to MAX
+END_VAR
+
+VAR_OUTPUT
+	bRetracted : BOOL; //Is in MIN
+	bExtended : BOOL; //Is in MAX
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+bRetracted := Status.0;
+bExtended := Status.1;
+Control.0 := bRetract;
+Control.1 := bExtend;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Cylinder">
+      <LineId Id="47" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="17" Count="2" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

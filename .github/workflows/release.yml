@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  Build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Get Project Version
+        id: project_version
+        uses: mavrosxristoforos/get-xml-info@1.0
+        with:
+            xml-file: "OC_Core.plcproj"
+            xpath: "//*[local-name()='ProjectVersion']"
+      
+      - name: Get Semantic Version
+        id: semantic_version
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+            dry_run: true
+        env:
+            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}} 
+            
+      - name: Compare Versions        
+        id: compare_versions
+        run: |
+          
+          echo "Project XML Version: ${{ steps.project_version.outputs.info }}"
+          echo "Semantic Version: ${{ steps.semantic_version.outputs.new_release_version}}"
+          
+          if ${{ steps.project_version.outputs.info == steps.semantic_version.outputs.new_release_version}}; then
+            echo "Versions match! Proceeding with the release..."
+            echo "release=true" >> $GITHUB_ENV
+          else
+            echo "Error: Project and Semantic versions do not match"
+            echo "release=false" >> $GITHUB_ENV
+            exit 1
+          fi
+          
+      - name: Semantic release
+        if: env.release == 'true'        
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

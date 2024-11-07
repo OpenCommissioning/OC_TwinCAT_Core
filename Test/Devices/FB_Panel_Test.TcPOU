@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Panel_Test" Id="{4e51b651-db5c-08c4-2c64-cfa71ec90cf1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Panel_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+	fbPanel : FB_Panel;
+	nExpected : DWORD;
+	nResult : DWORD;
+	bExpected : BOOL;
+	bResult : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Set nDataIn');
+nExpected := 255;
+fbPanel.nControlData := nExpected;
+fbPanel();
+nResult := fbPanel.GetLinkControlData();
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+TEST('Get nDataOut');
+nExpected := 255;
+fbPanel.SetLinkStatusData(nExpected);
+fbPanel();
+nResult := fbPanel.nStatusData;
+
+AssertEquals(Expected := nExpected,
+             Actual := nResult,
+             Message := 'Value is not correct');	
+TEST_FINISHED();
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DriveControl_Test" Id="{9cde1e7b-a51c-0d76-3d66-5678df60c75f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DriveControl_Test EXTENDS TcUnit.FB_TestSuite
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCaseMoveVelocityLimits();
+TestProperties();
+
+TestCaseMoveVelocity('Velocity Zero', 0, 0, TRUE);
+
+TestCaseMoveVelocity('Target Positiv Velocity_1', 0, 10, TRUE);
+TestCaseMoveVelocity('Target Positiv Velocity_2', 90, 100, TRUE);
+TestCaseMoveVelocity('Target Positiv Velocity_3', 990, 1000, TRUE);
+TestCaseMoveVelocity('Target Positiv Velocity_4', 50, 100, FALSE);
+TestCaseMoveVelocity('Target Positiv Velocity_5', 500, 1000, FALSE);
+
+TestCaseMoveVelocity('Target Negative Velocity_1', 0, -10, TRUE);
+TestCaseMoveVelocity('Target Negative Velocity_2', -90, -100, TRUE);
+TestCaseMoveVelocity('Target Negative Velocity_3', -990, -1000, TRUE);
+TestCaseMoveVelocity('Target Negative Velocity_4', -50, -100, FALSE);
+TestCaseMoveVelocity('Target Negative Velocity_5', -500, -1000, FALSE);
+
+TestCaseMoveAbsolute('Move Positive Absolute_1', 0, 1, 1000, TRUE);
+TestCaseMoveAbsolute('Move Positive Absolute_2', 0, 10, 1000, TRUE);
+TestCaseMoveAbsolute('Move Positive Absolute_3', 0, 100, 1000, FALSE);
+TestCaseMoveAbsolute('Move Positive Absolute_4', 0, 1000, 1000, FALSE);
+
+TestCaseMoveAbsolute('Move Positive Absolute_11', 50, 51, 1000, TRUE);
+TestCaseMoveAbsolute('Move Positive Absolute_12', 50, 60, 1000, TRUE);
+TestCaseMoveAbsolute('Move Positive Absolute_13', -50, -49, 1000, TRUE);
+TestCaseMoveAbsolute('Move Positive Absolute_14', -50, -40, 1000, TRUE);
+
+TestCaseMoveAbsolute('Move Negative Absolute_1', 0, -1, 1000, TRUE);
+TestCaseMoveAbsolute('Move Negative Absolute_2', 0, -10, 1000, TRUE);
+TestCaseMoveAbsolute('Move Negative Absolute_3', 0, -100, 1000, FALSE);
+TestCaseMoveAbsolute('Move Negative Absolute_4', 0, -1000, 1000, FALSE);
+
+TestCaseMoveAbsolute('Move Negative Absolute_11', -50, -51, 1000, TRUE);
+TestCaseMoveAbsolute('Move Negative Absolute_12', -50, -60, 1000, TRUE);
+TestCaseMoveAbsolute('Move Negative Absolute_13', 50, 49, 1000, TRUE);
+TestCaseMoveAbsolute('Move Negative Absolute_14', 50, 40, 1000, TRUE);
+
+TestStop();]]></ST>
+    </Implementation>
+    <Method Name="TestCaseMoveAbsolute" Id="{302d4865-b0de-04fe-0293-e4ceaff8d8fd}">
+      <Declaration><![CDATA[METHOD TestCaseMoveAbsolute
+VAR_INPUT
+	sName 				: T_MaxString;
+	fInitPosition 		: REAL;
+	fTargetPosition 	: REAL;
+	fTargetVelocity 	: REAL;
+	bExpected 			: BOOL;
+END_VAR
+
+VAR
+	fbDriveControl 		: FB_DriveControl;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;
+	fResult 			: REAL;
+	fVel 				: REAL;
+	fExpectedVel 		: REAL := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbDriveControl.fPosition := fInitPosition;
+
+FOR nCycleCount := 0 TO 10 DO
+    fbDriveControl.MoveAbsolute(fTargetPosition, fTargetVelocity, 1E+6, 1E+6);
+END_FOR
+
+bResult := fbDriveControl.bIsPositionReached;
+fResult := fbDriveControl.fPosition;
+fVel := fbDriveControl.fVelocity;
+
+AssertEquals(Expected := bExpected,
+             Actual := bResult,
+             Message := 'Position is not reached');
+
+IF bExpected THEN
+	AssertEquals(Expected := fTargetPosition,
+             Actual := fResult,
+             Message := 'Position value is not correct');	
+	AssertEquals(Expected := fExpectedVel,
+             Actual := fVel,
+             Message := 'Velocity value is not correct');	
+END_IF
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseMoveVelocity" Id="{d55e2fff-9156-0256-0494-a52a139d1f46}">
+      <Declaration><![CDATA[METHOD TestCaseMoveVelocity
+VAR_INPUT
+	sName 				: T_MaxString;
+	fInitVelocity 		: REAL;
+	fTargetVelocity 	: REAL;
+	bExpected 			: BOOL;
+END_VAR
+
+VAR
+	fbDriveControl 		: FB_DriveControl;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;	
+	fResult 			: REAL;	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbDriveControl.fVelocity := fInitVelocity;
+
+FOR nCycleCount := 0 TO 10 DO
+    fbDriveControl.MoveVelocity(fTargetVelocity, 1000, 1000);
+END_FOR;
+
+fResult := fbDriveControl.fVelocity;
+
+IF bExpected THEN
+	AssertEquals(Expected := fTargetVelocity,
+             Actual := fResult,
+             Message := 'Velocity value is not correct');
+ELSE
+	bResult := F_Compare(fbDriveControl.fVelocity, fTargetVelocity, 1E-6);
+	AssertFALSE(bResult, 'Not Expected Velocity');	 	
+END_IF
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseMoveVelocityLimits" Id="{e11c6570-b103-0ec4-25bf-bd6804a4ec45}">
+      <Declaration><![CDATA[METHOD TestCaseMoveVelocityLimits
+VAR
+	fbDriveControl 		: FB_DriveControl;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;	
+	fResult 			: REAL;	
+	fExpected 			: REAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Position Limit Min');
+
+fExpected := 0;
+fbDriveControl.fPositionLimitMin := -10;
+fbDriveControl.fPosition := -10;
+
+fbDriveControl.MoveVelocity(1000, 1000, 1000);
+fResult := fbDriveControl.fVelocity;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Velocity value is not limited');
+
+TEST_FINISHED();
+
+TEST('Position Limit Max');
+
+fExpected := 0;
+fbDriveControl.fPositionLimitMax := 10;
+fbDriveControl.fPosition := 10;
+
+fbDriveControl.MoveVelocity(1000, 1000, 1000);
+fResult := fbDriveControl.fVelocity;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Velocity value is not limited');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestProperties" Id="{01260ec7-8728-0f87-0908-cf546e249b3e}">
+      <Declaration><![CDATA[METHOD TestProperties
+VAR
+	fbDriveControl 		: FB_DriveControl;
+	fResult 			: REAL;
+	fExpected 			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test Property: fAccMax');
+fExpected := 10;
+fbDriveControl.fAccMax := fExpected;
+fResult := fbDriveControl.fAccMax;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Property value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fPositionLimitMin');
+fExpected := 10;
+fbDriveControl.fPositionLimitMin := fExpected;
+fResult := fbDriveControl.fPositionLimitMin;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Property value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fPositionLimitMax');
+fExpected := 10;
+fbDriveControl.fPositionLimitMax := fExpected;
+fResult := fbDriveControl.fPositionLimitMax;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Property value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fTolerance');
+fExpected := 10;
+fbDriveControl.fTolerance := fExpected;
+fResult := fbDriveControl.fTolerance;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Property value is not correct');
+TEST_FINISHED();
+
+TEST('Test Property: fPosition');
+fExpected := 10;
+fbDriveControl.fPosition := fExpected;
+fResult := fbDriveControl.fPosition;
+
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'Property value is not correct');
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestStop" Id="{9de4cf44-4717-0b30-1a24-0c0f8f35d2a2}">
+      <Declaration><![CDATA[METHOD TestStop : REFERENCE TO FB_Test
+VAR
+	fbDriveControl 		: FB_DriveControl;
+	nCycleCount 		: INT;
+	bResult 			: BOOL;
+	fResult 			: REAL;
+	fExpected 			: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Stop');
+
+fbDriveControl.fVelocity := -10; 
+
+bResult := fbDriveControl.bIsMoving;
+AssertTrue(bResult, 'Expected Drive in motion');
+
+FOR nCycleCount := 0 TO 10 DO
+    fbDriveControl.Stop(1E6);
+END_FOR
+
+bResult := fbDriveControl.bIsMoving;
+AssertFalse(bResult, 'Expected Drive is stopped');
+
+fExpected := 0;
+fResult := fbDriveControl.fVelocity;
+AssertEquals(Expected := fExpected,
+             Actual := fResult,
+             Message := 'fVelocity value is not correct');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_DriveControl_Test">
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="31" Count="2" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="36" Count="3" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="48" Count="3" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl_Test.TestCaseMoveAbsolute">
+      <LineId Id="5" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="38" Count="9" />
+      <LineId Id="32" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl_Test.TestCaseMoveVelocity">
+      <LineId Id="5" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="45" Count="2" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl_Test.TestCaseMoveVelocityLimits">
+      <LineId Id="5" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="69" Count="4" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="74" Count="7" />
+      <LineId Id="68" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl_Test.TestProperties">
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="31" Count="7" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="20" Count="8" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="50" Count="8" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="60" Count="8" />
+      <LineId Id="59" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DriveControl_Test.TestStop">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_SimMovidriveControlData" Id="{993c1b1c-8867-0e9f-0496-dafde40038e6}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE ST_SimMovidriveControlData :
+STRUCT
+	bControllerInhibit		: BIT;	//0			0 = Enable, 1 = Inhibit controller, activate brake
+	bRapidStop				: BIT;	//1			0 = Rapid stop, 1 = Enable
+	bStop					: BIT;	//2			0 =  Stop at integrator ramp or process ramp, 1 = Enable
+	bReserved3				: BIT;	//3			Currently not used
+	bReserved4				: BIT;	//4			Currently not used
+	bReserved5				: BIT;	//5			Currently not used
+	bResetFAULT		  		: BIT;	//6			0 → 1 = Reset fault 
+	bReserved7				: BIT;	//7			Currently not used	                            
+	bStart					: BIT;	//8			1 = Enable Positioning / Referencing 
+	bJog1					: BIT;	//9			1 = Enable Jog+
+	bJog2					: BIT;	//10		1 = Enable Jog-
+	bModeLow				: BIT;	//11		1 = Mode Jogging or Positioning (in combination with mode high)
+	bModeHigh				: BIT;	//12		1 = Mode Referencing or Positioning (in combination with mode low)
+	bReserved13				: BIT;	//13		Currently not used
+	bReserved14				: BIT;	//14		Currently not used
+	bReserved15				: BIT;	//15		Currently not used
+	nTargetPosition			: DINT;	//16..47	Target position
+	nVelocity				: UINT; //48..63	Velocity
+	nAcceleration			: UINT; //64..79	Acceleration
+	nDeceleration			: UINT; //80..95	Deceleration			
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

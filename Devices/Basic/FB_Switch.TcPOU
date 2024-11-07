@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Switch" Id="{53804fd9-bc27-02f0-3394-255385b99809}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Switch EXTENDS FB_LinkDevice
+VAR_INPUT		
+	nControl  			: BYTE;
+END_VAR
+
+VAR_OUTPUT
+	nStatus  			: BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[SUPER^();
+Control := nControl;
+nStatus := Status;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Switch">
+      <LineId Id="9" Count="0" />
+      <LineId Id="18" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

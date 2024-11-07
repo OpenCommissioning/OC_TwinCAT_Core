@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_RecordIdent" Id="{6bebf237-aee7-0b4e-2430-ac0cfbd45715}">
+    <Declaration><![CDATA[TYPE ST_RecordIdent :
+STRUCT
+	nPort  			: T_AmsPort; //ADS-Port of the Profinet Device. Ignored when using PLCSIM Advanced
+	nSlot			: UINT; //Slotnumber of the Profinet Device. Ignored when using PLCSIM Advanced
+	nSubSlot		: UINT; //Subslotnumber of the Profinet Device. Ignored when using PLCSIM Advanced
+	nPlcId			: UINT; //Identifier of the PLC when using PLCSIM Advanced
+	nHardwareId		: UINT; //Hardware-ID of the device when using PLCSIM Advanced
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
