@@ -86,3 +86,7 @@ Please follow [Beckhoff Programming Conventions](https://infosys.beckhoff.com/en
 - **Be consistent:** Follow existing coding styles and patterns in the project.
 - **Include tests:** It is recommended to add or update tests to cover your changes.
 - **Document your work:** Update relevant documentation, including code comments and user guides.
+
+## Credits for third-party software components and developers:
+* [TcUnit](https://github.com/tcunit/TcUnit) - TwinCAT unit testing framework
+* [Beckhoff ADS](https://www.nuget.org/packages/Beckhoff.TwinCAT.Ads) - Beckhoff protocol to communicate with TwinCAT devices
