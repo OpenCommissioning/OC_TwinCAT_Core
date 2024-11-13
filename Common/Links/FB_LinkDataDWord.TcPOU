@@ -3,8 +3,10 @@
   <POU Name="FB_LinkDataDWord" Id="{6640c605-874d-0b5b-3d68-62428ba9b094}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDataDWord EXTENDS FB_LinkDevice
 VAR		
-	ControlData		AT %Q* : DWORD; //{simulation-interface}
-	StatusData		AT %I* : DWORD; //{simulation-interface}	
+	{attribute 'simulation_interface'}
+	ControlData		AT %Q* : DWORD;
+	{attribute 'simulation_interface'}
+	StatusData		AT %I* : DWORD;
 END_VAR
 ]]></Declaration>
     <Implementation>

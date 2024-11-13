@@ -3,12 +3,22 @@
   <POU Name="FB_LinkDataWord" Id="{1027de07-48a8-0ab0-0b84-d0924d9dc9a0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDataWord EXTENDS FB_LinkDevice
 VAR	
-	StatusData		AT %I* : WORD; //{simulation-interface}
-	ControlData		AT %Q* : WORD; //{simulation-interface}
+	{attribute 'simulation_interface'}
+	StatusData		AT %I* : WORD;
+	{attribute 'simulation_interface'}
+	ControlData		AT %Q* : WORD;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[SUPER^();]]></ST>
     </Implementation>
+    <Method Name="GetLinkControlData" Id="{ea5e0deb-046e-0376-2f82-211873fa08f2}">
+      <Declaration><![CDATA[METHOD INTERNAL GetLinkControlData : WORD
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetLinkControlData := ControlData;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SetLinkStatusData" Id="{218fde2d-3ea4-09b6-140f-7d7b34287882}">
       <Declaration><![CDATA[METHOD INTERNAL SetLinkStatusData : BOOL
 VAR_INPUT
@@ -18,14 +28,6 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[StatusData := nStatusData;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="GetLinkControlData" Id="{ea5e0deb-046e-0376-2f82-211873fa08f2}">
-      <Declaration><![CDATA[METHOD INTERNAL GetLinkControlData : WORD
-
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[GetLinkControlData := ControlData;]]></ST>
       </Implementation>
     </Method>
   </POU>
