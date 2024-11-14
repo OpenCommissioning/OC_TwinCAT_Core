@@ -16,9 +16,9 @@
     <Implicit_Jitter_Distribution>{f3e469a5-8328-478a-9f2f-5b40124449c4}</Implicit_Jitter_Distribution>
     <LibraryReferences>{c9838a2e-5ed7-4009-ac30-29945e85e633}</LibraryReferences>
     <Company>Open Commissioning</Company>
-    <Released>true</Released>
+    <Released>false</Released>
     <Title>OC_Core</Title>
-    <ProjectVersion>1.0.0</ProjectVersion>
+    <ProjectVersion>1.1.0</ProjectVersion>
     <DefaultNamespace>OC_Core</DefaultNamespace>
     <Placeholder>OC_Core</Placeholder>
     <Author>SpiraTec AG</Author>

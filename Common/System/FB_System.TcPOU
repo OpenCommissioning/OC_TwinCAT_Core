@@ -9,9 +9,12 @@ VAR_INPUT
 END_VAR
 
 VAR
-	Control				AT %Q* : BYTE; //{simulation-interface}
-	Status				AT %I* : BYTE; //{simulation-interface}
-	TimeScaling			AT %I* : REAL := 1.0; //{simulation-interface}
+	{attribute 'simulation_interface'}
+	Control				AT %Q* : BYTE;
+	{attribute 'simulation_interface'}
+	Status				AT %I* : BYTE;
+	{attribute 'simulation_interface'}
+	TimeScaling			AT %I* : REAL := 1.0;
 	
 	{attribute 'instance-path'} 
     {attribute 'noinit'} 
@@ -37,88 +40,6 @@ fbPing(bFeedback := Status.7, bTrigger => Control.7);
 fbRecordData(); //Execution order -1 relative to FB_AdsMessageHandler
 fbAdsMessageHandler();]]></ST>
     </Implementation>
-    <Property Name="fTimeScaling" Id="{24281261-b190-0005-28ac-ab20602e18f0}">
-      <Declaration><![CDATA[PROPERTY PUBLIC fTimeScaling : REAL]]></Declaration>
-      <Set Name="Set" Id="{d4c9598d-134a-0bed-23ef-a2d8f4ecae49}">
-        <Declaration><![CDATA[]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[IF fTimeScaling = 0 THEN
-	_fTimeScaling := 1.0;
-ELSE
-	_fTimeScaling := LIMIT(0.01000001, fTimeScaling, 100.0);	
-END_IF
-
-]]></ST>
-        </Implementation>
-      </Set>
-      <Get Name="Get" Id="{faee38d2-3304-0e88-0f7b-41af5f8820f8}">
-        <Declaration><![CDATA[]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[fTimeScaling := _fTimeScaling;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Property Name="eControllerType" Id="{842c1e11-fb2e-020a-0bf0-8814ea6d44dc}">
-      <Declaration><![CDATA[PROPERTY eControllerType : E_ControllerType]]></Declaration>
-      <Get Name="Get" Id="{195627f8-584e-0b43-3938-6aac17021e11}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[eControllerType := _eControllerType;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{6055c751-a3c8-0dde-2598-286cc2bf75aa}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_eControllerType := eControllerType;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Method Name="InitRun" Id="{9d176150-042b-075c-25f7-3cdd017d1802}">
-      <Declaration><![CDATA[METHOD PRIVATE InitRun
-VAR_INST
-	bInitRun 			: BOOL := TRUE;
-	sMessageFormat   	: T_MAXSTRING := '%s %s';
-	sMessage  			: T_MAXSTRING;
-	fbFormatString 		: FB_FormatString;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
-bInitRun := FALSE;
-
-IF __ISVALIDREF(GVL_Core.refSystem) THEN	
-	fbFormatString(sFormat := sMessageFormat, arg1 := F_STRINGEx(_sPath), arg2 := F_STRINGEx('FB_System has no single instance! Check the PROGRAM declaration'), sOut => sMessage);
-	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR, '%s', sMessage);	
-ELSE 
-	GVL_Core.refSystem REF= THIS^;
-END_IF
-
-fbGetCurTaskIdx();
-_fDeltaTime := UDINT_TO_REAL(TwinCAT_SystemInfoVarList._TaskInfo[fbGetCurTaskIdx.index].CycleTime / 10000) / 1000.0;
-_fTimeScaling := 1;
-
-fbRecordData.eControllerType := _eControllerType;
-]]></ST>
-      </Implementation>
-    </Method>
-    <Property Name="fDeltaTime" Id="{a582fa69-51ab-06a9-395c-44350810ecf2}">
-      <Declaration><![CDATA[PROPERTY PUBLIC fDeltaTime : REAL]]></Declaration>
-      <Set Name="Set" Id="{0918670c-f79e-015c-1fcf-e67f242830f0}">
-        <Declaration><![CDATA[PRIVATE]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_fDeltaTime := fDeltaTime;]]></ST>
-        </Implementation>
-      </Set>
-      <Get Name="Get" Id="{c39c953f-9cc6-0fa1-0ee4-854ccc5e9713}">
-        <Declaration><![CDATA[]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[fDeltaTime := _fDeltaTime;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
     <Property Name="bDebug" Id="{cb9654c8-3a3b-0513-048d-f0f7e81d2e5a}">
       <Declaration><![CDATA[PROPERTY bDebug : BOOL]]></Declaration>
       <Get Name="Get" Id="{3f107974-862f-0a37-2e0d-9a39a4576d72}">
@@ -157,5 +78,87 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Property Name="eControllerType" Id="{842c1e11-fb2e-020a-0bf0-8814ea6d44dc}">
+      <Declaration><![CDATA[PROPERTY eControllerType : E_ControllerType]]></Declaration>
+      <Get Name="Get" Id="{195627f8-584e-0b43-3938-6aac17021e11}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eControllerType := _eControllerType;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{6055c751-a3c8-0dde-2598-286cc2bf75aa}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_eControllerType := eControllerType;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fDeltaTime" Id="{a582fa69-51ab-06a9-395c-44350810ecf2}">
+      <Declaration><![CDATA[PROPERTY PUBLIC fDeltaTime : REAL]]></Declaration>
+      <Get Name="Get" Id="{c39c953f-9cc6-0fa1-0ee4-854ccc5e9713}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fDeltaTime := _fDeltaTime;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{0918670c-f79e-015c-1fcf-e67f242830f0}">
+        <Declaration><![CDATA[PRIVATE]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_fDeltaTime := fDeltaTime;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="fTimeScaling" Id="{24281261-b190-0005-28ac-ab20602e18f0}">
+      <Declaration><![CDATA[PROPERTY PUBLIC fTimeScaling : REAL]]></Declaration>
+      <Get Name="Get" Id="{faee38d2-3304-0e88-0f7b-41af5f8820f8}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[fTimeScaling := _fTimeScaling;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{d4c9598d-134a-0bed-23ef-a2d8f4ecae49}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF fTimeScaling = 0 THEN
+	_fTimeScaling := 1.0;
+ELSE
+	_fTimeScaling := LIMIT(0.01000001, fTimeScaling, 100.0);	
+END_IF
+
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="InitRun" Id="{9d176150-042b-075c-25f7-3cdd017d1802}">
+      <Declaration><![CDATA[METHOD PRIVATE InitRun
+VAR_INST
+	bInitRun 			: BOOL := TRUE;
+	sMessageFormat   	: T_MAXSTRING := '%s %s';
+	sMessage  			: T_MAXSTRING;
+	fbFormatString 		: FB_FormatString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+bInitRun := FALSE;
+
+IF __ISVALIDREF(GVL_Core.refSystem) THEN	
+	fbFormatString(sFormat := sMessageFormat, arg1 := F_STRINGEx(_sPath), arg2 := F_STRINGEx('FB_System has no single instance! Check the PROGRAM declaration'), sOut => sMessage);
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR, '%s', sMessage);	
+ELSE 
+	GVL_Core.refSystem REF= THIS^;
+END_IF
+
+fbGetCurTaskIdx();
+_fDeltaTime := UDINT_TO_REAL(TwinCAT_SystemInfoVarList._TaskInfo[fbGetCurTaskIdx.index].CycleTime / 10000) / 1000.0;
+_fTimeScaling := 1;
+
+fbRecordData.eControllerType := _eControllerType;
+]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
