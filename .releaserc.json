@@ -23,7 +23,7 @@
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "Artefacts/OC_Core.library", "label": "OC_Core.library"}
+          { "path": "Artifacts/OC_Core.library", "label": "OC_Core.library"}
         ]
       }
     ],
