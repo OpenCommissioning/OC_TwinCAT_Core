@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.1.0...v1.1.1) (2024-11-20)
+
+
+### Bug Fixes
+
+* Library artifact typo ([501aff9](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/501aff96fc1b1d1cf64138e0aea2c5dd69b03c09))
+
 # [1.1.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.0.0...v1.1.0) (2024-11-20)
 
 
