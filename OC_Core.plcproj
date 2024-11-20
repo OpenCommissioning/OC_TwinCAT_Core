@@ -16,9 +16,9 @@
     <Implicit_Jitter_Distribution>{f3e469a5-8328-478a-9f2f-5b40124449c4}</Implicit_Jitter_Distribution>
     <LibraryReferences>{c9838a2e-5ed7-4009-ac30-29945e85e633}</LibraryReferences>
     <Company>Open Commissioning</Company>
-    <Released>true</Released>
+    <Released>false</Released>
     <Title>OC_Core</Title>
-    <ProjectVersion>1.0.0</ProjectVersion>
+    <ProjectVersion>1.1.1</ProjectVersion>
     <DefaultNamespace>OC_Core</DefaultNamespace>
     <Placeholder>OC_Core</Placeholder>
     <Author>SpiraTec AG</Author>
@@ -82,14 +82,14 @@
     <Folder Include="Devices\Drives\FB_Starter" />
     <Folder Include="Devices\Drives\Encoder" />
     <Folder Include="Devices\Safety" />
-    <Folder Include="Test">
+    <Folder Include="Tests">
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Folder>
-    <Folder Include="Test\Components" />
-    <Folder Include="Test\Devices" />
-    <Folder Include="Test\Drives" />
-    <Folder Include="Test\Safety" />
-    <Folder Include="Test\Common" />
+    <Folder Include="Tests\Components" />
+    <Folder Include="Tests\Devices" />
+    <Folder Include="Tests\Drives" />
+    <Folder Include="Tests\Safety" />
+    <Folder Include="Tests\Common" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AdsMessageHandler\FB_AdsMessageHandler.TcPOU">
@@ -348,133 +348,133 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_AdsMessageHandler_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_AdsMessageHandler_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_RecordData_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_RecordData_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Components\FB_DriveControl_Test.TcPOU">
+    <Compile Include="Tests\Components\FB_DriveControl_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Components\FB_Heater_Test.TcPOU">
+    <Compile Include="Tests\Components\FB_Heater_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Components\FB_MoveAbsolute_Test.TcPOU">
+    <Compile Include="Tests\Components\FB_MoveAbsolute_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Components\FB_MoveVelocity_Test.TcPOU">
+    <Compile Include="Tests\Components\FB_MoveVelocity_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Button_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Button_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Device_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Device_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Switch_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Switch_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Lock_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Lock_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_DeviceReal_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_DeviceReal_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Panel_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Panel_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Robot_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Robot_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_SensorBinary_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_SensorBinary_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_SensorAnalog_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_SensorAnalog_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Reader_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Reader_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Lamp_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Lamp_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Cylinder_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Cylinder_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_DeviceByte_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_DeviceByte_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_Drive_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_Drive_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_DeviceLWord_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_DeviceLWord_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_DeviceWord_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_DeviceWord_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Devices\FB_DeviceDWord_Test.TcPOU">
+    <Compile Include="Tests\Devices\FB_DeviceDWord_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_DS402FSM_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_DS402FSM_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_DS402_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_DS402_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_Encoder_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_Encoder_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_SimMovidrivePDO12_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_SimMovidrivePDO12_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_SimMovidriveFSM_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_SimMovidriveFSM_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_SimMovitracLTEB_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_SimMovitracLTEB_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_SimMovitracB_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_SimMovitracB_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_Starter_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_Starter_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Drives\FB_SimMovitrac_Test.TcPOU">
+    <Compile Include="Tests\Drives\FB_SimMovitrac_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\PRG_TEST.TcPOU">
+    <Compile Include="Tests\PRG_TEST.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Safety\FB_Euchner_MGB_Test.TcPOU">
+    <Compile Include="Tests\Safety\FB_Euchner_MGB_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Safety\FB_Euchner_STP_Test.TcPOU">
+    <Compile Include="Tests\Safety\FB_Euchner_STP_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_Clamp01_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_Clamp01_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_Compare_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_Compare_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_InverBytesOrder_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_InverBytesOrder_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_Norm_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_Norm_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_Sign_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_Sign_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_Scale_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_Scale_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_GetByte_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_GetByte_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test\Common\FB_System_Test.TcPOU">
+    <Compile Include="Tests\Common\FB_System_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -3,8 +3,10 @@
   <POU Name="FB_LinkDataByte" Id="{d6694e9a-755c-0867-08ff-7028877ecfeb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDataByte EXTENDS FB_LinkDevice
 VAR	
-	ControlData		AT %Q* : BYTE; //{simulation-interface}
-	StatusData		AT %I* : BYTE; //{simulation-interface}	
+	{attribute 'simulation_interface'}
+	ControlData		AT %Q* : BYTE;
+	{attribute 'simulation_interface'}
+	StatusData		AT %I* : BYTE;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[SUPER^();]]></ST>
