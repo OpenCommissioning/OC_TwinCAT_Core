@@ -5,12 +5,24 @@ The TwinCAT Core Library is used in the TwinCAT PLC project and provides the beh
 ## Project setup
 + Create PLC Project
 + Install and add the `OC_Core` library
-+ Install the dependencies:
-    * TcUnit
-    * Tc2_Utilities
-    * Tc2_Math
-    * Tc3_Module
++ Install referenced libraries (see below)
 + Declare and call `FB_System` in your main program
+
+## Referenced libraries
+
+| Library       | Organisation             | Version | Download                                                                                    |
+|:--------------|:-------------------------|:-------:|:--------------------------------------------------------------------------------------------|
+| Tc2_Math      | Beckhoff Automation GmbH | 3.4.4.0 | -                                                                                           |
+| Tc2_Standard  | Beckhoff Automation GmbH | 3.4.5.0 | -                                                                                           |
+| Tc2_System    | Beckhoff Automation GmbH | 3.6.4.0 | -                                                                                           |
+| Tc2_Utilities | Beckhoff Automation GmbH | 3.6.1.0 | -                                                                                           |
+| Tc3_Module    | Beckhoff Automation GmbH | 3.4.5.0 | -                                                                                           |
+| TcUnit        | TcUnit.org               | 1.3.0.0 | [TcUnit.library](https://github.com/tcunit/TcUnit/releases/download/1.3.0.0/TcUnit.library) |
+
+> [!NOTE]
+> It is recommended to have the same versions installed on your system.
+> However, newer versions should be safe to use in most cases, but without guarantee.
+> The Beckhoff libraries are included in the TwinCAT installation and can't be downloaded as single file.
 
 ## Overview
 In Unity project each device has a link class, which defines the interface for communication with TwinCAT.
