@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_Memcpy" Id="{4e35e276-b813-0523-07d7-44894b6f8e68}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_Memcpy : UDINT
+VAR_INPUT
+	destAddr 	: PVOID; //Destination Addr
+	srcAddr 	: PVOID; //Source Addr
+	n			: UDINT; //Bytes Length
+	bSwap		: BOOL; //If TRUE, the order of the copy bytes will be reversed
+END_VAR
+
+VAR
+	i 			: UDINT;
+	aBuffer 	: ARRAY [0..7] OF BYTE;
+	nWWORD		: WORD;
+	nDWORD		: DWORD;
+	nLWORD		: LWORD;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF NOT bSWAP OR n > 8 THEN
+	F_MEMCPY := MEMCPY(destAddr, srcAddr, n);
+	RETURN;
+END_IF
+
+F_MEMCPY := MEMCPY(ADR(aBuffer), srcAddr, n);
+
+FOR i:= 1 TO n DO	
+	MEMCPY(destAddr + i - 1, ADR(aBuffer) + n - i, 1);
+END_FOR
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

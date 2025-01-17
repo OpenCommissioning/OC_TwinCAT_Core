@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Swap_Test" Id="{3d3b72ec-c478-0de1-378a-e99fd775d579}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Swap_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCaseWORD();
+TestCaseDWORD();
+TestCaseLWORD();
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCaseDWORD" Id="{985d01e7-7819-0cd6-2f81-b0d06ab009cb}">
+      <Declaration><![CDATA[METHOD TestCaseDWORD
+VAR	
+	nValue 				: DWORD;
+	nValueExpected 		: DWORD;
+	nValueActual 		: DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Swap DWORD');
+	
+//Arrange
+nValue := 16#A1B2C3D4;
+nValueExpected := HOST_TO_BE32(nValue);
+
+//Act
+nValueActual := nValue;
+F_Swap(nValueActual);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseLWORD" Id="{e2c98556-892d-07df-3cf7-3541e78901d2}">
+      <Declaration><![CDATA[METHOD TestCaseLWORD
+VAR	
+	nValue 				: LWORD;
+	nValueExpected 		: LWORD;
+	nValueActual 		: LWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Swap LWORD');
+	
+//Arrange
+nValue := 16#A1B2C3D4F5E6F701;
+nValueExpected := HOST_TO_BE64EX(nValue);
+
+//Act
+nValueActual := nValue;
+F_Swap(nValueActual);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseWORD" Id="{40816ce6-019a-0d75-2090-6c524f6fe475}">
+      <Declaration><![CDATA[METHOD TestCaseWORD
+VAR	
+	nValue 				: WORD;
+	nValueExpected 		: WORD;
+	nValueActual 		: WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Swap WORD');
+	
+//Arrange
+nValue := 16#A1B2;
+nValueExpected := HOST_TO_BE16(nValue);
+
+//Act
+nValueActual := nValue;
+F_Swap(nValueActual);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

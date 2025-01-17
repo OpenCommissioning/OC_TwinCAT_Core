@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Memcpy_Test" Id="{53db7529-b1b6-0a91-3f16-6980477d59a7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Memcpy_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestCaseWORD();
+TestCaseDWORD();
+TestCaseLWORD();
+
+]]></ST>
+    </Implementation>
+    <Method Name="TestCaseDWORD" Id="{f1fa7ad3-9788-09eb-0b69-a43d7cc97bc4}">
+      <Declaration><![CDATA[METHOD TestCaseDWORD
+VAR	
+	nValue 				: DWORD;
+	nValueExpected 		: DWORD;
+	nValueActual 		: DWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('MEMCPY DWORD');
+	
+//Arrange
+nValue := nValueExpected := 16#A1B2C3D4;
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 4, FALSE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();
+
+
+TEST('MEMCPY DWORD SWAP');
+	
+//Arrange
+nValue := 16#A1B2C3D4;
+nValueExpected := HOST_TO_BE32(nValue);
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 4, TRUE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseLWORD" Id="{c077237d-da59-0bc5-3f73-574c2d847fee}">
+      <Declaration><![CDATA[METHOD TestCaseLWORD
+VAR	
+	nValue 				: LWORD;
+	nValueExpected 		: LWORD;
+	nValueActual 		: LWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('MEMCPY LDWORD');
+	
+//Arrange
+nValue := nValueExpected := 16#A1B2C3D4F5E6F701;
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 8, FALSE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();
+
+
+TEST('MEMCPY LDWORD SWAP');
+	
+//Arrange
+nValue := 16#A1B2C3D4F5E6F701;
+nValueExpected := HOST_TO_BE64EX(nValue);
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 8, TRUE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseWORD" Id="{c6744ce3-6c92-0bd8-3051-39b5fd7cef10}">
+      <Declaration><![CDATA[METHOD TestCaseWORD
+VAR	
+	nValue 				: WORD;
+	nValueExpected 		: WORD;
+	nValueActual 		: WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('MEMCPY WORD');
+	
+//Arrange
+nValue := nValueExpected := 16#A1B2;
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 2, FALSE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();
+
+
+TEST('MEMCPY WORD SWAP');
+	
+//Arrange
+nValue := 16#A1B2;
+nValueExpected := HOST_TO_BE16(nValue);
+
+//Act
+F_MEMCPY(ADR(nValueActual), ADR(nValue), 2, TRUE);
+
+//Assert
+AssertEquals(Expected := nValueExpected,
+             Actual := nValueActual,
+             Message := 'nValueActual not returning expected value');
+	 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

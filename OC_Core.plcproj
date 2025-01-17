@@ -195,6 +195,9 @@
     <Compile Include="Common\Utils\F_GetLByte.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\Utils\F_Memcpy.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Common\Utils\F_Norm.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -205,6 +208,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Utils\F_InverBytesOrder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Utils\F_Swap.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Utils\ST_ScaleConfig.TcDUT">
@@ -352,6 +358,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\Common\FB_AdsMessageHandler_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Common\FB_Memcpy_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Common\FB_Swap_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\Common\FB_RecordData_Test.TcPOU">
