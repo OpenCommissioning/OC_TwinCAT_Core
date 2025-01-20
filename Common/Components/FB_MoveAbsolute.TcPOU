@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_MoveAbsolute" Id="{33b9870f-0a9c-08e8-23f5-ccdbe10d56b1}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_MoveAbsolute 
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveAbsolute 
 VAR_INPUT
 	fTargetPosition 	: REAL;
 	fTargetVelocity 	: REAL; 
@@ -112,32 +112,5 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <LineIds Name="FB_MoveAbsolute">
-      <LineId Id="161" Count="0" />
-      <LineId Id="262" Count="0" />
-      <LineId Id="264" Count="0" />
-      <LineId Id="170" Count="3" />
-      <LineId Id="271" Count="0" />
-      <LineId Id="274" Count="0" />
-      <LineId Id="277" Count="30" />
-      <LineId Id="276" Count="0" />
-      <LineId Id="175" Count="1" />
-      <LineId Id="273" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute.bIsReached.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute.fPosition.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute.fPosition.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute.fVelocity.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute.fVelocity.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
