@@ -162,7 +162,7 @@ END_VAR
       </Set>
     </Property>
     <Method Name="MoveAbsolute" Id="{be210045-6d8a-0f76-38f1-25a7a667b3e2}">
-      <Declaration><![CDATA[METHOD INTERNAL MoveAbsolute
+      <Declaration><![CDATA[METHOD MoveAbsolute
 VAR_INPUT
 	fPosition 			: REAL;
 	fVelocity			: REAL;
@@ -187,7 +187,7 @@ _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="MoveVelocity" Id="{67902dcb-c091-0097-0c26-f6a25649f8cd}">
-      <Declaration><![CDATA[METHOD INTERNAL MoveVelocity
+      <Declaration><![CDATA[METHOD MoveVelocity
 VAR_INPUT
 	fVelocity 			: REAL;
 	fAcceleration 		: REAL;
@@ -216,7 +216,7 @@ _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Stop" Id="{989f0471-080e-05a5-05a7-9d4740e325c8}">
-      <Declaration><![CDATA[METHOD INTERNAL Stop
+      <Declaration><![CDATA[METHOD Stop
 VAR_INPUT
 	fDeceleration 	: REAL; 
 END_VAR

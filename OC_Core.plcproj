@@ -18,7 +18,7 @@
     <Company>Open Commissioning</Company>
     <Released>false</Released>
     <Title>OC_Core</Title>
-    <ProjectVersion>1.1.1</ProjectVersion>
+    <ProjectVersion>1.1.2</ProjectVersion>
     <DefaultNamespace>OC_Core</DefaultNamespace>
     <Placeholder>OC_Core</Placeholder>
     <Author>SpiraTec AG</Author>
