@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_Swap" Id="{67ba2ea3-5db7-0866-1408-4fe719406f99}" SpecialFunc="None">
+    <Declaration><![CDATA[// Reverse byte order
+FUNCTION F_Swap : UDINT
+VAR_INPUT
+	data 	: ANY;
+END_VAR
+
+VAR	
+	i 		: UDINT;
+	nSize	: UDINT;
+	aData 	: ARRAY [0..7] OF BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[nSize := DINT_TO_UDINT(data.diSize);
+
+IF(nSize > 8) THEN RETURN; END_IF;
+
+MEMCPY(ADR(aData), data.pValue, nSize);
+
+FOR i:= 1 TO nSize DO	
+	MEMCPY(data.pValue + i - 1, ADR(aData) + nSize - i, 1);
+END_FOR
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

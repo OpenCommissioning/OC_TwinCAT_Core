@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_DriveControl" Id="{dc56c267-b627-0528-22c2-e554d07a3d58}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
-FUNCTION_BLOCK INTERNAL FB_DriveControl
+FUNCTION_BLOCK FB_DriveControl
 VAR
 	_fPosition 				: REAL;
 	_fVelocity 				: REAL;		
@@ -162,7 +162,7 @@ END_VAR
       </Set>
     </Property>
     <Method Name="MoveAbsolute" Id="{be210045-6d8a-0f76-38f1-25a7a667b3e2}">
-      <Declaration><![CDATA[METHOD INTERNAL MoveAbsolute
+      <Declaration><![CDATA[METHOD MoveAbsolute
 VAR_INPUT
 	fPosition 			: REAL;
 	fVelocity			: REAL;
@@ -187,7 +187,7 @@ _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="MoveVelocity" Id="{67902dcb-c091-0097-0c26-f6a25649f8cd}">
-      <Declaration><![CDATA[METHOD INTERNAL MoveVelocity
+      <Declaration><![CDATA[METHOD MoveVelocity
 VAR_INPUT
 	fVelocity 			: REAL;
 	fAcceleration 		: REAL;
@@ -216,7 +216,7 @@ _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Stop" Id="{989f0471-080e-05a5-05a7-9d4740e325c8}">
-      <Declaration><![CDATA[METHOD INTERNAL Stop
+      <Declaration><![CDATA[METHOD Stop
 VAR_INPUT
 	fDeceleration 	: REAL; 
 END_VAR
@@ -240,72 +240,5 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_DriveControl">
-      <LineId Id="297" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.bIsMoving.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.bIsPositionReached.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fAccMax.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fAccMax.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPosition.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPosition.Set">
-      <LineId Id="8" Count="0" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPositionLimitMax.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPositionLimitMax.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPositionLimitMin.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fPositionLimitMin.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fTolerance.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fTolerance.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fVelocity.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.fVelocity.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.MoveAbsolute">
-      <LineId Id="293" Count="2" />
-      <LineId Id="283" Count="4" />
-      <LineId Id="259" Count="0" />
-      <LineId Id="267" Count="2" />
-      <LineId Id="298" Count="0" />
-      <LineId Id="162" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.MoveVelocity">
-      <LineId Id="367" Count="17" />
-      <LineId Id="344" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_DriveControl.Stop">
-      <LineId Id="35" Count="1" />
-      <LineId Id="28" Count="1" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="48" Count="1" />
-      <LineId Id="44" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
