@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_FileIO" Id="{9bd0ee4a-382c-097c-0148-97ed6cb4f83e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_FileIO
 VAR	
 	_sNetId				: STRING;
-	_sPath				: STRING;
 	fbFileOpen 			: FB_FileOpen;
 	fbFileWrite 		: FB_FileWrite;
 	fbFileRead 			: FB_FileRead;
@@ -127,7 +126,7 @@ CASE eReadState OF
 		END_IF
 				
 	E_FileIoState.ERROR:
-		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', _sPath))));
+		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', sFileName))));
 		eReadState := E_FileIoState.CLOSE;
 		
 END_CASE]]></ST>
@@ -149,25 +148,6 @@ END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[_sNetId := sNetId;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Property Name="sPath" Id="{06934dc8-2694-07cf-16fe-75a309d1c44f}">
-      <Declaration><![CDATA[PROPERTY sPath : STRING]]></Declaration>
-      <Get Name="Get" Id="{fbf55ba6-f6f0-0b6f-0ce6-2ff953730a55}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[sPath := _sPath;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{57f28500-383c-07d1-26f1-947f17fbf6b6}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_sPath := sPath;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -212,7 +192,7 @@ CASE eWriteState OF
 		END_IF
 		
 	E_FileIoState.CREATE:
-		fbCreateDir.sPathName:= _sPath;
+		fbCreateDir.sPathName:= sFileName;
 		fbCreateDir.ePath:= PATH_GENERIC;
 		fbCreateDir(bExecute := TRUE);
 		IF NOT fbCreateDir.bBusy AND NOT fbCreateDir.bError THEN
@@ -248,46 +228,11 @@ CASE eWriteState OF
 		END_IF
 
 	E_FileIoState.ERROR:
-		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', _sPath))));
+		F_LogError(CONCAT('Error reading/writing file in ', CONCAT(_sNetId, CONCAT(' - ', sFileName))));
 		eWriteState := E_FileIoState.CLOSE;	
 
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_FileIO">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.nBytesRead.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.nBytesRead.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.nErrorId.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.nErrorId.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.Read">
-      <LineId Id="282" Count="66" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.sNetId.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.sNetId.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.sPath.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.sPath.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FileIO.Write">
-      <LineId Id="302" Count="70" />
-      <LineId Id="45" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

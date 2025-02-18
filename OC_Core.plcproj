@@ -8,7 +8,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>OC_Core</Name>
-    <ProgramVersion>3.1.4023.0</ProgramVersion>
+    <ProgramVersion>3.1.4026.11</ProgramVersion>
     <Application>{0f645f04-9bdc-41d9-9330-3ea721dc6d75}</Application>
     <TypeSystem>{92c8c89f-07a9-4d6a-a399-f6395591bc58}</TypeSystem>
     <Implicit_Task_Info>{93642873-82ce-42a5-a385-9fa6dfa29623}</Implicit_Task_Info>
@@ -18,7 +18,7 @@
     <Company>Open Commissioning</Company>
     <Released>false</Released>
     <Title>OC_Core</Title>
-    <ProjectVersion>1.1.1</ProjectVersion>
+    <ProjectVersion>1.2.0</ProjectVersion>
     <DefaultNamespace>OC_Core</DefaultNamespace>
     <Placeholder>OC_Core</Placeholder>
     <Author>SpiraTec AG</Author>
@@ -36,6 +36,9 @@
     <SelectedLibraryCategories>
       <Id>{41661a1f-00b4-4855-90c5-5a3bdd03b62b}</Id>
     </SelectedLibraryCategories>
+    <AllowChecksForLibrary>false</AllowChecksForLibrary>
+    <POUsForPropertyAccessIncluded>false</POUsForPropertyAccessIncluded>
+    <GlobalVersionStructureIncluded>false</GlobalVersionStructureIncluded>
   </PropertyGroup>
   <ItemGroup>
     <PlaceholderReference Include="Tc2_Math">
@@ -192,6 +195,9 @@
     <Compile Include="Common\Utils\F_GetLByte.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\Utils\F_Memcpy.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Common\Utils\F_Norm.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -202,6 +208,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Utils\F_InverBytesOrder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Utils\F_Swap.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Utils\ST_ScaleConfig.TcDUT">
@@ -349,6 +358,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\Common\FB_AdsMessageHandler_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Common\FB_Memcpy_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Common\FB_Swap_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\Common\FB_RecordData_Test.TcPOU">

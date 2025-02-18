@@ -11,6 +11,8 @@ VAR
 	FB_Sign_Test : FB_Sign_Test;
 	FB_InverBytesOrder_Test : FB_InverBytesOrder_Test;
 	FB_GetByte_Test : FB_GetByte_Test;
+	FB_Swap_Test : FB_Swap_Test; 
+	FB_MEMCPY_Test : FB_MEMCPY_Test;
 	FB_Heater_Test : FB_Heater_Test;
 	FB_MoveVelocity_Test : FB_MoveVelocity_Test;
 	FB_MoveAbsolute_Test : FB_MoveAbsolute_Test; 
@@ -44,14 +46,11 @@ VAR
 	FB_AdsMessageHandler_Test : FB_AdsMessageHandler_Test;
 	FB_RecordData_Test : FB_RecordData_Test;
 	FB_SimMovidrivePDO12_Test : FB_SimMovidrivePDO12_Test;
-	FB_Encoder_Test : FB_Encoder_Test;
+	FB_Encoder_Test : FB_Encoder_Test;		
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[TcUnit.RUN();]]></ST>
     </Implementation>
-    <LineIds Name="PRG_TEST">
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

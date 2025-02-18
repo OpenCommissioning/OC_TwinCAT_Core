@@ -191,6 +191,7 @@ CASE eControllerType OF
 	E_ControllerType.NotDefined :	
 		stAdsMessage.nInvokeId := pRecordIdent^.nPort + UINT_TO_USINT(pRecordIdent^.nSubSlot) * 16#10000 + UINT_TO_USINT(pRecordIdent^.nSlot) * 16#1000000;		
 		stAdsMessage.nIdxOffs := pRecordIdent^.nSubSlot + pRecordIdent^.nSlot * 16#10000;	
+		stAdsMessage.tPort := pRecordIdent^.nPort;
 		
 		IF stAdsMessage.nInvokeId = 0 THEN
 			RETURN;

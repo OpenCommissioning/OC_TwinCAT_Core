@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_MoveVelocity" Id="{9bae960a-d9ba-07f3-39f8-a131e14eb6c6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL FB_MoveVelocity
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveVelocity
 VAR_INPUT
 	fTargetVelocity 	: REAL;
 	fAccMax 			: REAL;
@@ -105,40 +105,5 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <LineIds Name="FB_MoveVelocity">
-      <LineId Id="103" Count="8" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="2" />
-      <LineId Id="113" Count="2" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="116" Count="1" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="118" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="127" Count="3" />
-      <LineId Id="120" Count="0" />
-      <LineId Id="123" Count="0" />
-      <LineId Id="125" Count="0" />
-      <LineId Id="131" Count="3" />
-      <LineId Id="126" Count="0" />
-      <LineId Id="121" Count="0" />
-      <LineId Id="137" Count="1" />
-      <LineId Id="135" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveVelocity.bIsReached.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveVelocity.fAcc.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveVelocity.fAcc.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveVelocity.fVelocity.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveVelocity.fVelocity.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

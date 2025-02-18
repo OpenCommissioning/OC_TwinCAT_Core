@@ -1,8 +1,7 @@
 *.compileinfo
 *_compileinfo
 *.vs
-*.compiled-library
+*.library
+*.compiled-library*
 *.tmc
 .idea
-
-
