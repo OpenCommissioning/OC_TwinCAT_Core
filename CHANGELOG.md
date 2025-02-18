@@ -1,3 +1,22 @@
+# [1.2.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.1.1...v1.2.0) (2025-02-18)
+
+
+### Bug Fixes
+
+* change outputs to var type output in FB_Reader ([2a45255](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/2a45255a60a240df0faffd71f1dfe42dd8d3ac5c))
+* exclude all library file types ([b0e9687](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/b0e96874d0559191ccf36f630299b36ac705eb74))
+* extend plc project file to match TwinCAT 4026 ([ee74934](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/ee7493410113242b62d71eea7610ee6b1f87fb46))
+* initialize the port property of the AdsMessage structure when subscribing a device to HiL RecordData ([a3d77b3](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/a3d77b35b56e98b05bc84b61541eaf3c972405e6))
+* public Drive Control move methods ([7029161](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/7029161994d7a46db5aadfe7398fd921b55f653b))
+* public move FBs ([e977183](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/e97718322d57f02f73940d000571148d98022fe0))
+* remove path property from FB_FileIO. method input sPathName is always the full file path ([ed9887d](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/ed9887d79dcff58ad23698582b67efe3ce11e3a9))
+* update library version ([5129e6d](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/5129e6de5cc095e0789ca540a1b16769630d5d32))
+
+
+### Features
+
+* **Common:** F_Memcpy with swap flag, F_Swap byte array swaping ([33e44cd](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/33e44cd21109d9d0c9b6fb74abdb380765ebbf4c))
+
 ## [1.1.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.1.0...v1.1.1) (2024-11-20)
 
 
