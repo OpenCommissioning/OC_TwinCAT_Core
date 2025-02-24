@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.2.0...v1.2.1) (2025-02-24)
+
+
+### Bug Fixes
+
+* **robot:** attribute 'simulation_interface' ([4cf5ba4](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/4cf5ba4c9977ebd7694f32a890881cdd219cb5fd))
+* **robot:** up project version ([4e764db](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/4e764db38d551c07e6b13cc4fead8617d1e50bf6))
+
 # [1.2.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.1.1...v1.2.0) (2025-02-18)
 
 
