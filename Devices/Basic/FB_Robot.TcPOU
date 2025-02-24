@@ -13,8 +13,10 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	JointStatus AT %I* 	: ARRAY[0..11] OF REAL; //{simulation-interface}
-	JointTarget AT %Q* 	: ARRAY[0..11] OF REAL; //{simulation-interface}
+	{attribute 'simulation_interface'}
+	JointStatus AT %I* 	: ARRAY[0..11] OF REAL;
+	{attribute 'simulation_interface'}
+	JointTarget AT %Q* 	: ARRAY[0..11] OF REAL;
 	
 	{attribute 'hide'}
 	adrData				: LWORD;
@@ -65,27 +67,5 @@ END_VAR
         <ST><![CDATA[JointStatus := aJointsStatus;]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Robot">
-      <LineId Id="9" Count="0" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="69" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="40" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.ConnectJoints">
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.GetJointsTarget">
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.SetJointsStatus">
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
