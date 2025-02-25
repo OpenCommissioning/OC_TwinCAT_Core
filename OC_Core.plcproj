@@ -77,21 +77,11 @@
     <Folder Include="Common\System" />
     <Folder Include="Devices" />
     <Folder Include="Devices\Basic" />
-    <Folder Include="Devices\Drives" />
-    <Folder Include="Devices\Drives\FB_DS402" />
-    <Folder Include="Devices\Drives\FB_SimMovidrive" />
-    <Folder Include="Devices\Drives\FB_SimMovitrac" />
-    <Folder Include="Devices\Drives\FB_SimMovitracFSM" />
-    <Folder Include="Devices\Drives\FB_Starter" />
-    <Folder Include="Devices\Drives\Encoder" />
-    <Folder Include="Devices\Safety" />
     <Folder Include="Tests">
       <ExcludeFromBuild>false</ExcludeFromBuild>
     </Folder>
     <Folder Include="Tests\Components" />
     <Folder Include="Tests\Devices" />
-    <Folder Include="Tests\Drives" />
-    <Folder Include="Tests\Safety" />
     <Folder Include="Tests\Common" />
   </ItemGroup>
   <ItemGroup>
@@ -267,93 +257,6 @@
     <Compile Include="Devices\Basic\FB_Switch.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Devices\Drives\Encoder\FB_Encoder.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\Encoder\ST_EncoderConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\E_ControlMode.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\E_DS402State.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\FB_DS402.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\FB_DS402FSM.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\ST_DS402Config.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\ST_DS402_6040h_ControlWord.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_DS402\ST_DS402_6041h_StatusWord.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovidrive\E_SimMovidriveMode.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovidrive\FB_SimMovidrivePDO12.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovidrive\ST_SimMovidriveConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovidrive\ST_SimMovidriveControlData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovidrive\ST_SimMovidriveStatusData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\E_SimMovitracAssign.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\FB_SimMovitrac.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\FB_SimMovitracB.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\FB_SimMovitracLTEB.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\ST_SimMovitracConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\ST_SimMovitracControlData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitrac\ST_SimMovitracStatusData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitracFSM\E_SimMovitracState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_SimMovitracFSM\FB_SimMovitracFSM.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_Starter\FB_Starter.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_Starter\ST_StarterConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_Starter\ST_StarterControlData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Drives\FB_Starter\ST_StarterStatusData.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Safety\FB_EuchnerMGB.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Devices\Safety\FB_EuchnerSTP.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -432,40 +335,7 @@
     <Compile Include="Tests\Devices\FB_DeviceDWord_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tests\Drives\FB_DS402FSM_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_DS402_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_Encoder_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_SimMovidrivePDO12_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_SimMovidriveFSM_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_SimMovitracLTEB_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_SimMovitracB_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_Starter_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Drives\FB_SimMovitrac_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Tests\PRG_TEST.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Safety\FB_Euchner_MGB_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Tests\Safety\FB_Euchner_STP_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\Common\FB_Clamp01_Test.TcPOU">
