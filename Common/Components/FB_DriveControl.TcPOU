@@ -170,7 +170,7 @@ PROPERTY fTolerance : REAL]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[fTolerance := FB_DriveControl._fTolerance;]]></ST>
+          <ST><![CDATA[fTolerance := _fTolerance;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{0d15f425-9688-0993-1418-3e88fc0cd39d}">
@@ -178,7 +178,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[FB_DriveControl._fTolerance := fTolerance;]]></ST>
+          <ST><![CDATA[_fTolerance := fTolerance;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -230,12 +230,12 @@ _fbMoveAbsolute(
 	fTargetVelocity := fVelocity,
 	fAccMax := fAcceleration,
 	fDecMax := fDeceleration,
-	fTolerance := FB_DriveControl.fTolerance);					
+	fTolerance := _fTolerance);					
 
 _fVelocity := _fbMoveAbsolute.fVelocity;
 _fPosition := _fbMoveAbsolute.fPosition;
 
-_bIsPositionReached := F_Compare(fPosition, _fPosition, FB_DriveControl.fTolerance);]]></ST>
+_bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="MoveVelocity" Id="{67902dcb-c091-0097-0c26-f6a25649f8cd}">
@@ -270,7 +270,7 @@ _fbMoveVelocity();
 _fVelocity := _fbMoveVelocity.fVelocity;	
 
 _fPosition := _fPosition + _fVelocity * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
-_bIsPositionReached := F_Compare(fPosition, _fPosition, FB_DriveControl.fTolerance);]]></ST>
+_bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Stop" Id="{989f0471-080e-05a5-05a7-9d4740e325c8}">
@@ -286,7 +286,6 @@ END_VAR
 
 VAR
 	fSign 			: REAL;
-	fTolerance 		: REAL := 1E-3;
 	fAbsVelocity 	: REAL;
 END_VAR
 ]]></Declaration>
@@ -294,7 +293,7 @@ END_VAR
         <ST><![CDATA[fSign := F_Sign(_fVelocity);
 fAbsVelocity := ABS(_fVelocity);
 
-IF fAbsVelocity > Stop.fTolerance THEN
+IF fAbsVelocity > fTolerance THEN
 	fAbsVelocity := fAbsVelocity - ABS(fDeceleration) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
 	fAbsVelocity := LIMIT(0, fAbsVelocity, 3.402823E+38);
 	_fVelocity := fAbsVelocity * fSign;	
