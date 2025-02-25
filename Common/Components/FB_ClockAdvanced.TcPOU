@@ -4,8 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ClockAdvanced
 VAR_INPUT
 	bEnable				: BOOL;
-	tHighImpulsePT		: TIME;
-	tLowImpulsePT		: TIME;
+	tImpulsePTHigh		: TIME;
+	tImpulsePTLow		: TIME;
 	tDelay				: TIME;
 	bInvert				: BOOL;
 END_VAR
@@ -15,54 +15,49 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	fbTon1				: TON;
-	fbTon2				: TON;
-	fbTonDelay 			: TON;
-	bLocalGenerator 	: BOOL;
+	_fbTon1				: TON;
+	_fbTon2				: TON;
+	_fbTonDelay 		: TON;
+	_bValue 			: BOOL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTonDelay.IN := bEnable;
-fbTonDelay.PT := tDelay;
-fbTonDelay();
+      <ST><![CDATA[_fbTonDelay.IN := bEnable;
+_fbTonDelay.PT := tDelay;
+_fbTonDelay();
 
 IF NOT bEnable THEN
 	bQ := FALSE;
-	fbTon1(IN := FALSE);
-	fbTon2(IN := FALSE);
+	_fbTon1(IN := FALSE);
+	_fbTon2(IN := FALSE);
 	RETURN;
 END_IF
 
-IF fbTonDelay.Q THEN
+IF _fbTonDelay.Q THEN
 	IF bInvert THEN
-		fbTon1.PT := tHighImpulsePT;
-		fbTon2.PT := tLowImpulsePT;
+		_fbTon1.PT := tImpulsePTHigh;
+		_fbTon2.PT := tImpulsePTLow;
 	ELSE
-		fbTon1.PT := tLowImpulsePT;
-		fbTon2.PT := tHighImpulsePT;
+		_fbTon1.PT := tImpulsePTLow;
+		_fbTon2.PT := tImpulsePTHigh;
 	END_IF
 	
-	fbTon1(IN := NOT bLocalGenerator);
-	fbTon2(IN := bLocalGenerator);
+	_fbTon1(IN := NOT _bValue);
+	_fbTon2(IN := _bValue);
 	
-	IF fbTon1.Q THEN
-		bLocalGenerator := TRUE;
+	IF _fbTon1.Q THEN
+		_bValue := TRUE;
 	END_IF
 	
-	IF fbTon2.Q THEN
-		bLocalGenerator := FALSE;
-	END_IF
-	
-	bQ := bLocalGenerator;
+	IF _fbTon2.Q THEN
+		_bValue := FALSE;
+	END_IF	
 	
 	IF bInvert THEN
-		bQ := NOT bLocalGenerator;
-	END_IF
-	
+		bQ := NOT _bValue;
+	ELSE
+		bQ := _bValue;	
+	END_IF	
 END_IF]]></ST>
     </Implementation>
-    <LineIds Name="FB_ClockAdvanced">
-      <LineId Id="100" Count="36" />
-      <LineId Id="63" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
