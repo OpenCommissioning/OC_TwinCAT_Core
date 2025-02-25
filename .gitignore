@@ -4,4 +4,5 @@
 *.library
 *.compiled-library*
 *.tmc
+*.tmcRefac
 .idea
