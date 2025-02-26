@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Robot" Id="{f639ccdd-1cd2-0be9-3bb9-385ef8ff671a}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Robot EXTENDS FB_LinkDevice
+    <Declaration><![CDATA[(*
+	Default robot component with 12 axis interface	
+*)
+FUNCTION_BLOCK FB_Robot EXTENDS FB_LinkDevice
 VAR_INPUT
 	nControl  			: BYTE;	
 	aJointTarget 		: ARRAY[0..11] OF REAL;	
@@ -17,16 +20,16 @@ VAR
 	JointTarget AT %Q* 	: ARRAY[0..11] OF REAL; //{simulation-interface}
 	
 	{attribute 'hide'}
-	adrData				: LWORD;
+	_adrData			: LWORD;
 	{attribute 'hide'}
-	nDataLength 		: UDINT;	
+	_nDataLength 		: UDINT;	
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[SUPER^();
 
-IF (adrData <> 0) THEN	
-	MEMCPY(ADR(aJointTarget), adrData, nDataLength);
+IF (_adrData <> 0) THEN	
+	MEMCPY(ADR(aJointTarget), _adrData, _nDataLength);
 END_IF
 
 Control := nControl;
@@ -35,15 +38,18 @@ MEMCPY(ADR(aJointStatus), ADR(JointStatus), 12 * 4);
 nStatus := Status;]]></ST>
     </Implementation>
     <Method Name="ConnectJoints" Id="{a4744d53-dbc0-064b-1ff5-82e44518aa54}">
-      <Declaration><![CDATA[METHOD ConnectJoints : BOOL
+      <Declaration><![CDATA[(*
+	Assign the joint memory area for cyclic data exchange
+*)
+METHOD ConnectJoints : BOOL
 VAR_INPUT
-	Joints : ANY;
-	nJointCount : UDINT;
+	Joints : ANY; //Adress to joints memmory area
+	nJointCount : UDINT; //Number of joints
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[adrData := Joints.pValue;
-nDataLength := LIMIT(0, nJointCount * 4, 12 * 4);]]></ST>
+        <ST><![CDATA[_adrData := Joints.pValue;
+_nDataLength := LIMIT(0, nJointCount * 4, 12 * 4);]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetJointsTarget" Id="{dfbe159e-779c-09a3-21b6-47950f265ec6}">
@@ -65,27 +71,5 @@ END_VAR
         <ST><![CDATA[JointStatus := aJointsStatus;]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Robot">
-      <LineId Id="9" Count="0" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="69" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="40" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.ConnectJoints">
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.GetJointsTarget">
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot.SetJointsStatus">
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Button" Id="{0326373c-5c67-069e-0e20-ebaf33d35c0e}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Button EXTENDS FB_LinkDevice 
+    <Declaration><![CDATA[(*
+	Default button device.
+*)
+FUNCTION_BLOCK FB_Button EXTENDS FB_LinkDevice 
 VAR_INPUT
 	bEnable		: BOOL; //0-Lamp OFF, 1-Lamp ON
 END_VAR
@@ -16,9 +19,5 @@ Control.0 := bEnable;
 bValue := Status.0;
 ]]></ST>
     </Implementation>
-    <LineIds Name="FB_Button">
-      <LineId Id="66" Count="2" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
