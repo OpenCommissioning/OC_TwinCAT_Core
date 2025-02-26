@@ -11,7 +11,6 @@ VAR
 	FB_Sign_Test : FB_Sign_Test;
 	FB_InverBytesOrder_Test : FB_InverBytesOrder_Test;
 	FB_GetByte_Test : FB_GetByte_Test;
-	FB_Swap_Test : FB_Swap_Test; 
 	FB_MEMCPY_Test : FB_MEMCPY_Test;
 	FB_Heater_Test : FB_Heater_Test;
 	FB_MoveVelocity_Test : FB_MoveVelocity_Test;
@@ -35,7 +34,7 @@ VAR
 	FB_SensorBinary_Test : FB_SensorBinary_Test;
 	FB_Robot_Test : FB_Robot_Test;	
 	FB_AdsMessageHandler_Test : FB_AdsMessageHandler_Test;
-	FB_RecordData_Test : FB_RecordData_Test;		
+	FB_RecordData_Test : FB_RecordData_Test;	
 END_VAR
 ]]></Declaration>
     <Implementation>

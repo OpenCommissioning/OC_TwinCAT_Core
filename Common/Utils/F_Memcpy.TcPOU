@@ -1,12 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_Memcpy" Id="{4e35e276-b813-0523-07d7-44894b6f8e68}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_Memcpy : UDINT
+    <Declaration><![CDATA[(*
+	Custom MEMCPY function with a swap flag. 
+	If bSwap is true and the length is within the range of 0 to 8, the memcpy operation will be performed with reversed byte order.
+*) 
+FUNCTION F_Memcpy : UDINT
 VAR_INPUT
 	destAddr 	: PVOID; //Destination Addr
 	srcAddr 	: PVOID; //Source Addr
 	n			: UDINT; //Bytes Length
-	bSwap		: BOOL; //If TRUE, the order of the copy bytes will be reversed
+	bSwap		: BOOL; //If TRUE and the length is within the range of 0 to 8, the memcpy operation will be performed with reversed byte order
 END_VAR
 
 VAR
