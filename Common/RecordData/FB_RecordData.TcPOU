@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_RecordData" Id="{a8f1e079-f172-0d21-2fa6-1d07cef16ce5}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'conditionalshow_all_locals}
+    <Declaration><![CDATA[(*
+	Uses an external ADS message handler (FB_AdsMessageHandler) for sending/receiving ADS messages.
+	Handles cyclic execution for processing ADS messages and maintains a list of subscribed devices.	
+*)
+{attribute 'conditionalshow_all_locals}
 FUNCTION_BLOCK PUBLIC FB_RecordData IMPLEMENTS I_RecordData
 VAR_INPUT
 	bDisable 				: BOOL; //Deactivate cyclical execution
