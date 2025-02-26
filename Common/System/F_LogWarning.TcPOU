@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_LogWarning" Id="{0eec24d1-c9c3-06ad-2170-adaf247092ad}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+    <Declaration><![CDATA[(*
+	Log Warning message to TwinCAT console
+*)
+{attribute 'hide_all_locals'}
 FUNCTION F_LogWarning : BOOL
 VAR_INPUT
 	sMessage : T_MAXSTRING;
@@ -13,8 +16,5 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[ADSLOGSTR(ADSLOG_MSGTYPE_WARN, LOGHEADER, sMessage);]]></ST>
     </Implementation>
-    <LineIds Name="F_LogWarning">
-      <LineId Id="7" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
