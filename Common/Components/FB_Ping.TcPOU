@@ -1,7 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Ping" Id="{d1554898-fcd3-0dd1-02a0-76cebf986dbb}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Ping
+    <Declaration><![CDATA[(*
+	FB for measuring the delay between trigger and feeback signal
+	Already in use for measuring the delay between TwinCAT and Unity components
+*)
+
+FUNCTION_BLOCK FB_Ping
 VAR_INPUT	
 	bFeedback 		: BOOL;	// bit from unity status
 END_VAR
