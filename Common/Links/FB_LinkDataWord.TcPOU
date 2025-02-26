@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_LinkDataWord" Id="{1027de07-48a8-0ab0-0b84-d0924d9dc9a0}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDataWord EXTENDS FB_LinkDevice
+    <Declaration><![CDATA[(*
+	Link component with additional interface:
+	Control BYTE: From TwinCAT >>> To Unity	(Default)
+	Status BYTE: FROM Unity >>> TO TwinCAT	(Default)
+	ControlData WORD: From TwinCAT >>> To Unity		
+	StatusData WORD: FROM Unity >>> TO TwinCAT		
+*)
+FUNCTION_BLOCK FB_LinkDataWord EXTENDS FB_LinkDevice
 VAR	
 	{attribute 'simulation_interface'}
-	StatusData		AT %I* : WORD;
-	{attribute 'simulation_interface'}
 	ControlData		AT %Q* : WORD;
+	{attribute 'simulation_interface'}
+	StatusData		AT %I* : WORD;	
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[SUPER^();]]></ST>
