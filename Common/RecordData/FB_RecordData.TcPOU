@@ -8,14 +8,14 @@
 {attribute 'conditionalshow_all_locals}
 FUNCTION_BLOCK PUBLIC FB_RecordData IMPLEMENTS I_RecordData
 VAR_INPUT
-	bDisable 				: BOOL; //Deactivate cyclical execution
-	bVerbose 				: BOOL; //Log ADS messages data in the console
-	eControllerType 		: E_ControllerType; //The data processing logic depends on the controller type	
+	bDisable 				: BOOL; //Disables cyclic execution when set to TRUE
+	bVerbose 				: BOOL; //Enables console logging of ADS message data
+	eControllerType 		: E_ControllerType; //Determines data processing logic based on the controller type
 END_VAR
 
 VAR	
-	_refAdsMessageHandler	: REFERENCE TO FB_AdsMessageHandler;	
-	_nDeviceCount			: INT;
+	_refAdsMessageHandler	: REFERENCE TO FB_AdsMessageHandler;	//Reference to the external ADS message handler used for managing ADS messages	
+	_nDeviceCount			: INT;	//Number of devices subscribed for record data
 	_aDeviceList			: ARRAY[0..255] OF UDINT; //The internal device list is used for assistance services. Do not delete or change. 
 END_VAR]]></Declaration>
     <Implementation>
