@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_IsSystemValid" Id="{b0a17754-8ecf-0688-0d46-47efa9bc4fda}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_IsSystemValid : BOOL
+    <Declaration><![CDATA[FUNCTION INTERNAL F_IsSystemValid : BOOL
 VAR_STAT
 	{attribute 'hide'}
 	fbTcConfig		: TC_Config;	
@@ -27,16 +27,5 @@ F_IsSystemValid := bIsSystemValid;
 
 ]]></ST>
     </Implementation>
-    <LineIds Name="F_IsSystemValid">
-      <LineId Id="43" Count="0" />
-      <LineId Id="76" Count="3" />
-      <LineId Id="52" Count="1" />
-      <LineId Id="46" Count="1" />
-      <LineId Id="55" Count="0" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
