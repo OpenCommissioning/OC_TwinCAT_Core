@@ -67,21 +67,21 @@ _stAdsMessageResult := _fbAdsMessageHandler.stAdsMessageRead;
 
 AssertTrue(_bResult, 'Result value is not correct');
 
-AssertEquals(	Expected := stAdsMessage.tNetID,
-				Actual := _stAdsMessageResult.tNetID,
-				Message := 'tNetID is not valid');
+AssertEquals(Expected := stAdsMessage.tNetID,
+Actual := _stAdsMessageResult.tNetID,
+Message := 'tNetID is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nIdxGrp,
-				Actual := _stAdsMessageResult.nIdxGrp,
-				Message := 'nIdxGrp is not valid');
+AssertEquals(Expected := stAdsMessage.nIdxGrp,
+Actual := _stAdsMessageResult.nIdxGrp,
+Message := 'nIdxGrp is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nIdxOffs,
-				Actual := _stAdsMessageResult.nIdxOffs,
-				Message := 'nIdxOffs is not valid');
+AssertEquals(Expected := stAdsMessage.nIdxOffs,
+Actual := _stAdsMessageResult.nIdxOffs,
+Message := 'nIdxOffs is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nLength,
-				Actual := _stAdsMessageResult.nLength,
-				Message := 'nLength is not valid');
+AssertEquals(Expected := stAdsMessage.nLength,
+Actual := _stAdsMessageResult.nLength,
+Message := 'nLength is not valid');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -94,45 +94,45 @@ VAR_INPUT
 END_VAR
 
 VAR
-	_fbAdsMessageHandler 	: FB_AdsMessageHandler;		
-	_fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
-	_aData 					: ARRAY[0..5] OF BYTE;
-	_bResult 				: BOOL; 	
-	_stAdsMessageResult 	: ST_AdsMessage;
+	fbAdsMessageHandler 	: FB_AdsMessageHandler;		
+	fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
+	aData 					: ARRAY[0..5] OF BYTE;
+	bResult 				: BOOL; 	
+	stAdsMessageResult 	: ST_AdsMessage;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST(sName);
 
-_fbAdsWrite(WRITE := FALSE);
-_fbAdsWrite(	IDXGRP := _stAdsMessageSend.nIdxGrp, 
+fbAdsWrite(WRITE := FALSE);
+fbAdsWrite(	IDXGRP := _stAdsMessageSend.nIdxGrp, 
 			IDXOFFS := _stAdsMessageSend.nIdxOffs, 
             LEN := _stAdsMessageSend.nLength, 
-			SRCADDR := ADR(_aData), 
+			SRCADDR := ADR(aData), 
             WRITE := TRUE);			
 
-_fbAdsMessageHandler.bVerbose := TRUE;			
-_fbAdsMessageHandler();
+fbAdsMessageHandler.bVerbose := TRUE;			
+fbAdsMessageHandler();
 
-_bResult := _fbAdsMessageHandler.bIsAdsMessageWriteValid;
-_stAdsMessageResult := _fbAdsMessageHandler.stAdsMessageWrite;
+bResult := fbAdsMessageHandler.bIsAdsMessageWriteValid;
+stAdsMessageResult := fbAdsMessageHandler.stAdsMessageWrite;
 
-AssertTrue(_bResult, 'Result value is not correct');
+AssertTrue(bResult, 'Result value is not correct');
 
-AssertEquals(	Expected := stAdsMessage.tNetID,
-				Actual := _stAdsMessageResult.tNetID,
-				Message := 'tNetID is not valid');
+AssertEquals(Expected := stAdsMessage.tNetID,
+Actual := stAdsMessageResult.tNetID,
+Message := 'tNetID is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nIdxGrp,
-				Actual := _stAdsMessageResult.nIdxGrp,
-				Message := 'nIdxGrp is not valid');
+AssertEquals(Expected := stAdsMessage.nIdxGrp,
+Actual := stAdsMessageResult.nIdxGrp,
+Message := 'nIdxGrp is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nIdxOffs,
-				Actual := _stAdsMessageResult.nIdxOffs,
-				Message := 'nIdxOffs is not valid');
+AssertEquals(Expected := stAdsMessage.nIdxOffs,
+Actual := stAdsMessageResult.nIdxOffs,
+Message := 'nIdxOffs is not valid');
 
-AssertEquals(	Expected := stAdsMessage.nLength,
-				Actual := _stAdsMessageResult.nLength,
-				Message := 'nLength is not valid');
+AssertEquals(Expected := stAdsMessage.nLength,
+Actual := stAdsMessageResult.nLength,
+Message := 'nLength is not valid');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
