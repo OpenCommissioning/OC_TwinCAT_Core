@@ -266,9 +266,6 @@
     <Compile Include="Tests\Common\FB_Memcpy_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tests\Common\FB_Swap_Test.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Tests\Common\FB_RecordData_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>

@@ -3,76 +3,76 @@
   <POU Name="FB_DeviceReal_Test" Id="{1ccb4c80-d218-0516-0f5b-10aba02d7d3c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_DeviceReal_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbDevice : FB_DeviceReal;
-	fExpected : REAL;
-	fResult : REAL;
-	fValue : REAL := 16#FF;
+	_fbDevice 		: FB_DeviceReal;
+	_fExpected 		: REAL;
+	_fResult 		: REAL;
+	_fValue 		: REAL := 16#FF;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Set nControl');
-fExpected := 255;
-fbDevice.nControl := 255;
-fbDevice();
-fResult := fbDevice.GetControl();
+_fExpected := 255;
+_fbDevice.nControl := 255;
+_fbDevice();
+_fResult := _fbDevice.GetControl();
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Set nDataIn_1');
-fExpected := 1000;
-fbDevice.fControlData := fExpected;
-fbDevice();
-fResult := fbDevice.GetLinkControlData();
+_fExpected := 1000;
+_fbDevice.fControlData := _fExpected;
+_fbDevice();
+_fResult := _fbDevice.GetLinkControlData();
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Set nDataIn_2');
-fExpected := -1000;
-fbDevice.fControlData := fExpected;
-fbDevice();
-fResult := fbDevice.GetLinkControlData();
+_fExpected := -1000;
+_fbDevice.fControlData := _fExpected;
+_fbDevice();
+_fResult := _fbDevice.GetLinkControlData();
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nStatus');
-fExpected := 255;
-fbDevice.SetStatus(255);
-fbDevice();
-fResult := fbDevice.nStatus;
+_fExpected := 255;
+_fbDevice.SetStatus(255);
+_fbDevice();
+_fResult := _fbDevice.nStatus;
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nDataOut_1');
-fExpected := 1000;
-fbDevice.SetLinkStatusData(fExpected);
-fbDevice();
-fResult := fbDevice.fStatusData;
+_fExpected := 1000;
+_fbDevice.SetLinkStatusData(_fExpected);
+_fbDevice();
+_fResult := _fbDevice.fStatusData;
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nDataOut_2');
-fExpected := -1000;
-fbDevice.SetLinkStatusData(fExpected);
-fbDevice();
-fResult := fbDevice.fStatusData;
+_fExpected := -1000;
+_fbDevice.SetLinkStatusData(_fExpected);
+_fbDevice();
+_fResult := _fbDevice.fStatusData;
 
-AssertEquals(Expected := fExpected,
-             Actual := fResult,
+AssertEquals(Expected := _fExpected,
+             Actual := _fResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();]]></ST>
     </Implementation>

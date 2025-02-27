@@ -3,77 +3,77 @@
   <POU Name="FB_Drive_Test" Id="{08c3b536-195d-0dc2-3542-272a6e1f5fa0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Drive_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbDrive : FB_Drive;
-	nExpectedByte : BYTE;
-	nResultByte : BYTE;
-	fExpectedReal : REAL;
-	fResultReal : REAL;
+	_fbDrive 			: FB_Drive;
+	_nExpectedByte 		: BYTE;
+	_nResultByte 		: BYTE;
+	_fExpectedReal 		: REAL;
+	_fResultReal 		: REAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Set nControl');
-nExpectedByte := 255;
-fbDrive.nControl := nExpectedByte;
-fbDrive();
-nResultByte := fbDrive.GetControl();
+_nExpectedByte := 255;
+_fbDrive.nControl := _nExpectedByte;
+_fbDrive();
+_nResultByte := _fbDrive.GetControl();
 
-AssertEquals(Expected := nExpectedByte,
-             Actual := nResultByte,
+AssertEquals(Expected := _nExpectedByte,
+             Actual := _nResultByte,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nStatus');
-nExpectedByte := 255;
-fbDrive.SetStatus(nExpectedByte);
-fbDrive();
-nResultByte := fbDrive.nStatus;
+_nExpectedByte := 255;
+_fbDrive.SetStatus(_nExpectedByte);
+_fbDrive();
+_nResultByte := _fbDrive.nStatus;
 
-AssertEquals(Expected := nExpectedByte,
-             Actual := nResultByte,
+AssertEquals(Expected := _nExpectedByte,
+             Actual := _nResultByte,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Set fTargetValue_1');
-fExpectedReal := 1000;
-fbDrive.fTargetValue := fExpectedReal;
-fbDrive();
-fResultReal := fbDrive.GetLinkControlData();
+_fExpectedReal := 1000;
+_fbDrive.fTargetValue := _fExpectedReal;
+_fbDrive();
+_fResultReal := _fbDrive.GetLinkControlData();
 
-AssertEquals(Expected := fExpectedReal,
-             Actual := fResultReal,
+AssertEquals(Expected := _fExpectedReal,
+             Actual := _fResultReal,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Set fTargetValue_2');
-fExpectedReal := -1000;
-fbDrive.fTargetValue := fExpectedReal;
-fbDrive();
-fResultReal := fbDrive.GetLinkControlData();
+_fExpectedReal := -1000;
+_fbDrive.fTargetValue := _fExpectedReal;
+_fbDrive();
+_fResultReal := _fbDrive.GetLinkControlData();
 
-AssertEquals(Expected := fExpectedReal,
-             Actual := fResultReal,
+AssertEquals(Expected := _fExpectedReal,
+             Actual := _fResultReal,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get fActualValue_1');
-fExpectedReal := 1000;
-fbDrive.SetLinkStatusData(fExpectedReal);
-fbDrive();
-fResultReal := fbDrive.fActualValue;
+_fExpectedReal := 1000;
+_fbDrive.SetLinkStatusData(_fExpectedReal);
+_fbDrive();
+_fResultReal := _fbDrive.fActualValue;
 
-AssertEquals(Expected := fExpectedReal,
-             Actual := fResultReal,
+AssertEquals(Expected := _fExpectedReal,
+             Actual := _fResultReal,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get fActualValue_2');
-fExpectedReal := -1000;
-fbDrive.SetLinkStatusData(fExpectedReal);
-fbDrive();
-fResultReal := fbDrive.fActualValue;
+_fExpectedReal := -1000;
+_fbDrive.SetLinkStatusData(_fExpectedReal);
+_fbDrive();
+_fResultReal := _fbDrive.fActualValue;
 
-AssertEquals(Expected := fExpectedReal,
-             Actual := fResultReal,
+AssertEquals(Expected := _fExpectedReal,
+             Actual := _fResultReal,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 

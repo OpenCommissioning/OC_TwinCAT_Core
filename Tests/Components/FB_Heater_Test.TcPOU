@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Heater_Test" Id="{c19343b8-4c8f-0b85-22eb-7515d80d4eee}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Heater_Test EXTENDS TcUnit.FB_TestSuite
-
-]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Heater_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[TestState();
 TestLimits();

@@ -3,127 +3,106 @@
   <POU Name="FB_Cylinder_Test" Id="{4aa5bec3-e8a9-0d97-0520-d08e52c6fe69}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Cylinder_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbCylinder : FB_Cylinder;
-	nExpected : BYTE;
-	nResult : BYTE;
-	bExpected : BOOL;
-	bResult : BOOL;
+	_fbCylinder 	: FB_Cylinder;
+	_nExpected 		: BYTE;
+	_nResult 		: BYTE;
+	_bExpected 		: BOOL;
+	_bResult 		: BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('bRetract FALSE');
-fbCylinder.bRetract := FALSE;
-fbCylinder();
-bExpected := FALSE;
-nResult := fbCylinder.GetControl();
-bResult := nResult.0;
+_fbCylinder.bRetract := FALSE;
+_fbCylinder();
+_bExpected := FALSE;
+_nResult := _fbCylinder.GetControl();
+_bResult := _nResult.0;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bRetract TRUE');
-fbCylinder.bRetract := TRUE;
-fbCylinder();
-bExpected := TRUE;
-nResult := fbCylinder.GetControl();
-bResult := nResult.0;
+_fbCylinder.bRetract := TRUE;
+_fbCylinder();
+_bExpected := TRUE;
+_nResult := _fbCylinder.GetControl();
+_bResult := _nResult.0;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bExtend FALSE');
-fbCylinder.bExtend := FALSE;
-fbCylinder();
-bExpected := FALSE;
-nResult := fbCylinder.GetControl();
-bResult := nResult.1;
+_fbCylinder.bExtend := FALSE;
+_fbCylinder();
+_bExpected := FALSE;
+_nResult := _fbCylinder.GetControl();
+_bResult := _nResult.1;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bExtend TRUE');
-fbCylinder.bExtend := TRUE;
-fbCylinder();
-bExpected := TRUE;
-nResult := fbCylinder.GetControl();
-bResult := nResult.1;
+_fbCylinder.bExtend := TRUE;
+_fbCylinder();
+_bExpected := TRUE;
+_nResult := _fbCylinder.GetControl();
+_bResult := _nResult.1;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bRetracted FALSE');
-fbCylinder.SetStatus(0);
-fbCylinder();
-bExpected := FALSE;
-bResult := fbCylinder.bRetracted;
+_fbCylinder.SetStatus(0);
+_fbCylinder();
+_bExpected := FALSE;
+_bResult := _fbCylinder.bRetracted;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bRetracted TRUE');
-fbCylinder.SetStatus(1);
-fbCylinder();
-bExpected := TRUE;
-bResult := fbCylinder.bRetracted;
+_fbCylinder.SetStatus(1);
+_fbCylinder();
+_bExpected := TRUE;
+_bResult := _fbCylinder.bRetracted;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bExtended FALSE');
-fbCylinder.SetStatus(0);
-fbCylinder();
-bExpected := FALSE;
-bResult := fbCylinder.bExtended;
+_fbCylinder.SetStatus(0);
+_fbCylinder();
+_bExpected := FALSE;
+_bResult := _fbCylinder.bExtended;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 TEST('bExtended TRUE');
-fbCylinder.SetStatus(2);
-fbCylinder();
-bExpected := TRUE;
-bResult := fbCylinder.bExtended;
+_fbCylinder.SetStatus(2);
+_fbCylinder();
+_bExpected := TRUE;
+_bResult := _fbCylinder.bExtended;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	
 TEST_FINISHED();
 
 ]]></ST>
     </Implementation>
-    <LineIds Name="FB_Cylinder_Test">
-      <LineId Id="17" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="26" Count="2" />
-      <LineId Id="84" Count="0" />
-      <LineId Id="21" Count="3" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="86" Count="10" />
-      <LineId Id="85" Count="0" />
-      <LineId Id="98" Count="22" />
-      <LineId Id="97" Count="0" />
-      <LineId Id="122" Count="4" />
-      <LineId Id="128" Count="4" />
-      <LineId Id="121" Count="0" />
-      <LineId Id="136" Count="9" />
-      <LineId Id="135" Count="0" />
-      <LineId Id="147" Count="20" />
-      <LineId Id="146" Count="0" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="37" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

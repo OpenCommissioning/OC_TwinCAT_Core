@@ -3,34 +3,33 @@
   <POU Name="FB_Robot_Test" Id="{99b9641c-183a-08b8-2001-145a6234eb71}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Robot_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbRobot : FB_Robot;
-	nExpectedByte : BYTE;
-	nResultByte : BYTE;
-	aExpectedJoints : ARRAY[0..11] OF REAL := [11, 22, 33, 44, 55, 66, 77, 88, 99, 1010, 1111, 1212];	
-	aResultJoints : ARRAY[0..11] OF REAL;	
-	nJointCount : INT := 12;
-END_VAR
-]]></Declaration>
+	_fbRobot 			: FB_Robot;
+	_nExpectedByte 		: BYTE;
+	_nResultByte 		: BYTE;
+	_aExpectedJoints 	: ARRAY[0..11] OF REAL := [11, 22, 33, 44, 55, 66, 77, 88, 99, 1010, 1111, 1212];	
+	_aResultJoints 		: ARRAY[0..11] OF REAL;	
+	_nJointCount 		: INT := 12;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Set nControl');
-nExpectedByte := 255;
-fbRobot.nControl := nExpectedByte;
-fbRobot();
-nResultByte := fbRobot.GetControl();
+_nExpectedByte := 255;
+_fbRobot.nControl := _nExpectedByte;
+_fbRobot();
+_nResultByte := _fbRobot.GetControl();
 
-AssertEquals(Expected := nExpectedByte,
-             Actual := nResultByte,
+AssertEquals(Expected := _nExpectedByte,
+             Actual := _nResultByte,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nStatus');
-nExpectedByte := 255;
-fbRobot.SetStatus(nExpectedByte);
-fbRobot();
-nResultByte := fbRobot.nStatus;
+_nExpectedByte := 255;
+_fbRobot.SetStatus(_nExpectedByte);
+_fbRobot();
+_nResultByte := _fbRobot.nStatus;
 
-AssertEquals(Expected := nExpectedByte,
-             Actual := nResultByte,
+AssertEquals(Expected := _nExpectedByte,
+             Actual := _nResultByte,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
@@ -61,11 +60,11 @@ TestGetJoint('Get Joint EXT5', 10, 100);
 TestGetJoint('Get Joint EXT6', 11, 100);
 
 TEST('Set Joints wia Pointer');
-fbRobot.ConnectJoints(aExpectedJoints, 12);
-fbRobot();
-aResultJoints := fbRobot.GetJointsTarget();
-AssertEquals(Expected := aExpectedJoints,
-             Actual := aResultJoints,
+_fbRobot.ConnectJoints(_aExpectedJoints, 12);
+_fbRobot();
+_aResultJoints := _fbRobot.GetJointsTarget();
+AssertEquals(Expected := _aExpectedJoints,
+             Actual := _aResultJoints,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
@@ -129,39 +128,5 @@ AssertEquals(Expected := fValue,
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Robot_Test">
-      <LineId Id="13" Count="19" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="50" Count="10" />
-      <LineId Id="62" Count="11" />
-      <LineId Id="61" Count="0" />
-      <LineId Id="79" Count="1" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="89" Count="0" />
-      <LineId Id="84" Count="0" />
-      <LineId Id="86" Count="2" />
-      <LineId Id="78" Count="0" />
-      <LineId Id="75" Count="0" />
-      <LineId Id="74" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot_Test.TestGetJoint">
-      <LineId Id="19" Count="0" />
-      <LineId Id="34" Count="2" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="21" Count="4" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Robot_Test.TestSetJoint">
-      <LineId Id="19" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="32" Count="1" />
-      <LineId Id="21" Count="4" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

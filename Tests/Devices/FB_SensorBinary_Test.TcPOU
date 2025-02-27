@@ -3,37 +3,33 @@
   <POU Name="FB_SensorBinary_Test" Id="{80045a0d-866a-0cac-3ab1-dd3a70d21b12}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_SensorBinary_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbSensorBinary : FB_SensorBinary;
-	nExpected : BYTE;
-	nResult : BYTE;
-	bExpected : BOOL;
-	bResult : BOOL;
+	_fbSensorBinary 	: FB_SensorBinary;
+	_nExpected 			: BYTE;
+	_nResult 			: BYTE;
+	_bExpected 			: BOOL;
+	_bResult 			: BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Get bValue FALSE');
-fbSensorBinary.SetStatus(0);
-fbSensorBinary();
-bExpected := FALSE;
-bResult := fbSensorBinary.bValue;
+_fbSensorBinary.SetStatus(0);
+_fbSensorBinary();
+_bExpected := FALSE;
+_bResult := _fbSensorBinary.bValue;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get bValue TRUE');	
-fbSensorBinary.SetStatus(1);
-fbSensorBinary();
-bExpected := 1;
-bResult := fbSensorBinary.bValue;
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+_fbSensorBinary.SetStatus(1);
+_fbSensorBinary();
+_bExpected := 1;
+_bResult := _fbSensorBinary.bValue;
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Control value is not correct');	 
 TEST_FINISHED();]]></ST>
     </Implementation>
-    <LineIds Name="FB_SensorBinary_Test">
-      <LineId Id="119" Count="18" />
-      <LineId Id="37" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

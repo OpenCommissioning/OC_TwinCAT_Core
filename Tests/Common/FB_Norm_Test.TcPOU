@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Norm_Test" Id="{7f3317af-e674-0a37-20a2-78e23f583f48}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Norm_Test EXTENDS TcUnit.FB_TestSuite
-
-]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Norm_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[TestCase('Normalize in Range_1', fMin := 0.0, fMax := 100, fValue := 0, fExpected:= 0);
 TestCase('Normalize in Range_2', fMin := 0.0, fMax := 100, fValue := 20, fExpected:= 0.2);
@@ -38,17 +36,5 @@ AssertEquals(Expected := fExpected,
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Norm_Test">
-      <LineId Id="74" Count="0" />
-      <LineId Id="90" Count="2" />
-      <LineId Id="88" Count="0" />
-      <LineId Id="93" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="94" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Norm_Test.TestCase">
-      <LineId Id="13" Count="6" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
