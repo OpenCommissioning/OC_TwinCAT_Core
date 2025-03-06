@@ -1,8 +1,19 @@
-*.compileinfo
-*_compileinfo
+# VS Shell project specific files and folders
 *.vs
-*.library
-*.compiled-library*
+
+# Rider specific files and folders
+.idea
+
+# TwinCAT PLC
+*.plcproj.bak
+*.plcproj.orig
+*.tpy
+*.tclrs
+*.compileinfo
+*.asm
+*.core
+LineIDs.dbg
+LineIDs.dbg.bak
 *.tmc
 *.tmcRefac
-.idea
+_[Ll]ibraries
