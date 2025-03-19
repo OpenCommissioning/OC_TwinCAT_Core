@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Encoder_Test" Id="{c627d3be-8e58-00cf-1b1c-918f193d619d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Encoder_Test EXTENDS FB_TestSuite
+VAR	
+	_stConfig 				: ST_Encoder_Config;
+	_fNumDen				: REAL;
+	_fDenNum				: REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_fNumDen := _stConfig.fNumerator / _stConfig.fDenominator;
+_fDenNum := _stConfig.fDenominator / _stConfig.fNumerator;
+
+TestCase_LREAL_TO_INC('LREAL_TO_INC 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCase_LREAL_TO_INC('LREAL_TO_INC 2', 100, 1, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+TestCase_LREAL_TO_INC('LREAL_TO_INC 3', -100, 1, LREAL_TO_DINT(-100*_fDenNum), _stConfig);
+TestCase_LREAL_TO_INC('LREAL_TO_INC 4', -100, -1, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+
+TestCase_INC_TO_LREAL('INC_TO_LREAL 1', LREAL_TO_DINT(0*_fDenNum), 0, 0, _stConfig);
+TestCase_INC_TO_LREAL('INC_TO_LREAL 2', LREAL_TO_DINT(100*_fDenNum), 1, 100, _stConfig);
+TestCase_INC_TO_LREAL('INC_TO_LREAL 3', -LREAL_TO_DINT(100*_fDenNum), 1, -100, _stConfig);
+TestCase_INC_TO_LREAL('INC_TO_LREAL 4', -LREAL_TO_DINT(100*_fDenNum), -1, 100, _stConfig);
+
+TestCaseEncoder('Absolute 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute 2', 100, 100, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute 3', -100, -100, LREAL_TO_DINT(-100*_fDenNum), _stConfig);
+
+_stConfig.fGearFactor := -1;
+TestCaseEncoder('Absolute with Factor 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute with Factor 2', 100, -100, LREAL_TO_DINT(-100*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute with Factor 3', -100, 100, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+
+_stConfig.fGearFactor := 1;
+_stConfig.bInvertEncoderDirection := TRUE;
+TestCaseEncoder('Absolute with Invert 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute with Invert 2', 100, 100, LREAL_TO_DINT(-100*_fDenNum), _stConfig);
+TestCaseEncoder('Absolute with Invert 3', -100, -100, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+
+_stConfig.fModulo := 360;
+_stConfig.bInvertEncoderDirection := FALSE;
+TestCaseEncoder('Modulo 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('Modulo 2', 360, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('Modulo 3', 350, 350, LREAL_TO_DINT(350*_fDenNum), _stConfig);
+TestCaseEncoder('Modulo 4', -350, -350, LREAL_TO_DINT(-350*_fDenNum), _stConfig);
+TestCaseEncoder('Modulo 5', -360, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+
+_stConfig.fModulo := 0;
+_stConfig.bInvertEncoderDirection := FALSE;
+_stConfig.bIsIntegrator := TRUE;
+TestCaseEncoder('Integrate 1', 0, 0, 0, _stConfig);
+TestCaseEncoder('Integrate 2', 100, 1, LREAL_TO_DINT(1*_fDenNum), _stConfig);
+TestCaseEncoder('Integrate 3', -100, -1, LREAL_TO_DINT(-1*_fDenNum), _stConfig);
+
+_stConfig.fModulo := 0;
+_stConfig.bInvertEncoderDirection := FALSE;
+_stConfig.bIsIntegrator := FALSE;
+
+_stConfig.fGearFactor := 5;
+TestCaseEncoder('GearFactor 1', 0, 0, 0, _stConfig);
+TestCaseEncoder('GearFactor 2', 100, 500, LREAL_TO_DINT(500*_fDenNum), _stConfig);
+TestCaseEncoder('GearFactor 3', -100, -500, LREAL_TO_DINT(-500*_fDenNum), _stConfig);
+_stConfig.fGearFactor := -5;
+TestCaseEncoder('GearFactor 4', 100, -500, LREAL_TO_DINT(-500*_fDenNum), _stConfig);
+TestCaseEncoder('GearFactor 5', -100, 500, LREAL_TO_DINT(500*_fDenNum), _stConfig);
+_stConfig.fGearFactor := 1;
+
+_stConfig.fNumerator := 1E-3;
+_stConfig.fDenominator := 2;
+_fNumDen := _stConfig.fNumerator / _stConfig.fDenominator;
+_fDenNum := _stConfig.fDenominator / _stConfig.fNumerator;
+
+TestCaseEncoder('NumDemFactor 1', 0, 0, LREAL_TO_DINT(0*_fDenNum), _stConfig);
+TestCaseEncoder('NumDemFactor 2', 100, 100, LREAL_TO_DINT(100*_fDenNum), _stConfig);
+TestCaseEncoder('NumDemFactor 3', -100, -100, LREAL_TO_DINT(-100*_fDenNum), _stConfig);]]></ST>
+    </Implementation>
+    <Method Name="TestCase_INC_TO_LREAL" Id="{1365ff04-1516-042e-32a2-89bbf4ce336f}">
+      <Declaration><![CDATA[METHOD TestCase_INC_TO_LREAL
+VAR_INPUT
+	sName 					: T_MaxString;
+	nInput					: DINT;
+	fFactor					: LREAL;
+	fExpected				: LREAL;
+	stConfig				: ST_Encoder_Config;
+END_VAR
+
+VAR	
+	fbEncoder 				: FB_Encoder;		
+	fActual					: LREAL;
+	fTolerance 				: REAL := 1E-6;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbEncoder.stConfig := stConfig;
+
+fActual := fbEncoder.INC_TO_LREAL(nInput, fFactor);
+
+AssertEquals_LREAL(Expected := fExpected,
+             Actual := fActual,
+			 fTolerance,
+             Message := 'fResult is not correct');
+
+TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCase_LREAL_TO_INC" Id="{a59132d4-c680-00b9-3309-bfa53fec7309}">
+      <Declaration><![CDATA[METHOD TestCase_LREAL_TO_INC
+VAR_INPUT
+	sName 					: T_MaxString;
+	fInput					: LREAL;
+	fFactor					: LREAL;
+	nExpected				: DINT;
+	stConfig				: ST_Encoder_Config;
+END_VAR
+
+VAR	
+	fbEncoder 				: FB_Encoder;		
+	nActual					: DINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbEncoder.stConfig := stConfig;
+
+nActual := fbEncoder.LREAL_TO_INC(fInput, fFactor);
+
+AssertEquals_DINT(Expected := nExpected,
+             Actual := nActual,
+             Message := 'nResult is not correct');	
+
+TEST_FINISHED();
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TestCaseEncoder" Id="{889e1edc-dd3c-02a0-3064-6169ca68a7b0}">
+      <Declaration><![CDATA[METHOD TestCaseEncoder
+VAR_INPUT
+	sName 					: T_MaxString;
+	fInput					: REAL;
+	fExpected				: LREAL;
+	nExpected				: DINT;
+	stConfig				: ST_Encoder_Config;
+END_VAR
+
+VAR	
+	fbEncoder 				: FB_Encoder;
+	nCycleCount 			: INT;
+	fActual					: LREAL;	
+	nActual					: DINT;
+	fTolerance 				: REAL := 1E-6;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST(sName);
+
+fbEncoder.stConfig := stConfig;
+fbEncoder.fValue := fInput;
+
+(*	Call FB to test	*)
+FOR nCycleCount := 0 TO 9 DO
+   fbEncoder();
+END_FOR
+
+(*	Evaluation of results	*)
+fActual := fbEncoder.fResult;
+nActual := fbEncoder.nResult;
+
+AssertEquals_LREAL(Expected := fExpected,
+             Actual := fActual,
+			 fTolerance,
+             Message := 'fResult is not correct');
+
+AssertEquals_DINT(Expected := nExpected,
+             Actual := nActual,
+             Message := 'nResult is not correct');	
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Encoder" Id="{9f695950-8631-030c-3e5f-5f2832f1bca3}" SpecialFunc="None">
+    <Declaration><![CDATA[(*
+	Generic simulated Encoder 
+*)
+{attribute 'reflection'} 
+FUNCTION_BLOCK FB_Encoder
+VAR_INPUT
+	fValue 			: LREAL; //Input Value [unit] or [unit/s]	
+	stConfig 		: ST_Encoder_Config;	
+END_VAR
+
+VAR_OUTPUT
+	nResult 		: DINT; //Position [INC]
+	fResult 		: LREAL;
+END_VAR
+
+VAR
+	{attribute 'instance-path'} 
+    {attribute 'noinit'} 
+    _sPath 				: STRING;
+	_fValue 			: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[InitRun();
+ControlLogic();]]></ST>
+    </Implementation>
+    <Method Name="ControlLogic" Id="{37dfca51-a2ad-0f0f-37ef-d994aa6119ef}">
+      <Declaration><![CDATA[METHOD PRIVATE ControlLogic
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stConfig.bIsIntegrator THEN
+	_fValue := _fValue + (fValue * stConfig.fGearFactor * GVL_Core.fbSystem.fDeltaTime);
+ELSE
+	_fValue := fValue * stConfig.fGearFactor;
+END_IF
+
+IF stConfig.fModulo > 0.0 THEN
+	_fValue := LREAL_TO_REAL(LMOD(_fValue, stConfig.fModulo));
+END_IF
+
+fResult := _fValue;
+
+IF stConfig.bInvertEncoderDirection THEN
+	nResult := LREAL_TO_INC(fResult, -1);
+ELSE
+	nResult := LREAL_TO_INC(fResult, 1);	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INC_TO_LREAL" Id="{4e268706-d7b0-0c4a-1aa3-ef3ebd3b09a8}">
+      <Declaration><![CDATA[METHOD INC_TO_LREAL : LREAL
+VAR_INPUT
+	nValue : DINT;
+	fFactor : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Parameters validation
+stConfig.fNumerator := MAX(1E-6, stConfig.fNumerator);
+stConfig.fDenominator := MAX(1E-6, stConfig.fDenominator);
+
+INC_TO_LREAL := DINT_TO_REAL(nValue) * (stConfig.fNumerator / stConfig.fDenominator) * fFactor;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="InitRun" Id="{f02c414d-d4f6-0a32-32bc-f6719fd50e81}">
+      <Declaration><![CDATA[METHOD PRIVATE InitRun
+VAR_INST
+	bInitRun : BOOL := TRUE;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInitRun THEN RETURN; END_IF
+bInitRun := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LREAL_TO_INC" Id="{2f77637e-09f9-0ffa-1058-dc3b91e54db0}">
+      <Declaration><![CDATA[METHOD LREAL_TO_INC : DINT
+VAR_INPUT
+	fValue : LREAL;
+	fFactor : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Parameters validation
+stConfig.fNumerator := MAX(1E-6, stConfig.fNumerator);
+stConfig.fDenominator := MAX(1E-6, stConfig.fDenominator);
+
+LREAL_TO_INC := LREAL_TO_DINT(fValue * (stConfig.fDenominator / stConfig.fNumerator) * fFactor);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetActualValue" Id="{93fed503-6d4a-0c5b-3a75-a75aedf28d8d}">
+      <Declaration><![CDATA[METHOD PUBLIC SetActualValue : BOOL
+VAR_INPUT
+	fValue : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_fValue := fValue;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
