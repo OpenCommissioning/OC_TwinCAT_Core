@@ -3,53 +3,52 @@
   <POU Name="FB_DeviceByte_Test" Id="{42652490-a470-0fdf-0fc2-0fe47e5dd184}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_DeviceByte_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbDevice : FB_DeviceByte;
-	nExpected : BYTE;
-	nResult : BYTE;
-END_VAR
-]]></Declaration>
+	_fbDevice : FB_DeviceByte;
+	_nExpected : BYTE;
+	_nResult : BYTE;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Set nControl');
-nExpected := 255;
-fbDevice.nControl := nExpected;
-fbDevice();
-nResult := fbDevice.GetControl();
+_nExpected := 255;
+_fbDevice.nControl := _nExpected;
+_fbDevice();
+_nResult := _fbDevice.GetControl();
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Set nDataIn');
-nExpected := 255;
-fbDevice.nControlData := nExpected;
-fbDevice();
-nResult := fbDevice.GetLinkControlData();
+_nExpected := 255;
+_fbDevice.nControlData := _nExpected;
+_fbDevice();
+_nResult := _fbDevice.GetLinkControlData();
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nStatus');
-nExpected := 255;
-fbDevice.SetStatus(nExpected);
-fbDevice();
-nResult := fbDevice.nStatus;
+_nExpected := 255;
+_fbDevice.SetStatus(_nExpected);
+_fbDevice();
+_nResult := _fbDevice.nStatus;
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nDataOut');
-nExpected := 255;
-fbDevice.SetLinkStatusData(nExpected);
-fbDevice();
-nResult := fbDevice.nStatusData;
+_nExpected := 255;
+_fbDevice.SetLinkStatusData(_nExpected);
+_fbDevice();
+_nResult := _fbDevice.nStatusData;
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();]]></ST>
     </Implementation>

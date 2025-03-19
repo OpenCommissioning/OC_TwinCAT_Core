@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_MoveAbsolute_Test" Id="{d2f77918-5118-045a-3fd5-ac7758034c7e}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveAbsolute_Test EXTENDS TcUnit.FB_TestSuite
-
-]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveAbsolute_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[TestCaseMoveTo('Set Init', fInitPosition := 0, fInitVelocity := 0, fPosition := 0, fVelocity := 100, fAcceleration := 1E+6, fDeceleration := 1E+6, TRUE);
 
@@ -86,37 +84,5 @@ END_IF
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_MoveAbsolute_Test">
-      <LineId Id="36" Count="1" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="11" Count="2" />
-      <LineId Id="20" Count="1" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="15" Count="3" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="27" Count="3" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="32" Count="3" />
-      <LineId Id="31" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_MoveAbsolute_Test.TestCaseMoveTo">
-      <LineId Id="5" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="27" Count="3" />
-      <LineId Id="32" Count="1" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="39" Count="2" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="43" Count="9" />
-      <LineId Id="42" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

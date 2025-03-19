@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Panel" Id="{e6254a7d-4ca8-06bd-1449-ca9d97b68dce}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Panel EXTENDS FB_LinkDataDWord
+    <Declaration><![CDATA[(*
+	Basic panel with extended interface:
+	nControl BYTE: From TwinCAT >>> To Unity
+	nStatus BYTE: FROM Unity >>> TO TwinCAT	
+	nControlData DWORD: From TwinCAT >>> To Unity
+	nStatusData DWORD: FROM Unity >>> TO TwinCAT	
+*)
+FUNCTION_BLOCK FB_Panel EXTENDS FB_LinkDataDWord
 VAR_INPUT
 	nControlData  			: DWORD;
 END_VAR

@@ -11,21 +11,21 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	fbTon1	: TON;
-	fbTon2	: TON;
+	_fbTon1	: TON;
+	_fbTon2	: TON;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbTon1.PT := tPT;
-fbTon2.PT := tPT;
+      <ST><![CDATA[_fbTon1.PT := tPT;
+_fbTon2.PT := tPT;
 
-fbTon1(IN := NOT bQ);
-fbTon2(IN := bQ);
+_fbTon1(IN := NOT bQ);
+_fbTon2(IN := bQ);
 
-IF fbTon1.Q THEN
+IF _fbTon1.Q THEN
 	bQ := TRUE;
 END_IF
 
-IF fbTon2.Q THEN
+IF _fbTon2.Q THEN
 	bQ := FALSE;
 END_IF
 
@@ -43,9 +43,5 @@ END_IF
         </TypeList>
       </XmlArchive>
     </ObjectProperties>
-    <LineIds Name="FB_Clock">
-      <LineId Id="67" Count="13" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

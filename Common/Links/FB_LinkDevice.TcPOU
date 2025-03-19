@@ -1,14 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_LinkDevice" Id="{898b3300-0d80-065c-002a-6f4eb8497620}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_LinkDevice EXTENDS FB_Base
+    <Declaration><![CDATA[(*
+	Base link component with default interface:
+	Control BYTE: From TwinCAT >>> To Unity
+	Status BYTE: FROM Unity >>> TO TwinCAT		
+*)
+FUNCTION_BLOCK FB_LinkDevice EXTENDS FB_Base
 VAR		
 	{attribute 'simulation_interface'}
-	Status		AT %I* : BYTE;
-	{attribute 'simulation_interface'}
 	Control		AT %Q* : BYTE;
-END_VAR
-]]></Declaration>
+	{attribute 'simulation_interface'}
+	Status		AT %I* : BYTE;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[SUPER^();]]></ST>
     </Implementation>

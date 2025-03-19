@@ -10,137 +10,45 @@ VAR_INPUT
 END_VAR
 
 VAR	
-	fbAdsWriteIndicator 	: AdsWriteInd;	
-	fbAdsReadIndicator 		: AdsReadInd;
-	fbAdsWriteResponse		: AdsWriteRes;
-	fbAdsReadResponse		: AdsReadRes;	
+	_fbAdsWriteIndicator 	: AdsWriteInd;	
+	_fbAdsReadIndicator 	: AdsReadInd;
+	_fbAdsWriteResponse		: AdsWriteRes;
+	_fbAdsReadResponse		: AdsReadRes;	
 	_stAdsMessageWrite		: ST_AdsMessage;
-	_stAdsMessageRead		: ST_AdsMessage;	
-	
-    sFormatReciveWrite		: STRING := 'AdsWriteInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	sFormatReciveRead		: STRING := 'AdsReadInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	sFormatResponseWrite	: STRING := 'AdsWriteRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	sFormatResponseRead		: STRING := 'AdsReadRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';  
+	_stAdsMessageRead		: ST_AdsMessage;
+END_VAR
+
+VAR CONSTANT
+	S_FORMAT_RECEIVEWRITE	: STRING := 'AdsWriteInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RECEIVEREAD	: STRING := 'AdsReadInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RESPONSEWRITE	: STRING := 'AdsWriteRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RESPONSEREAD	: STRING := 'AdsReadRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';  
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF bDisable THEN RETURN; END_IF
 
 //Reset Indication and Result FBs
-fbAdsWriteResponse(RESPOND := FALSE);
-fbAdsReadResponse(RESPOND := FALSE);
+_fbAdsWriteResponse(RESPOND := FALSE);
+_fbAdsReadResponse(RESPOND := FALSE);
 
 //Capture all Write requests
-fbAdsWriteIndicator();
+_fbAdsWriteIndicator();
 CreateAdsWriteMessage();
 		
 //Capture all Read requests
-fbAdsReadIndicator();
+_fbAdsReadIndicator();
 CreateAdsReadMessage();]]></ST>
     </Implementation>
-    <Method Name="CreateAdsWriteMessage" Id="{0d849bff-4ddd-0cef-244d-b4004991857b}">
-      <Declaration><![CDATA[METHOD PRIVATE CreateAdsWriteMessage : BOOL
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF NOT fbAdsWriteIndicator.VALID THEN RETURN; END_IF
-
-MEMSET(ADR(_stAdsMessageWrite), 0, SIZEOF(ST_AdsMessage));
-_stAdsMessageWrite.tNetId 		:= fbAdsWriteIndicator.NETID;
-_stAdsMessageWrite.tPort 		:= fbAdsWriteIndicator.PORT;
-_stAdsMessageWrite.nInvokeId 	:= fbAdsWriteIndicator.INVOKEID;
-_stAdsMessageWrite.nIdxGrp 		:= fbAdsWriteIndicator.IDXGRP;
-_stAdsMessageWrite.nIdxOffs 	:= fbAdsWriteIndicator.IDXOFFS;
-_stAdsMessageWrite.nLength 		:= fbAdsWriteIndicator.LENGTH;
-			
-//Limit size to 240
-IF _stAdsMessageWrite.nLength > 240 THEN
-	IF bVerbose THEN
-		F_LOGWARNING(CONCAT('WRREC data length limited to 240. Requested data length was ', TO_STRING(_stAdsMessageWrite.nLength)));
-	END_IF
-	_stAdsMessageWrite.nLength := 240;
-END_IF
-
-MEMCPY(ADR(_stAdsMessageWrite.aData), fbAdsWriteIndicator.DATAADDR, _stAdsMessageWrite.nLength);
-
-IF bVerbose THEN
-	LogAdsMessage(_stAdsMessageWrite, sFormatReciveWrite);
-END_IF
-
-fbAdsWriteIndicator(CLEAR := TRUE);
-fbAdsWriteIndicator(CLEAR := FALSE);
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="SendReadResponse" Id="{2be62736-b08a-05f5-3bc6-9fa4497f0378}">
-      <Declaration><![CDATA[(*Send ADS Read Response message*)
-METHOD PUBLIC SendReadResponse : HRESULT
-VAR_INPUT
-	stAdsMessage 	: ST_AdsMessage; //Response ADS Message
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF fbAdsReadResponse.RESPOND THEN
-	SendReadResponse := S_PENDING;
-	RETURN;
-END_IF
-
-//Limit size to 240
-IF stAdsMessage.nLength > 240 THEN
-	IF bVerbose THEN
-		F_LOGWARNING(CONCAT('RDRES data length limited to 240. Requested data length was ', TO_STRING(stAdsMessage.nLength)));
-	END_IF
-	stAdsMessage.nLength := 240;
-END_IF
-
-fbAdsReadResponse(
-	NETID:= stAdsMessage.tNetId, 
-	PORT:= stAdsMessage.tPort, 
-	INVOKEID:= stAdsMessage.nInvokeId, 
-	RESULT:= stAdsMessage.nResult, 
-	LEN:= stAdsMessage.nLength,
-	DATAADDR:= ADR(stAdsMessage.aData),
-	RESPOND:= TRUE);
-IF bVerbose OR bLog THEN	
-	LogAdsMessage(stAdsMessage, sFormatResponseRead);
-END_IF
-
-SendReadResponse := S_OK;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="SendWriteResponse" Id="{35a4388e-0d6e-0d3c-0521-30d0b2dca3b3}">
-      <Declaration><![CDATA[(*Send ADS Read Response message*)
-METHOD PUBLIC SendWriteResponse : HRESULT
-VAR_INPUT
-	stAdsMessage 	: ST_AdsMessage; //Response ADS Message
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF fbAdsWriteResponse.RESPOND THEN
-	SendWriteResponse := S_PENDING;
-	RETURN;
-END_IF
-
-fbAdsWriteResponse(
-	NETID:= stAdsMessage.tNetId, 
-	PORT:= stAdsMessage.tPort, 
-	INVOKEID:= stAdsMessage.nInvokeId, 
-	RESULT:= stAdsMessage.nResult, 
-	RESPOND:= TRUE);	
-
-IF bVerbose OR bLog THEN		
-	LogAdsMessage(stAdsMessage, sFormatResponseWrite);
-END_IF
-	
-SendWriteResponse := S_OK;]]></ST>
-      </Implementation>
-    </Method>
-    <Property Name="stAdsMessageRead" Id="{3e506c59-371a-020b-3990-2b1164bd1adb}">
-      <Declaration><![CDATA[(*Get last valid ADS Read Message*)
-PROPERTY stAdsMessageRead : REFERENCE TO ST_AdsMessage]]></Declaration>
-      <Get Name="Get" Id="{1146fbb4-654e-0bee-182e-d49b0b7632f4}">
+    <Property Name="bIsAdsMessageReadValid" Id="{71854fcb-df6d-0fd9-286b-9099a211dfc0}">
+      <Declaration><![CDATA[(*Returns the status of the indication of the read message in the current frame*)
+PROPERTY PUBLIC bIsAdsMessageReadValid : BOOL]]></Declaration>
+      <Get Name="Get" Id="{e3b94d4c-aafc-0948-2ea0-164ed1aa7a9e}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[stAdsMessageRead REF= _stAdsMessageRead;]]></ST>
+          <ST><![CDATA[bIsAdsMessageReadValid := _stAdsMessageRead.tPort <> 0;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -156,30 +64,60 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="stAdsMessageWrite" Id="{61e15cb2-4386-006c-1317-d9748ac53e5c}">
-      <Declaration><![CDATA[(*Get last valid ADS Write Message*)
-PROPERTY stAdsMessageWrite : REFERENCE TO ST_AdsMessage]]></Declaration>
-      <Get Name="Get" Id="{80a7e498-ed13-0c60-1e50-e962df251bb3}">
-        <Declaration><![CDATA[VAR
-END_VAR
+    <Method Name="CreateAdsReadMessage" Id="{e94a041b-4515-0ead-2584-a7047f18bfe9}">
+      <Declaration><![CDATA[METHOD PRIVATE CreateAdsReadMessage : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _fbAdsReadIndicator.VALID THEN RETURN; END_IF
+
+MEMSET(ADR(_stAdsMessageRead), 0, SIZEOF(ST_AdsMessage));
+_stAdsMessageRead.tNetId 		:= _fbAdsReadIndicator.NETID;
+_stAdsMessageRead.tPort 		:= _fbAdsReadIndicator.PORT;
+_stAdsMessageRead.nInvokeId 	:= _fbAdsReadIndicator.INVOKEID;
+_stAdsMessageRead.nIdxGrp 		:= _fbAdsReadIndicator.IDXGRP;
+_stAdsMessageRead.nIdxOffs 		:= _fbAdsReadIndicator.IDXOFFS;
+_stAdsMessageRead.nLength 		:= _fbAdsReadIndicator.LENGTH;
+
+IF bVerbose THEN
+	LogAdsMessage(_stAdsMessageWrite, S_FORMAT_RECEIVEREAD);
+END_IF
+
+_fbAdsReadIndicator(CLEAR := TRUE);
+_fbAdsReadIndicator(CLEAR := FALSE);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CreateAdsWriteMessage" Id="{0d849bff-4ddd-0cef-244d-b4004991857b}">
+      <Declaration><![CDATA[METHOD PRIVATE CreateAdsWriteMessage : BOOL
 ]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[stAdsMessageWrite REF= _stAdsMessageWrite;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
-    <Property Name="bIsAdsMessageReadValid" Id="{71854fcb-df6d-0fd9-286b-9099a211dfc0}">
-      <Declaration><![CDATA[(*Returns the status of the indication of the read message in the current frame*)
-PROPERTY PUBLIC bIsAdsMessageReadValid : BOOL]]></Declaration>
-      <Get Name="Get" Id="{e3b94d4c-aafc-0948-2ea0-164ed1aa7a9e}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[bIsAdsMessageReadValid := _stAdsMessageRead.tPort <> 0;]]></ST>
-        </Implementation>
-      </Get>
-    </Property>
+      <Implementation>
+        <ST><![CDATA[IF NOT _fbAdsWriteIndicator.VALID THEN RETURN; END_IF
+
+MEMSET(ADR(_stAdsMessageWrite), 0, SIZEOF(ST_AdsMessage));
+_stAdsMessageWrite.tNetId 		:= _fbAdsWriteIndicator.NETID;
+_stAdsMessageWrite.tPort 		:= _fbAdsWriteIndicator.PORT;
+_stAdsMessageWrite.nInvokeId 	:= _fbAdsWriteIndicator.INVOKEID;
+_stAdsMessageWrite.nIdxGrp 		:= _fbAdsWriteIndicator.IDXGRP;
+_stAdsMessageWrite.nIdxOffs 	:= _fbAdsWriteIndicator.IDXOFFS;
+_stAdsMessageWrite.nLength 		:= _fbAdsWriteIndicator.LENGTH;
+			
+//Limit size to 240
+IF _stAdsMessageWrite.nLength > 240 THEN
+	IF bVerbose THEN
+		F_LOGWARNING(CONCAT('WRREC data length limited to 240. Requested data length was ', TO_STRING(_stAdsMessageWrite.nLength)));
+	END_IF
+	_stAdsMessageWrite.nLength := 240;
+END_IF
+
+MEMCPY(ADR(_stAdsMessageWrite.aData), _fbAdsWriteIndicator.DATAADDR, _stAdsMessageWrite.nLength);
+
+IF bVerbose THEN
+	LogAdsMessage(_stAdsMessageWrite, S_FORMAT_RECEIVEWRITE);
+END_IF
+
+_fbAdsWriteIndicator(CLEAR := TRUE);
+_fbAdsWriteIndicator(CLEAR := FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="LogAdsMessage" Id="{8c2bed4d-bc57-0edd-06a1-6c7c9fad0de5}">
       <Declaration><![CDATA[METHOD PRIVATE LogAdsMessage : BOOL
 VAR_INPUT
@@ -204,26 +142,90 @@ END_VAR]]></Declaration>
 F_LogMessage(sMessage);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="CreateAdsReadMessage" Id="{e94a041b-4515-0ead-2584-a7047f18bfe9}">
-      <Declaration><![CDATA[METHOD PRIVATE CreateAdsReadMessage : BOOL]]></Declaration>
+    <Method Name="SendReadResponse" Id="{2be62736-b08a-05f5-3bc6-9fa4497f0378}">
+      <Declaration><![CDATA[(*Send ADS Read Response message*)
+METHOD PUBLIC SendReadResponse : HRESULT
+VAR_INPUT
+	stAdsMessage 	: ST_AdsMessage; //Response ADS Message
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT fbAdsReadIndicator.VALID THEN RETURN; END_IF
-
-MEMSET(ADR(_stAdsMessageRead), 0, SIZEOF(ST_AdsMessage));
-_stAdsMessageRead.tNetId 		:= fbAdsReadIndicator.NETID;
-_stAdsMessageRead.tPort 		:= fbAdsReadIndicator.PORT;
-_stAdsMessageRead.nInvokeId 	:= fbAdsReadIndicator.INVOKEID;
-_stAdsMessageRead.nIdxGrp 		:= fbAdsReadIndicator.IDXGRP;
-_stAdsMessageRead.nIdxOffs 		:= fbAdsReadIndicator.IDXOFFS;
-_stAdsMessageRead.nLength 		:= fbAdsReadIndicator.LENGTH;
-
-IF bVerbose THEN
-	LogAdsMessage(_stAdsMessageWrite, sFormatReciveRead);
+        <ST><![CDATA[IF _fbAdsReadResponse.RESPOND THEN
+	SendReadResponse := S_PENDING;
+	RETURN;
 END_IF
 
-fbAdsReadIndicator(CLEAR := TRUE);
-fbAdsReadIndicator(CLEAR := FALSE);]]></ST>
+//Limit size to 240
+IF stAdsMessage.nLength > 240 THEN
+	IF bVerbose THEN
+		F_LOGWARNING(CONCAT('RDRES data length limited to 240. Requested data length was ', TO_STRING(stAdsMessage.nLength)));
+	END_IF
+	stAdsMessage.nLength := 240;
+END_IF
+
+_fbAdsReadResponse(
+	NETID:= stAdsMessage.tNetId, 
+	PORT:= stAdsMessage.tPort, 
+	INVOKEID:= stAdsMessage.nInvokeId, 
+	RESULT:= stAdsMessage.nResult, 
+	LEN:= stAdsMessage.nLength,
+	DATAADDR:= ADR(stAdsMessage.aData),
+	RESPOND:= TRUE);
+IF bVerbose OR bLog THEN	
+	LogAdsMessage(stAdsMessage, S_FORMAT_RESPONSEREAD);
+END_IF
+
+SendReadResponse := S_OK;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="SendWriteResponse" Id="{35a4388e-0d6e-0d3c-0521-30d0b2dca3b3}">
+      <Declaration><![CDATA[(*Send ADS Write Response message*)
+METHOD PUBLIC SendWriteResponse : HRESULT
+VAR_INPUT
+	stAdsMessage 	: ST_AdsMessage; //Response ADS Message
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _fbAdsWriteResponse.RESPOND THEN
+	SendWriteResponse := S_PENDING;
+	RETURN;
+END_IF
+
+_fbAdsWriteResponse(
+	NETID:= stAdsMessage.tNetId, 
+	PORT:= stAdsMessage.tPort, 
+	INVOKEID:= stAdsMessage.nInvokeId, 
+	RESULT:= stAdsMessage.nResult, 
+	RESPOND:= TRUE);	
+
+IF bVerbose OR bLog THEN		
+	LogAdsMessage(stAdsMessage, S_FORMAT_RESPONSEWRITE);
+END_IF
+	
+SendWriteResponse := S_OK;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="stAdsMessageRead" Id="{3e506c59-371a-020b-3990-2b1164bd1adb}">
+      <Declaration><![CDATA[(*Get last valid ADS Read Message*)
+PROPERTY stAdsMessageRead : REFERENCE TO ST_AdsMessage]]></Declaration>
+      <Get Name="Get" Id="{1146fbb4-654e-0bee-182e-d49b0b7632f4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[stAdsMessageRead REF= _stAdsMessageRead;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="stAdsMessageWrite" Id="{61e15cb2-4386-006c-1317-d9748ac53e5c}">
+      <Declaration><![CDATA[(*Get last valid ADS Write Message*)
+PROPERTY stAdsMessageWrite : REFERENCE TO ST_AdsMessage]]></Declaration>
+      <Get Name="Get" Id="{80a7e498-ed13-0c60-1e50-e962df251bb3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[stAdsMessageWrite REF= _stAdsMessageWrite;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
   </POU>
 </TcPlcObject>

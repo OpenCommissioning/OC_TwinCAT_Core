@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_SensorAnalog" Id="{4c4220ea-803a-0cce-2f5a-0ed9e84376d8}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_SensorAnalog EXTENDS FB_LinkDataReal 
+    <Declaration><![CDATA[(*
+	Default analog sensor device. 
+	The stConfig structure is used to configure the scaling factor for transforming values into real-world units.
+*)
+FUNCTION_BLOCK FB_SensorAnalog EXTENDS FB_LinkDataReal 
 VAR_INPUT
 	nControl  		: BYTE;
 	stConfig		: ST_ScaleConfig;

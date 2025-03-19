@@ -1,29 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_InverBytesOrder" Id="{8dd330be-8d57-093b-0c7e-cd87c810153c}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_InverBytesOrder : BOOL
+    <Declaration><![CDATA[(*
+	Reverse the byte order of the given ANY input.
+*)
+FUNCTION F_InverBytesOrder : BOOL
 VAR_INPUT
 	data 	: ANY;
 END_VAR
 
 VAR	
-	i 		: UDINT;
-	nSize	: UDINT;
-	aData 	: ARRAY [0..7] OF BYTE;
+	_i 		: UDINT;
+	_nSize	: UDINT;
+	_aData 	: ARRAY [0..7] OF BYTE;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[nSize := DINT_TO_UDINT(data.diSize);
-memcpy(ADR(aData), data.pValue, nSize);
+      <ST><![CDATA[_nSize := DINT_TO_UDINT(data.diSize);
+MEMCPY(ADR(_aData), data.pValue, _nSize);
 
-FOR i:= 1 TO nSize DO	
-	memcpy(data.pValue + i - 1, ADR(aData) + nSize - i, 1);
+IF(_nSize > 8) THEN
+	F_LogError('F_InverBytesOrder: Data Size is not in range [0..7]');
+	RETURN;
+END_IF
+
+FOR _i:= 1 TO _nSize DO	
+	MEMCPY(data.pValue + _i - 1, ADR(_aData) + _nSize - _i, 1);
 END_FOR]]></ST>
     </Implementation>
-    <LineIds Name="F_InverBytesOrder">
-      <LineId Id="83" Count="0" />
-      <LineId Id="70" Count="3" />
-      <LineId Id="67" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

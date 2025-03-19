@@ -3,95 +3,95 @@
   <POU Name="FB_Lock_Test" Id="{b3cb49e5-1ecd-0655-03e8-08f305861a2b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Lock_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	fbLock : FB_Lock;
-	nExpected : BYTE;
-	nResult : BYTE;
-	bExpected : BOOL;
-	bResult : BOOL;
+	_fbLock 		: FB_Lock;
+	_nExpected 		: BYTE;
+	_nResult 		: BYTE;
+	_bExpected 		: BOOL;
+	_bResult 		: BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Set bEnable TRUE');			 
-fbLock.bLock := TRUE; 
-fbLock();
-nExpected := 1;
-nResult := fbLock.GetControl();
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+_fbLock.bLock := TRUE; 
+_fbLock();
+_nExpected := 1;
+_nResult := _fbLock.GetControl();
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Control value is not correct');	 
 TEST_FINISHED();
 
 TEST('Set bEnable FALSE');			 
-fbLock.bLock := FALSE; 
-fbLock();
-nExpected := 0;
-nResult := fbLock.GetControl();
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+_fbLock.bLock := FALSE; 
+_fbLock();
+_nExpected := 0;
+_nResult := _fbLock.GetControl();
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	 
 TEST_FINISHED();
 
 
 TEST('Get bClosed FALSE');
-fbLock.SetStatus(0);
-fbLock();
-bExpected := FALSE;
-bResult := fbLock.bClosed;
+_fbLock.SetStatus(0);
+_fbLock();
+_bExpected := FALSE;
+_bResult := _fbLock.bClosed;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get bClosed TRUE');	
-fbLock.SetStatus(1);
-fbLock();
-bExpected := 1;
-bResult := fbLock.bClosed;
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+_fbLock.SetStatus(1);
+_fbLock();
+_bExpected := 1;
+_bResult := _fbLock.bClosed;
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Value is not correct');	 
 TEST_FINISHED();
 
 TEST('Get bLocked FALSE');
-fbLock.SetStatus(0);
-fbLock();
-bExpected := FALSE;
-bResult := fbLock.bLocked;
+_fbLock.SetStatus(0);
+_fbLock();
+_bExpected := FALSE;
+_bResult := _fbLock.bLocked;
 
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get bLocked TRUE');	
-fbLock.SetStatus(2);
-fbLock();
-bExpected := 1;
-bResult := fbLock.bLocked;
-AssertEquals(Expected := bExpected,
-             Actual := bResult,
+_fbLock.SetStatus(2);
+_fbLock();
+_bExpected := 1;
+_bResult := _fbLock.bLocked;
+AssertEquals(Expected := _bExpected,
+             Actual := _bResult,
              Message := 'Value is not correct');	 
 TEST_FINISHED();
 
 TEST('Set nDataIn');
-nExpected := 255;
-fbLock.nControlData := nExpected;
-fbLock();
-nResult := fbLock.GetLinkControlData();
+_nExpected := 255;
+_fbLock.nControlData := _nExpected;
+_fbLock();
+_nResult := _fbLock.GetLinkControlData();
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 
 TEST('Get nDataOut');
-nExpected := 255;
-fbLock.SetLinkStatusData(nExpected);
-fbLock();
-nResult := fbLock.nStatusData;
+_nExpected := 255;
+_fbLock.SetLinkStatusData(_nExpected);
+_fbLock();
+_nResult := _fbLock.nStatusData;
 
-AssertEquals(Expected := nExpected,
-             Actual := nResult,
+AssertEquals(Expected := _nExpected,
+             Actual := _nResult,
              Message := 'Value is not correct');	
 TEST_FINISHED();
 

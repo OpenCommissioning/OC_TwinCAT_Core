@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_MoveVelocity" Id="{9bae960a-d9ba-07f3-39f8-a131e14eb6c6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_MoveVelocity
+    <Declaration><![CDATA[(* 
+	FB_MoveVelocity: Adjusts the drive's velocity based on target velocity, acceleration, and deceleration
+*)
+FUNCTION_BLOCK FB_MoveVelocity
 VAR_INPUT
 	fTargetVelocity 	: REAL;
 	fAccMax 			: REAL;
@@ -12,38 +15,38 @@ VAR
 	_fVelocity 			: REAL;	
 	_fAcc 				: REAL;
 	_bIsReached			: BOOL;
-	fVelocityTolerance	: REAL;
+	_fVelocityTolerance	: REAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[_bIsReached := FALSE;
 IF _fAcc = 0 THEN
 	IF ABS(fAccMax) > ABS(fDecMax) THEN
-		fVelocityTolerance := ABS(fAccMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+		_fVelocityTolerance := ABS(fAccMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
 	ELSE
-		fVelocityTolerance := ABS(fDecMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+		_fVelocityTolerance := ABS(fDecMax) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
 	END_IF
 ELSE
-	fVelocityTolerance := ABS(_fAcc) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
+	_fVelocityTolerance := ABS(_fAcc) * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
 END_IF	
 
 (* Calculate acceleration *)
 //Hold velocity (velocity reached)
-IF F_Compare(fVelocity, fTargetVelocity, fVelocityTolerance) THEN
+IF F_Compare(fVelocity, fTargetVelocity, _fVelocityTolerance) THEN
 	_fAcc := 0;
 	_fVelocity := fTargetVelocity;
 	_bIsReached := TRUE;
 	RETURN;
 END_IF
 
-IF _fVelocity - fTargetVelocity > fVelocityTolerance THEN
+IF _fVelocity - fTargetVelocity > _fVelocityTolerance THEN
 	//Decelerate
 	IF _fVelocity < 0 THEN
 		_fAcc := -ABS(fAccMax);
 	ELSE
 		_fAcc := -ABS(fDecMax);
 	END_IF
- ELSIF _fVelocity - fTargetVelocity < -fVelocityTolerance THEN
+ ELSIF _fVelocity - fTargetVelocity < -_fVelocityTolerance THEN
 	//Accelerate
 	IF _fVelocity < 0 THEN
 		_fAcc := ABS(fDecMax);
@@ -53,10 +56,13 @@ IF _fVelocity - fTargetVelocity > fVelocityTolerance THEN
 END_IF
 
 _fVelocity := _fVelocity + _fAcc * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
-_bIsReached := F_Compare(_fVelocity, fTargetVelocity, fVelocityTolerance);]]></ST>
+_bIsReached := F_Compare(_fVelocity, fTargetVelocity, _fVelocityTolerance);]]></ST>
     </Implementation>
     <Property Name="bIsReached" Id="{1b62f692-0ce8-0ddf-04df-a2cb5441658f}">
-      <Declaration><![CDATA[PROPERTY bIsReached : BOOL]]></Declaration>
+      <Declaration><![CDATA[(* 
+	bIsReached: TRUE if the current velocity has reached the target velocity 
+*)
+PROPERTY bIsReached : BOOL]]></Declaration>
       <Get Name="Get" Id="{f53b033e-df5e-07b6-2792-bf6722784217}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -67,7 +73,12 @@ END_VAR
       </Get>
     </Property>
     <Property Name="fAcc" Id="{d6f7d3ff-b9bd-097a-2fcb-bea90667f161}">
-      <Declaration><![CDATA[PROPERTY fAcc : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Actual Drive Acceleration
+	
+	The fAcc property provides the current acceleration for the drive.
+*)
+PROPERTY fAcc : REAL]]></Declaration>
       <Get Name="Get" Id="{e64a8ff4-07d9-014d-1950-84da0b2118c2}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -87,7 +98,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fVelocity" Id="{ba9df249-e9e4-070c-3e5e-4885a73cc59a}">
-      <Declaration><![CDATA[PROPERTY fVelocity : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Actual Drive Velocity
+	
+	The fVelocity property provides the current velocity for the drive.
+*)
+PROPERTY fVelocity : REAL]]></Declaration>
       <Get Name="Get" Id="{85b8344d-47b3-05d3-3895-9954bbfd24d7}">
         <Declaration><![CDATA[VAR
 END_VAR

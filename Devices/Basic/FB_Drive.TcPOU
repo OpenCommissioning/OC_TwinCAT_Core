@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Drive" Id="{a1a15448-403e-0037-1891-471a9590d7d4}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Drive EXTENDS FB_LinkDataREAL
+    <Declaration><![CDATA[(*
+	Basic drive interface:
+	nControl BYTE: From TwinCAT >>> To Unity
+	nStatus BYTE: FROM Unity >>> TO TwinCAT	
+	fTargetValue REAL: From TwinCAT >>> To Unity
+	fActualValue REAL: FROM Unity >>> TO TwinCAT	
+*)
+FUNCTION_BLOCK FB_Drive EXTENDS FB_LinkDataREAL
 VAR_INPUT
 	nControl  		: BYTE;
 	fTargetValue 	: REAL; //Target value to drive

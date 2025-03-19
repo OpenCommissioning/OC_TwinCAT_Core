@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_Encoder_Config" Id="{5f81797b-160d-0675-2c98-c8d9410f63b3}">
+    <Declaration><![CDATA[TYPE ST_Encoder_Config :
+STRUCT
+	bIsIntegrator   		: BOOL := FALSE;  //Integrate input value
+	fNumerator 	  			: REAL := 0.0001; //[unit/INC]
+	fDenominator  			: REAL := 1.0; 	// Scaling
+	fModulo 	  			: REAL := 0; // Modulo [unit]; If 0, will be ignored
+	fGearFactor  			: REAL := 1.0;
+	bInvertEncoderDirection : BOOL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
