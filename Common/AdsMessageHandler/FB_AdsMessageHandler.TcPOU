@@ -19,10 +19,10 @@ VAR
 END_VAR
 
 VAR CONSTANT
-	_sFormatReciveWrite		: STRING := 'AdsWriteInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	_sFormatReciveRead		: STRING := 'AdsReadInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	_sFormatResponseWrite	: STRING := 'AdsWriteRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
-	_sFormatResponseRead	: STRING := 'AdsReadRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';  
+	S_FORMAT_RECEIVEWRITE	: STRING := 'AdsWriteInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RECEIVEREAD	: STRING := 'AdsReadInd Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RESPONSEWRITE	: STRING := 'AdsWriteRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';
+	S_FORMAT_RESPONSEREAD	: STRING := 'AdsReadRes Port: %X, IdxGrp: %X, IdxOffs: %X, InvokeId %X, Length: %X';  
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -78,7 +78,7 @@ _stAdsMessageRead.nIdxOffs 		:= _fbAdsReadIndicator.IDXOFFS;
 _stAdsMessageRead.nLength 		:= _fbAdsReadIndicator.LENGTH;
 
 IF bVerbose THEN
-	LogAdsMessage(_stAdsMessageWrite, _sFormatReciveRead);
+	LogAdsMessage(_stAdsMessageWrite, S_FORMAT_RECEIVEREAD);
 END_IF
 
 _fbAdsReadIndicator(CLEAR := TRUE);
@@ -110,7 +110,7 @@ END_IF
 MEMCPY(ADR(_stAdsMessageWrite.aData), _fbAdsWriteIndicator.DATAADDR, _stAdsMessageWrite.nLength);
 
 IF bVerbose THEN
-	LogAdsMessage(_stAdsMessageWrite, _sFormatReciveWrite);
+	LogAdsMessage(_stAdsMessageWrite, S_FORMAT_RECEIVEWRITE);
 END_IF
 
 _fbAdsWriteIndicator(CLEAR := TRUE);
@@ -171,7 +171,7 @@ _fbAdsReadResponse(
 	DATAADDR:= ADR(stAdsMessage.aData),
 	RESPOND:= TRUE);
 IF bVerbose OR bLog THEN	
-	LogAdsMessage(stAdsMessage, _sFormatResponseRead);
+	LogAdsMessage(stAdsMessage, S_FORMAT_RESPONSEREAD);
 END_IF
 
 SendReadResponse := S_OK;]]></ST>
@@ -197,7 +197,7 @@ _fbAdsWriteResponse(
 	RESPOND:= TRUE);	
 
 IF bVerbose OR bLog THEN		
-	LogAdsMessage(stAdsMessage, _sFormatResponseWrite);
+	LogAdsMessage(stAdsMessage, S_FORMAT_RESPONSEWRITE);
 END_IF
 	
 SendWriteResponse := S_OK;]]></ST>

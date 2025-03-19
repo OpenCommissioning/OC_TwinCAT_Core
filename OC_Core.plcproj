@@ -207,9 +207,6 @@
     <Compile Include="Common\Utils\F_InverBytesOrder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Utils\F_Swap.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Common\Utils\ST_ScaleConfig.TcDUT">
       <SubType>Code</SubType>
     </Compile>
