@@ -1,3 +1,18 @@
+# [1.3.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.2.1...v1.3.0) (2025-03-19)
+
+
+### Bug Fixes
+
+* code style ([34696a8](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/34696a831d808accd1ef8638eb5c3e5b187f2c62))
+* **gitignore:** ignore .tmcRefact ([6cb3a6b](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/6cb3a6bd3ac773398c180d44b653b478142344cc))
+* **gitignore:** ignore only Libraries folder ([434add3](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/434add3bada1f96b3da27b3a587f024f500f8304))
+* Test ([4c2701c](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/4c2701ca167c84fd3e995c3950fa7c8871480bff))
+
+
+### Features
+
+* **Encoder:** common encoder calculation ([d48d276](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/d48d2768f820a1c8de21b1fabce34da2b8de021c))
+
 ## [1.2.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.2.0...v1.2.1) (2025-02-24)
 
 
