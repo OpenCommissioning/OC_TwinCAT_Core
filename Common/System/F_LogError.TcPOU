@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_LogError" Id="{4f6bc53c-00e9-0ffe-0447-891bfa4a8ab9}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+    <Declaration><![CDATA[(*
+	Log Error message to TwinCAT console
+*)
+{attribute 'hide_all_locals'}
 FUNCTION F_LogError : BOOL
 VAR_INPUT
 	sMessage : T_MAXSTRING;
 END_VAR
 
 VAR CONSTANT	
-	LOGHEADER		: T_MAXSTRING := 'Open Commissioning: %s';
+	S_LOGHEADER		: T_MAXSTRING := 'Open Commissioning: %s';
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[ADSLOGSTR(ADSLOG_MSGTYPE_ERROR, LOGHEADER, sMessage);]]></ST>
+      <ST><![CDATA[ADSLOGSTR(ADSLOG_MSGTYPE_ERROR, S_LOGHEADER, sMessage);]]></ST>
     </Implementation>
-    <LineIds Name="F_LogError">
-      <LineId Id="7" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

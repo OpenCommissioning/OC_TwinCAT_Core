@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_DeviceLWord" Id="{ebc2de75-3ab5-0d8f-0ee5-fb01e22b2b7a}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_DeviceLWord EXTENDS FB_LinkDataLWord
+    <Declaration><![CDATA[(*
+	Basic device with extended interface:
+	nControl BYTE: From TwinCAT >>> To Unity
+	nStatus BYTE: FROM Unity >>> TO TwinCAT	
+	nControlData LWORD: From TwinCAT >>> To Unity
+	nStatusData LWORD: FROM Unity >>> TO TwinCAT	
+*)
+FUNCTION_BLOCK FB_DeviceLWord EXTENDS FB_LinkDataLWord
 VAR_INPUT		
 	nControl  			: BYTE;
 	nControlData  		: LWORD;

@@ -1,32 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_RecordData" Id="{a8f1e079-f172-0d21-2fa6-1d07cef16ce5}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'conditionalshow_all_locals}
+    <Declaration><![CDATA[(*
+	Uses an external ADS message handler (FB_AdsMessageHandler) for sending/receiving ADS messages.
+	Handles cyclic execution for processing ADS messages and maintains a list of subscribed devices.	
+*)
+{attribute 'conditionalshow_all_locals}
 FUNCTION_BLOCK PUBLIC FB_RecordData IMPLEMENTS I_RecordData
 VAR_INPUT
-	bDisable 				: BOOL; //Deactivate cyclical execution
-	bVerbose 				: BOOL; //Log ADS messages data in the console
-	eControllerType 		: E_ControllerType; //The data processing logic depends on the controller type	
+	bDisable 				: BOOL; //Disables cyclic execution when set to TRUE
+	bVerbose 				: BOOL; //Enables console logging of ADS message data
+	eControllerType 		: E_ControllerType; //Determines data processing logic based on the controller type
 END_VAR
 
 VAR	
-	refAdsMessageHandler	: REFERENCE TO FB_AdsMessageHandler;	
-	nDeviceCount			: INT;
-	aDeviceList				: ARRAY[0..255] OF UDINT; //The internal device list is used for assistance services. Do not delete or change. 
+	_refAdsMessageHandler	: REFERENCE TO FB_AdsMessageHandler;	//Reference to the external ADS message handler used for managing ADS messages	
+	_nDeviceCount			: INT;	//Number of devices subscribed for record data
+	_aDeviceList			: ARRAY[0..255] OF UDINT; //The internal device list is used for assistance services. Do not delete or change. 
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF bDisable THEN RETURN; END_IF
 
 //Send WriteRes if last WriteInd has not been read by any device
-IF refAdsMessageHandler.stAdsMessageWrite.tPort <> 0 THEN
-	SendWriteResponse(refAdsMessageHandler.stAdsMessageRead);
-	refAdsMessageHandler.stAdsMessageWrite.tPort := 0;
+IF _refAdsMessageHandler.stAdsMessageWrite.tPort <> 0 THEN
+	SendWriteResponse(_refAdsMessageHandler.stAdsMessageRead);
+	_refAdsMessageHandler.stAdsMessageWrite.tPort := 0;
 END_IF
 
 //Send ReadRes if last ReadInd has not been read by any device
-IF refAdsMessageHandler.stAdsMessageRead.tPort <> 0 THEN
-	SendReadResponse(refAdsMessageHandler.stAdsMessageRead);
-	refAdsMessageHandler.stAdsMessageRead.tPort := 0;
+IF _refAdsMessageHandler.stAdsMessageRead.tPort <> 0 THEN
+	SendReadResponse(_refAdsMessageHandler.stAdsMessageRead);
+	_refAdsMessageHandler.stAdsMessageRead.tPort := 0;
 END_IF 
 
 (*Ads Message Comments*)
@@ -40,19 +44,15 @@ END_IF
 //aData				: ARRAY[0..239] OF BYTE;
 ]]></ST>
     </Implementation>
-    <Method Name="SendReadResponse" Id="{1181d321-530a-0b91-294f-f643bd6b748d}">
-      <Declaration><![CDATA[(*Send ADS Read Response message*)
-METHOD PUBLIC SendReadResponse : HRESULT
+    <Method Name="CmpIGrp" Id="{5a5a0ebe-2263-0040-0485-4fbe6674e209}">
+      <Declaration><![CDATA[METHOD PRIVATE CmpIGrp : BOOL
 VAR_INPUT
-	stAdsMessage : ST_AdsMessage; //Response ADS Message
+	nIGrpDevice 	: UDINT;
+	nIGrpReceived 	: UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE eControllerType OF		
-	E_ControllerType.PlcSimAdvanced :
-		stAdsMessage.nResult := SHR(stAdsMessage.nIdxOffs, 16) + 16#80000000;
-END_CASE
-
-SendReadResponse := refAdsMessageHandler.SendReadResponse(stAdsMessage);]]></ST>
+        <ST><![CDATA[(* Compare low word only *)
+CmpIGrp := (nIGrpDevice AND 16#0000FFFF) = (nIGrpReceived AND 16#0000FFFF) OR nIGrpDevice = 0;]]></ST>
       </Implementation>
     </Method>
     <Method Name="CmpInvokeId" Id="{1df98617-d7bb-04d0-2a89-a05ea89b7967}">
@@ -70,6 +70,16 @@ END_IF
 
 (* Compare low word only. low word = port *)
 CmpInvokeId := (nInvokeIdDevice AND 16#0000FFFF) = (nInvokeIdReceived AND 16#0000FFFF);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CmpIOffs" Id="{647ae9b0-6eac-0136-1597-ca2aa4f33188}">
+      <Declaration><![CDATA[METHOD PRIVATE CmpIOffs : BOOL
+VAR_INPUT
+	nIOffsDevice 	: UDINT;
+	nIOffsReceived 	: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CmpIOffs := nIOffsDevice = nIOffsReceived OR nIOffsDevice = 16#FFFFFFFF;]]></ST>
       </Implementation>
     </Method>
     <Method Name="DataValid" Id="{372c54b6-5212-0234-1621-1b2d5758cb0e}">
@@ -107,6 +117,18 @@ refHandlerAdsMessage.tPort := 0;
 DataValid := TRUE;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="FB_init" Id="{e7d80f07-c80a-0d50-39a8-e3798b1427ab}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 				: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 				: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	refAdsMessageHandler		: REFERENCE TO FB_AdsMessageHandler;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._refAdsMessageHandler REF= refAdsMessageHandler;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetReadIndication" Id="{5391900e-76d1-030c-217a-d97657daf763}">
       <Declaration><![CDATA[(*Try to get a valid ADR read message. If the message is valid, the data in the input structure will be overwritten*)
 METHOD PUBLIC GetReadIndication : BOOL
@@ -114,33 +136,12 @@ VAR_INPUT
 	refDeviceAdsMessage : REFERENCE TO ST_AdsMessage; //Reference ADS Message
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT refAdsMessageHandler.bIsAdsMessageReadValid THEN
+        <ST><![CDATA[IF NOT _refAdsMessageHandler.bIsAdsMessageReadValid THEN
 	GetReadIndication := FALSE;
 	RETURN; 
 END_IF
 
-GetReadIndication := DataValid(refDeviceAdsMessage, refAdsMessageHandler.stAdsMessageRead);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="CmpIGrp" Id="{5a5a0ebe-2263-0040-0485-4fbe6674e209}">
-      <Declaration><![CDATA[METHOD PRIVATE CmpIGrp : BOOL
-VAR_INPUT
-	nIGrpDevice 	: UDINT;
-	nIGrpReceived 	: UDINT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[(* Compare low word only *)
-CmpIGrp := (nIGrpDevice AND 16#0000FFFF) = (nIGrpReceived AND 16#0000FFFF) OR nIGrpDevice = 0;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="CmpIOffs" Id="{647ae9b0-6eac-0136-1597-ca2aa4f33188}">
-      <Declaration><![CDATA[METHOD PRIVATE CmpIOffs : BOOL
-VAR_INPUT
-	nIOffsDevice 	: UDINT;
-	nIOffsReceived 	: UDINT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CmpIOffs := nIOffsDevice = nIOffsReceived OR nIOffsDevice = 16#FFFFFFFF;]]></ST>
+GetReadIndication := DataValid(refDeviceAdsMessage, _refAdsMessageHandler.stAdsMessageRead);]]></ST>
       </Implementation>
     </Method>
     <Method Name="GetWriteIndication" Id="{a43a768c-aede-070f-1a03-3e57149230e9}">
@@ -150,12 +151,27 @@ VAR_INPUT
 	refDeviceAdsMessage : REFERENCE TO ST_AdsMessage; //Reference ADS Message	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT refAdsMessageHandler.bIsAdsMessageWriteValid THEN
+        <ST><![CDATA[IF NOT _refAdsMessageHandler.bIsAdsMessageWriteValid THEN
 	GetWriteIndication := FALSE;
 	RETURN; 
 END_IF
 
-GetWriteIndication := DataValid(refDeviceAdsMessage, refAdsMessageHandler.stAdsMessageWrite);]]></ST>
+GetWriteIndication := DataValid(refDeviceAdsMessage, _refAdsMessageHandler.stAdsMessageWrite);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SendReadResponse" Id="{1181d321-530a-0b91-294f-f643bd6b748d}">
+      <Declaration><![CDATA[(*Send ADS Read Response message*)
+METHOD PUBLIC SendReadResponse : HRESULT
+VAR_INPUT
+	stAdsMessage : ST_AdsMessage; //Response ADS Message
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eControllerType OF		
+	E_ControllerType.PlcSimAdvanced :
+		stAdsMessage.nResult := SHR(stAdsMessage.nIdxOffs, 16) + 16#80000000;
+END_CASE
+
+SendReadResponse := _refAdsMessageHandler.SendReadResponse(stAdsMessage);]]></ST>
       </Implementation>
     </Method>
     <Method Name="SendWriteResponse" Id="{b50c35b1-74c7-0b2e-02b6-d8f33c966900}">
@@ -170,7 +186,7 @@ END_VAR]]></Declaration>
 		stAdsMessage.nResult := SHR(stAdsMessage.nIdxOffs, 16) + 16#80000000;
 END_CASE
 
-SendWriteResponse := refAdsMessageHandler.SendWriteResponse(stAdsMessage);]]></ST>
+SendWriteResponse := _refAdsMessageHandler.SendWriteResponse(stAdsMessage);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Subscribe" Id="{d461791e-17f4-05a5-399a-1be3d27a8723}">
@@ -182,7 +198,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF nDeviceCount > 255 THEN
+        <ST><![CDATA[IF _nDeviceCount > 255 THEN
 	F_LogError('More than 256 RecordData devices');
 	RETURN;
 END_IF
@@ -197,7 +213,7 @@ CASE eControllerType OF
 			RETURN;
 		END_IF
 		
-		aDeviceList[nDeviceCount] := stAdsMessage.nInvokeId;
+		_aDeviceList[_nDeviceCount] := stAdsMessage.nInvokeId;
 	
 	E_ControllerType.PlcSimAdvanced :
 		stAdsMessage.nIdxOffs := pRecordIdent^.nHardwareId + pRecordIdent^.nPlcId * 16#10000;
@@ -206,22 +222,10 @@ CASE eControllerType OF
 			RETURN;
 		END_IF
 		
-		aDeviceList[nDeviceCount] := stAdsMessage.nIdxOffs;
+		_aDeviceList[_nDeviceCount] := stAdsMessage.nIdxOffs;
 END_CASE	
 
-nDeviceCount := nDeviceCount + 1;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="FB_init" Id="{e7d80f07-c80a-0d50-39a8-e3798b1427ab}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains 				: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode 				: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-	refAdsMessageHandler		: REFERENCE TO FB_AdsMessageHandler;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^.refAdsMessageHandler REF= refAdsMessageHandler;]]></ST>
+_nDeviceCount := _nDeviceCount + 1;]]></ST>
       </Implementation>
     </Method>
   </POU>

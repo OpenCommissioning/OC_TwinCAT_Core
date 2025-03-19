@@ -3,33 +3,32 @@
   <POU Name="FB_AdsMessageHandler_Test" Id="{d0a621dd-f611-0c4b-1159-2e949b20cfc0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_AdsMessageHandler_Test EXTENDS TcUnit.FB_TestSuite
 VAR
-	stAdsMessageSend 		: ST_AdsMessage;
-END_VAR
-]]></Declaration>
+	_stAdsMessageSend 		: ST_AdsMessage;
+END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[stAdsMessageSend.nIdxGrp := 16#80000005;
-stAdsMessageSend.nIdxOffs := 7;
-TestCaseWrite('ADS Write Indication 1', stAdsMessageSend);
+      <ST><![CDATA[_stAdsMessageSend.nIdxGrp := 16#80000005;
+_stAdsMessageSend.nIdxOffs := 7;
+TestCaseWrite('ADS Write Indication 1', _stAdsMessageSend);
 
-stAdsMessageSend.nIdxGrp := 16#80000006;
-stAdsMessageSend.nIdxOffs := 8;
-TestCaseWrite('ADS Write Indication 2', stAdsMessageSend);
+_stAdsMessageSend.nIdxGrp := 16#80000006;
+_stAdsMessageSend.nIdxOffs := 8;
+TestCaseWrite('ADS Write Indication 2', _stAdsMessageSend);
 
-stAdsMessageSend.nIdxGrp := 16#80000007;
-stAdsMessageSend.nIdxOffs := 9;
-TestCaseWrite('ADS Write Indication 3', stAdsMessageSend);
+_stAdsMessageSend.nIdxGrp := 16#80000007;
+_stAdsMessageSend.nIdxOffs := 9;
+TestCaseWrite('ADS Write Indication 3', _stAdsMessageSend);
 
-stAdsMessageSend.nIdxGrp := 16#80000005;
-stAdsMessageSend.nIdxOffs := 7;
-TestCaseRead('ADS Read Indication 1', stAdsMessageSend);
+_stAdsMessageSend.nIdxGrp := 16#80000005;
+_stAdsMessageSend.nIdxOffs := 7;
+TestCaseRead('ADS Read Indication 1', _stAdsMessageSend);
 
-stAdsMessageSend.nIdxGrp := 16#80000006;
-stAdsMessageSend.nIdxOffs := 8;
-TestCaseRead('ADS Read Indication 2', stAdsMessageSend);
+_stAdsMessageSend.nIdxGrp := 16#80000006;
+_stAdsMessageSend.nIdxOffs := 8;
+TestCaseRead('ADS Read Indication 2', _stAdsMessageSend);
 
-stAdsMessageSend.nIdxGrp := 16#80000007;
-stAdsMessageSend.nIdxOffs := 9;
-TestCaseRead('ADS Read Indication 3', stAdsMessageSend);
+_stAdsMessageSend.nIdxGrp := 16#80000007;
+_stAdsMessageSend.nIdxOffs := 9;
+TestCaseRead('ADS Read Indication 3', _stAdsMessageSend);
 
 
 
@@ -47,15 +46,15 @@ VAR
 	fbAdsRead				: ADSREAD := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
 	aData 					: ARRAY[0..5] OF BYTE;
 	bResult 				: BOOL; 	
-	stAdsMessageResult 	: ST_AdsMessage;
+	stAdsMessageResult 		: ST_AdsMessage;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST(sName);
 
 fbAdsRead(READ := FALSE);
-fbAdsRead(IDXGRP := stAdsMessageSend.nIdxGrp, 
-		IDXOFFS := stAdsMessageSend.nIdxOffs, 
-        LEN := stAdsMessageSend.nLength, 
+fbAdsRead(IDXGRP := _stAdsMessageSend.nIdxGrp, 
+		IDXOFFS := _stAdsMessageSend.nIdxOffs, 
+        LEN := _stAdsMessageSend.nLength, 
 		DESTADDR := ADR(aData), 
         READ := TRUE);			
 
@@ -98,15 +97,15 @@ VAR
 	fbAdsWrite				: ADSWRITE := (NETID := '', PORT := 851, TMOUT := DEFAULT_ADS_TIMEOUT);
 	aData 					: ARRAY[0..5] OF BYTE;
 	bResult 				: BOOL; 	
-	stAdsMessageResult 	: ST_AdsMessage;
+	stAdsMessageResult 		: ST_AdsMessage;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST(sName);
 
 fbAdsWrite(WRITE := FALSE);
-fbAdsWrite(	IDXGRP := stAdsMessageSend.nIdxGrp, 
-			IDXOFFS := stAdsMessageSend.nIdxOffs, 
-            LEN := stAdsMessageSend.nLength, 
+fbAdsWrite(	IDXGRP := _stAdsMessageSend.nIdxGrp, 
+			IDXOFFS := _stAdsMessageSend.nIdxOffs, 
+            LEN := _stAdsMessageSend.nLength, 
 			SRCADDR := ADR(aData), 
             WRITE := TRUE);			
 
@@ -137,51 +136,5 @@ Message := 'nLength is not valid');
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_AdsMessageHandler_Test">
-      <LineId Id="71" Count="9" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="52" Count="1" />
-      <LineId Id="56" Count="3" />
-      <LineId Id="62" Count="3" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="69" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="42" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_AdsMessageHandler_Test.TestCaseRead">
-      <LineId Id="11" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="21" Count="5" />
-      <LineId Id="28" Count="2" />
-      <LineId Id="59" Count="1" />
-      <LineId Id="69" Count="1" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="44" Count="1" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="75" Count="2" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="79" Count="1" />
-      <LineId Id="78" Count="0" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="88" Count="1" />
-      <LineId Id="87" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_AdsMessageHandler_Test.TestCaseWrite">
-      <LineId Id="11" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="21" Count="5" />
-      <LineId Id="28" Count="2" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="49" Count="6" />
-      <LineId Id="60" Count="7" />
-      <LineId Id="72" Count="5" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

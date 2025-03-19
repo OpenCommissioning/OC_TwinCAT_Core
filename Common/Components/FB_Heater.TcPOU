@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Heater" Id="{e09e2890-7221-0f07-0e61-61432d4b0f35}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Heater
 VAR_INPUT
@@ -8,7 +8,6 @@ VAR_INPUT
 	fCoolingSpeed 	: REAL := 1; //[*/s]
 	fLimitMin 		: REAL := 0; //[*]
 	fLimitMax 		: REAL := 100; //[*]
-	fInitValue 		: REAL; //[*]
 END_VAR
 
 VAR_OUTPUT
@@ -37,18 +36,6 @@ bIsLimitMin := _fValue <= fLimitMin;
 bIsLimitMax := _fValue >= fLimitMax;
 _fValue := LIMIT(fLimitMin, _fValue, fLimitMax);]]></ST>
     </Implementation>
-    <Method Name="FB_init" Id="{a74ae686-8d88-0e9e-3855-076bfd534cf8}">
-      <Declaration><![CDATA[METHOD FB_init : BOOL
-VAR_INPUT
-	bInitRetains : BOOL := TRUE; // if TRUE, the retain variables are initialized (warm start / cold start)
-	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
-	fInitValue : REAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[fValue := fInitValue;]]></ST>
-      </Implementation>
-    </Method>
     <Property Name="fValue" Id="{0964f444-8c81-0f60-0117-e0741ceae9eb}">
       <Declaration><![CDATA[PROPERTY fValue : REAL]]></Declaration>
       <Get Name="Get" Id="{b7eba905-2b22-01db-2ca3-08b0ab0d9f8e}">
@@ -78,30 +65,5 @@ END_VAR]]></Declaration>
 bInitRun := FALSE;]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Heater">
-      <LineId Id="9" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="1" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="62" Count="2" />
-    </LineIds>
-    <LineIds Name="FB_Heater.FB_init">
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Heater.fValue.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Heater.fValue.Set">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Heater.InitRun">
-      <LineId Id="7" Count="0" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

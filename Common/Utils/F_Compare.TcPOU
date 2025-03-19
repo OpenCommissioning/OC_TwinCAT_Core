@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="F_Compare" Id="{806b9cee-6c90-0d48-3903-6abca9e7f319}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+    <Declaration><![CDATA[(*
+	Compare fValueA and fValueB within the specified fTolerance window
+*)
+{attribute 'hide_all_locals'}
 FUNCTION F_Compare : BOOL
 VAR_INPUT
 	fValueA 		: REAL;
@@ -10,19 +13,15 @@ VAR_INPUT
 END_VAR
 
 VAR
-	fDifference 	: REAL;
+	_fDifference 	: REAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fDifference := ABS(fValueB - fValueA);
+      <ST><![CDATA[_fDifference := ABS(fValueB - fValueA);
 fTolerance := LIMIT(1E-6, ABS(fTolerance), 1E+6);
-F_Compare := fTolerance > fDifference;
+F_Compare := fTolerance > _fDifference;
 		
 	]]></ST>
     </Implementation>
-    <LineIds Name="F_Compare">
-      <LineId Id="66" Count="3" />
-      <LineId Id="19" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

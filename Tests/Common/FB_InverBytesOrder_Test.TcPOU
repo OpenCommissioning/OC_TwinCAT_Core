@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_InverBytesOrder_Test" Id="{140c23b6-c900-0392-3cfd-b22c9301fc15}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_InverBytesOrder_Test EXTENDS TcUnit.FB_TestSuite
-
-]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InverBytesOrder_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[TestWord('Invert WORD_1', nData := 16#1234, nExpected:= 16#3412);
 TestWord('Invert WORD_2', nData := 16#4321, nExpected:= 16#2143);
@@ -83,33 +81,5 @@ AssertEquals(Expected := nExpected,
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_InverBytesOrder_Test">
-      <LineId Id="113" Count="0" />
-      <LineId Id="120" Count="2" />
-      <LineId Id="103" Count="0" />
-      <LineId Id="124" Count="1" />
-      <LineId Id="123" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_InverBytesOrder_Test.TestDWord">
-      <LineId Id="13" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="15" Count="4" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_InverBytesOrder_Test.TestLWord">
-      <LineId Id="13" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="15" Count="4" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_InverBytesOrder_Test.TestWord">
-      <LineId Id="13" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="15" Count="4" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

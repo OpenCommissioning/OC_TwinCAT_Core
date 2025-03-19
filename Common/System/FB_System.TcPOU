@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_System" Id="{be746857-6a84-0550-15a8-342a3cf285ce}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'reflection'} 
+    <Declaration><![CDATA[(*
+	FB_System should be defined and called up once in the project so that the GVL reference is correctly assigned. 
+	If FB_System is not defined or there are several instances, the TwinCAT PLC project is forced into config mode with corresponding messages in the console.
+*)
+{attribute 'reflection'} 
 FUNCTION_BLOCK FB_System
 VAR_INPUT
 	fbAdsMessageHandler 	: FB_AdsMessageHandler;
@@ -26,16 +30,16 @@ VAR
 	_fTimeScaling 		: REAL;
 	_eControllerType	: E_ControllerType;
 	
-	fbPing				: FB_Ping;
+	_fbPing				: FB_Ping;
 	
 	{attribute 'hide'}
-	fbGetCurTaskIdx 	: TC2_SYSTEM.GETCURTASKINDEX;
+	_fbGetCurTaskIdx 	: TC2_SYSTEM.GETCURTASKINDEX;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[InitRun();
 fTimeScaling := TimeScaling;
-fbPing(bFeedback := Status.7, bTrigger => Control.7);
+_fbPing(bFeedback := Status.7, bTrigger => Control.7);
 
 fbRecordData(); //Execution order -1 relative to FB_AdsMessageHandler
 fbAdsMessageHandler();]]></ST>
@@ -152,8 +156,8 @@ ELSE
 	GVL_Core.refSystem REF= THIS^;
 END_IF
 
-fbGetCurTaskIdx();
-_fDeltaTime := UDINT_TO_REAL(TwinCAT_SystemInfoVarList._TaskInfo[fbGetCurTaskIdx.index].CycleTime / 10000) / 1000.0;
+_fbGetCurTaskIdx();
+_fDeltaTime := UDINT_TO_REAL(TwinCAT_SystemInfoVarList._TaskInfo[_fbGetCurTaskIdx.index].CycleTime / 10000) / 1000.0;
 _fTimeScaling := 1;
 
 fbRecordData.eControllerType := _eControllerType;

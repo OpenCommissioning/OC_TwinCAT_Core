@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Compare_Test" Id="{cfd97280-3efd-03f4-1e1f-b445ee047434}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Compare_Test EXTENDS TcUnit.FB_TestSuite
-
-]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Compare_Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[TestCase('Compare Valid_1', fValueA := 0.0, fValueB := 0.0, fTolerance := 1E-6, bExpected:= TRUE);
 TestCase('Compare Valid_2', fValueA := -1E-6, fValueB := -1E-6, fTolerance := 1E-6, bExpected:= TRUE);
@@ -45,13 +43,5 @@ AssertEquals(Expected := bExpected,
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_Compare_Test">
-      <LineId Id="72" Count="13" />
-      <LineId Id="29" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_Compare_Test.TestCase">
-      <LineId Id="13" Count="6" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

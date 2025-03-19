@@ -11,7 +11,6 @@ VAR
 	FB_Sign_Test : FB_Sign_Test;
 	FB_InverBytesOrder_Test : FB_InverBytesOrder_Test;
 	FB_GetByte_Test : FB_GetByte_Test;
-	FB_Swap_Test : FB_Swap_Test; 
 	FB_MEMCPY_Test : FB_MEMCPY_Test;
 	FB_Heater_Test : FB_Heater_Test;
 	FB_MoveVelocity_Test : FB_MoveVelocity_Test;
@@ -33,20 +32,10 @@ VAR
 	FB_Reader_Test : FB_Reader_Test;
 	FB_SensorAnalog_Test : FB_SensorAnalog_Test;
 	FB_SensorBinary_Test : FB_SensorBinary_Test;
-	FB_Robot_Test : FB_Robot_Test;
-	FB_DS402FSM_Test : FB_DS402FSM_Test;
-	FB_DS402_Test : FB_DS402_Test;
-	FB_Euchner_MGB_Test : FB_Euchner_MGB_Test;
-	FB_Euchner_STP_Test : FB_Euchner_STP_Test;
-	FB_SimMovitracLTEB_Test : FB_SimMovitracLTEB_Test;
-	FB_Starter_Test : FB_Starter_Test;
-	FB_SimMovidriveFSM_Test : FB_SimMovidriveFSM_Test;
-	FB_SimMovitrac_Test : FB_SimMovitrac_Test;
-	FB_SimMovitracB_Test : FB_SimMovitracB_Test;
+	FB_Robot_Test : FB_Robot_Test;	
 	FB_AdsMessageHandler_Test : FB_AdsMessageHandler_Test;
 	FB_RecordData_Test : FB_RecordData_Test;
-	FB_SimMovidrivePDO12_Test : FB_SimMovidrivePDO12_Test;
-	FB_Encoder_Test : FB_Encoder_Test;		
+	FB_Encoder_Test : FB_Encoder_Test;	
 END_VAR
 ]]></Declaration>
     <Implementation>

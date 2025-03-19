@@ -3,14 +3,14 @@
   <DUT Name="ST_AdsMessage" Id="{af86c548-10eb-0720-2cc1-1241d038b332}">
     <Declaration><![CDATA[TYPE ST_AdsMessage :
 STRUCT
-	tNetID			: T_AmsNetID;
-	tPort			: T_AmsPort;
-	nInvokeID		: UDINT;
-	nIdxGrp			: UDINT;
-	nIdxOffs		: UDINT;
-	nLength			: UDINT;
-	nResult			: UDINT;
-	aData			: ARRAY[0..239] OF BYTE;
+	tNetID			: T_AmsNetID; // AMS NetId identifier
+	tPort			: T_AmsPort; // AMS port number
+	nInvokeID		: UDINT; // Unique identifier for the ADS invocation
+	nIdxGrp			: UDINT; // Index group for the ADS command
+	nIdxOffs		: UDINT; // Index offset within the ADS command
+	nLength			: UDINT; // Length of the ADS message data
+	nResult			: UDINT; // Result code from the ADS operation
+	aData			: ARRAY[0..239] OF BYTE; // Data payload (240-byte buffer)
 END_STRUCT
 END_TYPE
 ]]></Declaration>

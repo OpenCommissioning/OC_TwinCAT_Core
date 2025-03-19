@@ -1,9 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_DriveControl" Id="{dc56c267-b627-0528-22c2-e554d07a3d58}" SpecialFunc="None">
-    <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
+    <Declaration><![CDATA[(*
+	FB_DriveControl manages drive operations by integrating absolute position and velocity control.
+    It encapsulates the functionalities of FB_MoveAbsolute for absolute movement and FB_MoveVelocity
+    for velocity-based control.
+*)
 FUNCTION_BLOCK FB_DriveControl
 VAR
+	_fbMoveAbsolute 		: FB_MoveAbsolute();
+	_fbMoveVelocity			: FB_MoveVelocity();
+
 	_fPosition 				: REAL;
 	_fVelocity 				: REAL;		
 	_bIsPositionReached 	: BOOL := TRUE;		
@@ -11,10 +18,7 @@ VAR
 	_fPositionLimitMin 		: REAL := -1E+12;
 	_fPositionLimitMax 		: REAL := 1E+12;
 	_fAccMax				: REAL := 1E+12;	
-	_fTolerance				: REAL := 1E-6;
-	
-	fbMoveAbsolute 			: FB_MoveAbsolute();
-	fbMoveVelocity			: FB_MoveVelocity();
+	_fTolerance				: REAL := 1E-6;	
 END_VAR
 
 
@@ -23,7 +27,12 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Property Name="bIsMoving" Id="{73e19af7-d622-0b70-2ddc-0e44cd6fc384}">
-      <Declaration><![CDATA[PROPERTY bIsMoving : BOOL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Indicates whether the drive is currently in motion.
+
+    The bIsMoving property returns TRUE if the drive is actively moving toward its target.
+*)
+PROPERTY bIsMoving : BOOL]]></Declaration>
       <Get Name="Get" Id="{34506e92-9377-0421-1027-96ada56082df}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -34,7 +43,14 @@ END_VAR
       </Get>
     </Property>
     <Property Name="bIsPositionReached" Id="{8f4cebef-1a01-0cb4-2c9b-b39a96d04003}">
-      <Declaration><![CDATA[PROPERTY bIsPositionReached : BOOL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Indicates whether the drive has reached its target position.
+
+    This property reflects the internal state of the drive control system.
+    It returns TRUE if the drive has achieved the desired position within the specified
+    tolerance limits; otherwise, it returns FALSE.
+*)
+PROPERTY bIsPositionReached : BOOL]]></Declaration>
       <Get Name="Get" Id="{0c10a029-e5d5-06f2-3cec-034889a553cf}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -45,7 +61,12 @@ END_VAR
       </Get>
     </Property>
     <Property Name="fAccMax" Id="{cbc5a371-916a-036a-36ba-312db2ce89eb}">
-      <Declaration><![CDATA[PROPERTY fAccMax : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Maximum Acceleration Limit
+
+    The fAccMax property represents the maximum acceleration permitted for drive movements.
+*)
+PROPERTY fAccMax : REAL]]></Declaration>
       <Get Name="Get" Id="{833d2f7c-2121-0dd5-0aa5-7a1eceeb4fdd}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -64,7 +85,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fPosition" Id="{059e2d77-deb5-0e01-35eb-131abdf4b729}">
-      <Declaration><![CDATA[PROPERTY fPosition : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Actual Drive Position
+	
+	The fPosition property provides the current position for the drive.
+*)
+PROPERTY fPosition : REAL]]></Declaration>
       <Get Name="Get" Id="{c931bd96-dda6-09e5-0854-c99182dbe955}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -85,7 +111,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fPositionLimitMax" Id="{fa7b5bed-e9f1-00b0-2694-7fd5d07b2165}">
-      <Declaration><![CDATA[PROPERTY fPositionLimitMax : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Maximum Position Limit
+	
+	The fPositionLimitMax property defines the upper boundary for the drive's position.
+*)
+PROPERTY fPositionLimitMax : REAL]]></Declaration>
       <Get Name="Get" Id="{30579d96-7fa8-044c-298c-52dedd9f6e10}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -104,7 +135,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fPositionLimitMin" Id="{4154ad98-973b-0b01-179b-6e880cfaa026}">
-      <Declaration><![CDATA[PROPERTY fPositionLimitMin : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Minimum  Position Limit
+	
+	The fPositionLimitMax property defines the lower boundary for the drive's position.
+*)
+PROPERTY fPositionLimitMin : REAL]]></Declaration>
       <Get Name="Get" Id="{328a948d-81a9-0388-23f2-1bd27eef4930}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -123,7 +159,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fTolerance" Id="{77ed7496-39fc-05df-196f-13e6115f8789}">
-      <Declaration><![CDATA[PROPERTY fTolerance : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Position Tolerance
+	
+	The fTolerance property defines the acceptable error range for the drive's position.
+*)
+PROPERTY fTolerance : REAL]]></Declaration>
       <Get Name="Get" Id="{0b58fdbc-bb13-0dbf-21d4-f64d65aea821}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -142,7 +183,12 @@ END_VAR
       </Set>
     </Property>
     <Property Name="fVelocity" Id="{51a8cd0e-a3fd-0189-3eb3-54ee4c21bc32}">
-      <Declaration><![CDATA[PROPERTY fVelocity : REAL]]></Declaration>
+      <Declaration><![CDATA[(*
+    Actual Drive Velocity
+	
+	The fVelocity property provides the current velocity for the drive.
+*)
+PROPERTY fVelocity : REAL]]></Declaration>
       <Get Name="Get" Id="{7bedfb7c-fa77-0e4d-1c13-7cb05df11252}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -162,7 +208,13 @@ END_VAR
       </Set>
     </Property>
     <Method Name="MoveAbsolute" Id="{be210045-6d8a-0f76-38f1-25a7a667b3e2}">
-      <Declaration><![CDATA[METHOD MoveAbsolute
+      <Declaration><![CDATA[(* 
+    Moves the drive to an absolute position.
+    
+    The MoveAbsolute method commands the drive to move to a specified absolute position with a given velocity,
+    acceleration, and deceleration.
+*)
+METHOD MoveAbsolute
 VAR_INPUT
 	fPosition 			: REAL;
 	fVelocity			: REAL;
@@ -170,60 +222,70 @@ VAR_INPUT
 	fDeceleration   	: REAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbMoveAbsolute.fPosition := _fPosition;
-fbMoveAbsolute.fVelocity := _fVelocity;
+        <ST><![CDATA[_fbMoveAbsolute.fPosition := _fPosition;
+_fbMoveAbsolute.fVelocity := _fVelocity;
 
-fbMoveAbsolute(
+_fbMoveAbsolute(
 	fTargetPosition := LIMIT(_fPositionLimitMin, fPosition, _fPositionLimitMax),
 	fTargetVelocity := fVelocity,
 	fAccMax := fAcceleration,
 	fDecMax := fDeceleration,
 	fTolerance := _fTolerance);					
 
-_fVelocity := fbMoveAbsolute.fVelocity;
-_fPosition := fbMoveAbsolute.fPosition;
+_fVelocity := _fbMoveAbsolute.fVelocity;
+_fPosition := _fbMoveAbsolute.fPosition;
 
 _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="MoveVelocity" Id="{67902dcb-c091-0097-0c26-f6a25649f8cd}">
-      <Declaration><![CDATA[METHOD MoveVelocity
+      <Declaration><![CDATA[(* 
+    Moves the drive using velocity control.
+    
+    The MoveVelocity method commands the drive to move with a specified velocity and controls the acceleration
+    and deceleration parameters. It also enforces position limits to prevent the drive from exceeding its boundaries.
+*)
+METHOD MoveVelocity
 VAR_INPUT
 	fVelocity 			: REAL;
 	fAcceleration 		: REAL;
 	fDeceleration 		: REAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbMoveVelocity.fVelocity := _fVelocity;
-fbMoveVelocity.fTargetVelocity := fVelocity;
-fbMoveVelocity.fAccMax := fAcceleration;
-fbMoveVelocity.fDecMax := fDeceleration;	
+        <ST><![CDATA[_fbMoveVelocity.fVelocity := _fVelocity;
+_fbMoveVelocity.fTargetVelocity := fVelocity;
+_fbMoveVelocity.fAccMax := fAcceleration;
+_fbMoveVelocity.fDecMax := fDeceleration;	
 	
 IF _fPositionLimitMax <> 0 AND _fPositionLimitMin <> 0 THEN
 	IF _fPosition >= _fPositionLimitMax OR _fPosition <= _fPositionLimitMin THEN
-		fbMoveVelocity.fTargetVelocity := 0;
-		fbMoveVelocity.fAccMax := _fAccMax;
-		fbMoveVelocity.fDecMax := _fAccMax;
+		_fbMoveVelocity.fTargetVelocity := 0;
+		_fbMoveVelocity.fAccMax := _fAccMax;
+		_fbMoveVelocity.fDecMax := _fAccMax;
 	END_IF		
 END_IF
 	
-fbMoveVelocity();
+_fbMoveVelocity();
 	
-_fVelocity := fbMoveVelocity.fVelocity;	
+_fVelocity := _fbMoveVelocity.fVelocity;	
 
 _fPosition := _fPosition + _fVelocity * GVL_Core.fbSystem.fDeltaTime * GVL_Core.fbSystem.fTimeScaling;
 _bIsPositionReached := F_Compare(fPosition, _fPosition, _fTolerance);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Stop" Id="{989f0471-080e-05a5-05a7-9d4740e325c8}">
-      <Declaration><![CDATA[METHOD Stop
+      <Declaration><![CDATA[(* 
+    Stops the drive movement.
+    
+    The Stop method decelerates the drive until it comes to a complete halt using the specified deceleration.
+*)
+METHOD Stop
 VAR_INPUT
 	fDeceleration 	: REAL; 
 END_VAR
 
 VAR
 	fSign 			: REAL;
-	fTolerance 		: REAL := 1E-3;
 	fAbsVelocity 	: REAL;
 END_VAR
 ]]></Declaration>
