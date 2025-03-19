@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.3.0...v1.3.1) (2025-03-19)
+
+
+### Bug Fixes
+
+* **FB_Base:** public FB ([39d03b3](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/39d03b3dcc70199f59a39d51fb6d04f8c7024ef9))
+
 # [1.3.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.2.1...v1.3.0) (2025-03-19)
 
 
