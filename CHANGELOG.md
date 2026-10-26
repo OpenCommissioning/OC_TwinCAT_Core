@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.3.1...v1.4.0) (2026-10-26)
+
+
+### Features
+
+* binary mode added to FB_FileIO ([fbfa493](https://github.com/OpenCommissioning/OC_TwinCAT_Core/commit/fbfa4933047330c755e41ab2967afb6eaefc4d62))
+
 ## [1.3.1](https://github.com/OpenCommissioning/OC_TwinCAT_Core/compare/v1.3.0...v1.3.1) (2025-03-19)
 
 
