@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
   <POU Name="FB_FileIO" Id="{9bd0ee4a-382c-097c-0148-97ed6cb4f83e}" SpecialFunc="None">
     <Declaration><![CDATA[(*
 	File read/write operations.
@@ -16,12 +16,28 @@ VAR
 	_eReadState 		: E_FileIoState := READY;
 	_eWriteState 		: E_FileIoState := READY;
 	_nBytesReadResult	: UDINT;
-	_nErrorIdResult		: UDINT;	
+	_nErrorIdResult		: UDINT;
+	_bBinaryMode		: BOOL := FALSE;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Property Name="bBinaryMode" Id="{049cf39e-685a-04f2-1ed0-c0423126998b}">
+      <Declaration><![CDATA[PROPERTY PUBLIC bBinaryMode : BOOL]]></Declaration>
+      <Get Name="Get" Id="{0ea1542b-75a1-0e61-38c3-82df7a860a53}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[bBinaryMode := _bBinaryMode;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a6660342-c679-0d2e-0f62-18740f98a4b6}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_bBinaryMode := bBinaryMode;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Property Name="nBytesRead" Id="{77d13791-0365-08c4-3bd9-096e691e978b}">
       <Declaration><![CDATA[(*
 	Number of bytes from last read (maps to _nBytesReadResult)
@@ -72,7 +88,7 @@ END_VAR
 METHOD PUBLIC Read : BOOL
 VAR_INPUT
 	sFileName	: T_MaxString;	//Name/path of the file to read
-	pData		: PVOID;	//ointer to the data buffer for storing the file contents
+	pData		: PVOID;	//Pointer to the data buffer for storing the file contents
 	nLength		: UDINT; //Number of bytes to read
 END_VAR
 ]]></Declaration>
@@ -90,7 +106,11 @@ CASE _eReadState OF
 		nBytesRead := 0;
 		IF _nHFile = 0 THEN
 			_fbFileOpen.sPathName := sFileName;
-			_fbFileOpen.nMode := FOPEN_MODEREAD;
+			IF _bBinaryMode THEN
+				_fbFileOpen.nMode := FOPEN_MODEREAD OR FOPEN_MODEBINARY;
+			ELSE
+				_fbFileOpen.nMode := FOPEN_MODEREAD OR FOPEN_MODETEXT;
+			END_IF
 			_fbFileOpen.ePath := PATH_GENERIC;
 			_fbFileOpen(bExecute := TRUE);
 		END_IF
@@ -197,7 +217,11 @@ CASE _eWriteState OF
 		nErrorId := 0;
 		IF _nHFile = 0 THEN
 			_fbFileOpen.sPathName := sFileName;
-			_fbFileOpen.nMode := FOPEN_MODEWRITE;
+			IF _bBinaryMode THEN
+				_fbFileOpen.nMode := FOPEN_MODEWRITE OR FOPEN_MODEBINARY;
+			ELSE
+				_fbFileOpen.nMode := FOPEN_MODEWRITE OR FOPEN_MODETEXT;
+			END_IF
 			_fbFileOpen.ePath := PATH_GENERIC;
 			_fbFileOpen(bExecute := TRUE);
 		END_IF
